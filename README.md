@@ -1,2 +1,2 @@
 # Smart-Bin
-Smart bin project by: Adrian, Jayden, Matthew
+Smart bin project by: Adrian, Jayden Lao, Matthew
