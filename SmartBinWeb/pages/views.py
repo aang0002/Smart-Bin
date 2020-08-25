@@ -6,7 +6,7 @@ from .models import *
 def homepage_view(request, *args, **kwargs):
 	print(args, kwargs)
 	print(request.user)
-	return render(request, "home.html", {})
+	return render(request, "login.html", {})
 
 def contact_view(request, *args, **kwargs):
 	return render(request, "contact.html", {})

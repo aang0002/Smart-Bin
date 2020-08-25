@@ -26,4 +26,4 @@ def home(request):
         'posts': posts
     }
 
-    return render(request, 'home/home.html', context)
+    return render(request, 'home/login.html', context)

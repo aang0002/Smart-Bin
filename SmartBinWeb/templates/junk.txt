@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+body {background-color: black;
+      }
+
+h1   {color: white;
+      text-align: center;
+      font-size: 300%;}
+
+p    {color: white;
+      text-align: center;}
+
+.login {text-align: center;
+        border-radius: 1.5em;
+        border-color: green;
+        border-width: 5px;
+        border-style: groove;
+        margin-top: 100px;
+        margin-left: 350px;
+        margin-right: 350px;
+        }
+
+.un {
+    width: 76%;
+    color: rgb(38, 50, 56);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background: rgba(136, 126, 126, 0.04);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    outline: none;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0.02);
+    margin-bottom: 50px;
+
+    text-align: center;
+    margin-bottom: 27px;
+    font-family: 'Ubuntu', sans-serif;
+    }
+
+.pass {
+    width: 76%;
+    color: rgb(38, 50, 56);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    background: rgba(136, 126, 126, 0.04);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    outline: none;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0.02);
+    margin-bottom: 50px;
+    margin-left: 9px;
+    text-align: center;
+    margin-bottom: 27px;
+    font-family: 'Ubuntu', sans-serif;
+    }
+
+.submit {
+    cursor: pointer;
+    border-radius: 5em;
+    color: #fff;
+    background-color: green;
+    border: 0;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    font-family: 'Ubuntu', sans-serif;
+    <!-- margin-left: 35%; -->
+    font-size: 13px;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+    }
+
+</style>
+</head>
+
+<div class="login">
+    <h1 class="sign"> Sign in</h1>
+        <input class="un" type="text" name="u" placeholder="Username" required="required" />
+        <input class="pass" type="password" name="p" placeholder="Password" required="required" />
+        <button class="submit" type="submit" class="btn btn-primary btn-block btn-large">Sign in</button>
+</div>
+
+
+</html>
+
+
+###########################################################################################################################
+
+
+
+
+
+
+
+
+
