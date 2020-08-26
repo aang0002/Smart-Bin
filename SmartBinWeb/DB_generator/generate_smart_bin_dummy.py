@@ -7,6 +7,73 @@ import os
 import sqlite3
 import random
 
+"""
+Fill in pages_bin table in the DB
+"""
+def generate_bin_dummy_data(cursor):
+	# bin datas constraints
+	N = 20	# number of bins that we want to generate
+	MAX_LAT = -37.794240
+	MIN_LAT = -37.816393
+	MAX_LONG = 144.995321
+	MIN_LONG = 144.952883
+
+	# clear all existing bin datas
+	cursor.execute("DELETE FROM pages_bin;")
+
+	# create N dummy bin datas
+	bin_num = 1
+	for i in range(N):
+		cursor.execute("""INSERT INTO pages_bin
+			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, last_cleared_datetime, installation_date, bin_status)
+			VALUES ('{bin_num}', 'GENERAL_WASTE', 0, {bin_latitude}, {bin_longitude}, '2020-08-19', '2020-08-19', 'no defect');"""
+			.format(bin_num=format(bin_num,'05d'), bin_latitude=random.uniform(MIN_LAT, MAX_LAT), bin_longitude=random.uniform(MIN_LONG, MAX_LONG)))
+		bin_num += 1
+
+	return
+
+"""
+Fill in pages_employee table in the DB
+"""
+def generate_emp_dummy_data(cursor):
+	# clear all existing employee datas
+	cursor.execute("DELETE FROM pages_employee;")
+
+	# create a list of datas
+	usernames = ['aang0002','ylao0001','mgad0001']
+	passwords = ['fit','fit','fit']
+	names = ['Adrian Ang', 'Jayden Lao', 'Matthew Gadsden']
+	dobs = ['1998-09-04','1998-11-12','1998-13-05']
+	tfns = ['1111111111','2222222222','3333333333']
+	addresses = ['39 Waverly Drive, Mount Waverly','17 Anchora Palace, Glen Waverly','1 Venice Street, Box Hill']
+	phones = ['0455611990','0418224233','0411909988']
+
+	# start filling in datas
+	for i in range(len(usernames)):
+		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone) 
+			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}');"""
+			.format(username=usernames[i], password=passwords[i], name=names[i], dob=dobs[i], tfn=tfns[i], address=addresses[i], phone=phones[i]))
+	
+	# test
+	sqlite_select_Query = "SELECT emp_username, emp_password FROM pages_employee;"
+	cursor.execute(sqlite_select_Query)
+	records = cursor.fetchall()
+	for row in records:
+		# row is returned in tuple
+		print(row)
+
+	return
+
+
+"""
+Fill in pages_collectioncenter table in the DB
+"""
+def generate_collectioncenter_dummy_data(cursor):
+	# clear all existing collection center datas
+	cursor.execute("DELETE FROM pages_collectioncenter;")
+
+
+
 
 if __name__ == "__main__":
 	try:
@@ -20,28 +87,24 @@ if __name__ == "__main__":
 		record = cursor.fetchall()
 		print("SQLite Database Version is: ", record)
 
-		# bin datas constraints
-		N = 20	# number of bins that we want to generate
-		MAX_LAT = -37.794240
-		MIN_LAT = -37.816393
-		MAX_LONG = 144.995321
-		MIN_LONG = 144.952883
+		# generate bin dummy date
+		generate_bin_dummy_data(cursor)
 
-		# clear all existing bin datas
-		cursor.execute("DELETE FROM pages_bin;")
+		# generate employee dummy data
+		generate_emp_dummy_data(cursor)
 
-		# create N dummy bin datas
-		bin_num = 1
-		for i in range(N):
-			cursor.execute("""INSERT INTO pages_bin
-				(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, last_cleared_datetime, installation_date, bin_status)
-				VALUES ('{bin_num}', 'GENERAL_WASTE', 0, {bin_latitude}, {bin_longitude}, '2020-08-19', '2020-08-19', 'no defect');"""
-				.format(bin_num=format(bin_num,'05d'), bin_latitude=random.uniform(MIN_LAT, MAX_LAT), bin_longitude=random.uniform(MIN_LONG, MAX_LONG)))
-			bin_num += 1
+		# generate collection ceters dummy data
+		generate_collectioncenter_dummy_data(cursor)
+
+		# commit changes
+		cursor.execute("COMMIT;")
 
 		# close connection
 		print("connection closed")
 		cursor.close()
 
 	except sqlite3.Error as error:
-		print("Error while connecting to sqlite", error)
+		print("SQL error:", error)
+
+	except Exception as error:
+		print(error)

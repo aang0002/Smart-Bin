@@ -22,16 +22,15 @@ class Item(models.Model):
 
 # Employee Model
 class Employee(models.Model):
-	emp_id = models.CharField(max_length=7, validators=[RegexValidator(r'^[0-9]{7}$')], primary_key=True)
-	emp_username = models.CharField(max_length=100, unique=True)
-	emp_password = models.CharField(max_length=100)
+	emp_username = models.CharField(max_length=50, primary_key=True)
+	emp_password = models.CharField(max_length=100, default="fit")
 	emp_name = models.CharField(max_length=100)
 	emp_dob = models.DateField()
 	tfn_no = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
 	emp_address = models.CharField(max_length=100)
 	emp_phone = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
-	on_shift = models.BooleanField(default=True)
-	emp_points = models.PositiveSmallIntegerField(default=0) 
+	on_shift = models.BooleanField(default=True, blank=True, null=True)
+	emp_points = models.PositiveSmallIntegerField(default=0, blank=True, null=True) 
 
 	def __str__(self):
 		return self.emp_id
@@ -58,7 +57,6 @@ class Bin(models.Model):
 	bin_fullness = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 	bin_longitude = models.DecimalField(max_digits=8, decimal_places=5)
 	bin_latitude = models.DecimalField(max_digits=8, decimal_places=5)
-	area_name = models.CharField(max_length=100)
 	last_cleared_datetime = models.DateTimeField()
 	installation_date = models.DateField(blank=True)
 	bin_status = models.CharField(max_length=300)
@@ -66,7 +64,7 @@ class Bin(models.Model):
 # Assignment Model
 class Assignment(models.Model):
 	asgn_id = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')], primary_key=True)
-	emp_id = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
+	emp_username = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
 	bin_num = models.ForeignKey(Bin, on_delete=models.CASCADE, blank=False)
 	colcen_id =  models.ForeignKey(CollectionCenter, on_delete=models.SET_NULL, null=True)
 	datetime_created = models.DateTimeField()

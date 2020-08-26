@@ -11,7 +11,7 @@
     .login {
         background-color: #202120;
         width: 400px;
-        height: 400px;
+        height: 700px;
         margin: 7em auto;
         border-radius: 1.5em;
         box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
@@ -27,7 +27,7 @@
 
     .un {
     width: 76%;
-    color: rgb(38, 50, 56);
+    color: rgb(255, 255, 255);
     font-weight: 700;
     font-size: 14px;
     letter-spacing: 1px;
@@ -97,6 +97,10 @@
         padding-top: 15px;
     }
 
+    #DOB {
+    	color: rgba(255, 255, 255, 0.3);
+    }
+
     a {
         text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
         color: #158313;
@@ -114,22 +118,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
 
-  <title>Sign in</title>
+  <title>Register</title>
 
 </head>
 
 <body>
   <div class="login">
-    <p class="sign" align="center">Sign in</p>
-    <form class="form1" method="post" action="/login/" id="loginForm">
-      <input class="un" type="text" align="center" placeholder="Username" id="username">
-      <input class="pass" type="password" align="center" placeholder="Password" id="password">
-      <button type="submit" align="center" class="submit" form="loginForm">Sign In</button>
+    <p class="sign" align="center">Employee Registeration</p>
+    <form class="form1" method="post" action="" id="registerForm">
+      <input class="un" type="text" align="center" id="username" placeholder="Username" id="username">
+      <input class="un" type="text" align="center" id="password" placeholder="Password" id="password">
+      <input class="un" type="text" align="center" id="name" placeholder="Full Name" id="name">
+      <input class="un" type="date" align="center" id="DOB" placeholder="D.O.B" id="dob">
+      <input class="un" type="text" align="center" id="TFN" placeholder="TFN No" id="tfn">
+      <input class="un" type="text" align="center" id="address" placeholder="Full Address" id="address">
+      <input class="un" type="text" align="center" id="phone" placeholder="Phone" id="phone">
+      <button type="submit" align="center" class="submit" form="loginForm" formmethod="post">Register</button>
     </form>
-    <div align="center">
-        <br>
-        <a href="http://127.0.0.1:8000/register" align="center">Register</a>
-    </div>
   </div>
 
 </body>
