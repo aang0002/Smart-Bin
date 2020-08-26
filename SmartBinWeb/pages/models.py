@@ -23,6 +23,8 @@ class Item(models.Model):
 # Employee Model
 class Employee(models.Model):
 	emp_id = models.CharField(max_length=7, validators=[RegexValidator(r'^[0-9]{7}$')], primary_key=True)
+	emp_username = models.CharField(max_length=100, unique=True)
+	emp_password = models.CharField(max_length=100)
 	emp_name = models.CharField(max_length=100)
 	emp_dob = models.DateField()
 	tfn_no = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])

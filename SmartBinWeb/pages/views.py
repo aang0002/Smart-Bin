@@ -14,3 +14,8 @@ def contact_view(request, *args, **kwargs):
 def todolist_view(response, id):
 	ls = ToDoList.objects.get(id=id)
 	return HttpResponse(ls.name)
+
+class HomeView:
+	template_name = 'templates/login.html'
+
+	
