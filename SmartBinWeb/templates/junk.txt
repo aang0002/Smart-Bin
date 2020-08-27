@@ -1,93 +1,82 @@
 <!DOCTYPE html>
-<html>
 
 <head>
+
 <style>
-body {background-color: black;
-      }
+        body {
+        background-color: #0D0D0D;
+        font-family: 'Ubuntu', sans-serif;
+    }
 
-h1   {color: white;
-      text-align: center;
-      font-size: 300%;}
-
-p    {color: white;
-      text-align: center;}
-
-.login {text-align: center;
+    .map {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 650px;
+        height: 450px;
         border-radius: 1.5em;
-        border-color: green;
-        border-width: 5px;
-        border-style: groove;
-        margin-top: 100px;
-        margin-left: 350px;
-        margin-right: 350px;
-        }
-
-.un {
-    width: 76%;
-    color: rgb(38, 50, 56);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 1px;
-    background: rgba(136, 126, 126, 0.04);
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    box-sizing: border-box;
-    border: 2px solid rgba(0, 0, 0, 0.02);
-    margin-bottom: 50px;
-
-    text-align: center;
-    margin-bottom: 27px;
-    font-family: 'Ubuntu', sans-serif;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 50px;
+        margin-top: 50px;
     }
 
-.pass {
-    width: 76%;
-    color: rgb(38, 50, 56);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 1px;
-    background: rgba(136, 126, 126, 0.04);
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    box-sizing: border-box;
-    border: 2px solid rgba(0, 0, 0, 0.02);
-    margin-bottom: 50px;
-    margin-left: 9px;
-    text-align: center;
-    margin-bottom: 27px;
-    font-family: 'Ubuntu', sans-serif;
+    .stat1 {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 250px;
+        height: 150px;
+        border-radius: 1.5em;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 50px;
+        margin-bottom: 20px;
+        margin-top: 30px;
     }
 
-.submit {
-    cursor: pointer;
-    border-radius: 5em;
-    color: #fff;
-    background-color: green;
-    border: 0;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    font-family: 'Ubuntu', sans-serif;
-    <!-- margin-left: 35%; -->
-    font-size: 13px;
-    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+    .stat2 {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 250px;
+        height: 150px;
+        border-radius: 1.5em;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 300px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+    .stat3 {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 250px;
+        height: 150px;
+        border-radius: 1.5em;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 300px;
+        margin-bottom: 20px;
+        margin-top: 30px;
     }
 
 </style>
+
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+      <title>Smart Bin - Home</title>
 </head>
 
-<div class="login">
-    <h1 class="sign"> Sign in</h1>
-        <input class="un" type="text" name="u" placeholder="Username" required="required" />
-        <input class="pass" type="password" name="p" placeholder="Password" required="required" />
-        <button class="submit" type="submit" class="btn btn-primary btn-block btn-large">Sign in</button>
-</div>
+
+<body>
+    <h1 style="color: #38BB36; text-align: center; font-family: 'Ubuntu', sans-serif; ">HOME</h1>
+    <div class="map">
+        <p style="color: green; text-align: center;">map</p>
+
+    </div>
+    <div class = "stat1">
+        <div class = "stat2">
+            <div class = "stat3">
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+
 
 
 </html>
@@ -95,7 +84,28 @@ p    {color: white;
 
 ###########################################################################################################################
 
+<!DOCTYPE html>
+<html>
+<body>
 
+<h1>My First Google Map</h1>
+
+<div id="googleMap" style="width:100%;height:400px;"></div>
+
+<script>
+function myMap() {
+var mapProp= {
+  center:new google.maps.LatLng(51.508742,-0.120850),
+  zoom:5,
+};
+var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+}
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=myMap"></script>
+
+</body>
+</html>
 
 
 

@@ -9,6 +9,11 @@ import sqlite3
 def homepage_view(request, *args, **kwargs):
 	print(args, kwargs)
 	print(request.user)
+	return render(request, "home.html", {})
+
+def login_view(request, *args, **kwargs):
+	print(args, kwargs)
+	print(request.user)
 	return render(request, "login.html", {})
 
 def contact_view(request, *args, **kwargs):

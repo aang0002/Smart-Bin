@@ -21,10 +21,10 @@ from pages.views import contact_view
 from pages.views import todolist_view
 from pages.views import register_view
 from pages.views import login
-
+from pages.views import login_view
 
 urlpatterns = [
-    path('', homepage_view, name='home'),
+    path('', login_view, name='home'),
     path('home/', homepage_view, name='home'),
     path('contact/', contact_view, name='contact'),
     path('register/', register_view, name='register'),

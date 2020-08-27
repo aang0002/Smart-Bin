@@ -1,1 +1,121 @@
-<h1> THIS IS HOME PAGE </h1>
+<!DOCTYPE html>
+
+<head>
+
+<style>
+        body {
+        background-color: #0D0D0D;
+        font-family: 'Ubuntu', sans-serif;
+    }
+
+    .map {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 650px;
+        height: 450px;
+        border-radius: 1.5em;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 50px;
+        margin-top: 50px;
+    }
+
+    .stat1 {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 250px;
+        height: 150px;
+        border-radius: 1.5em;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 50px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+    .stat2 {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 250px;
+        height: 150px;
+        border-radius: 1.5em;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 300px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+    .stat3 {
+        background-image: linear-gradient(to bottom, #202120, grey);
+        width: 250px;
+        height: 150px;
+        border-radius: 1.5em;
+        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        margin-left: 300px;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
+
+</style>
+
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+      <title>Smart Bin - Home</title>
+</head>
+
+
+<body>
+
+    <h1 style="color: #38BB36; text-align: center; font-family: 'Ubuntu', sans-serif; ">HOME</h1>
+
+
+    <div class="map", id="googleMap", style="width:650px;height:450px;">
+        <script>
+        function myMap() {
+        var mapProp= {
+          center:new google.maps.LatLng(-37.9144,145.1300),
+          zoom:15,
+        };
+
+        var myPos = {lat: -37.9144, lng: 145.1300};
+        var bin1Pos = {lat: -37.913587, lng: 145.125013};
+        var bin2Pos = {lat: -37.913147, lng: 145.129337};
+        var bin3Pos = {lat: -37.912757, lng: 145.131966};
+
+        var myMarker = new google.maps.Marker({
+            position: myPos,
+            icon: {url: "http://maps.google.com/mapfiles/ms/micons/man.png"}});
+
+        var bin1Marker = new google.maps.Marker({
+            position: bin1Pos,
+            icon: {url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"}});
+
+        var bin2Marker = new google.maps.Marker({
+            position: bin2Pos,
+            icon: {url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"}});
+
+        var bin3Marker = new google.maps.Marker({
+            position: bin3Pos,
+            icon: {url: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png"}});
+
+        var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+        myMarker.setMap(map);
+        bin1Marker.setMap(map);
+        bin2Marker.setMap(map);
+        bin3Marker.setMap(map);
+        }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?AIzaSyCrh0_YAzTIlGi1HzKArllNHIh1rHCbf5c&callback=myMap"></script>
+
+    </div>
+    <div class = "stat1">
+        <div class = "stat2">
+            <div class = "stat3">
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+
+
+
+</html>
+
