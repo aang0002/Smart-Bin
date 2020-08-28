@@ -43,7 +43,7 @@ def generate_emp_dummy_data(cursor):
 	usernames = ['aang0002','ylao0001','mgad0001']
 	passwords = ['fit','fit','fit']
 	names = ['Adrian Ang', 'Jayden Lao', 'Matthew Gadsden']
-	dobs = ['1998-09-04','1998-11-12','1998-13-05']
+	dobs = ['1998-09-04','1998-11-12','1998-11-05']
 	tfns = ['1111111111','2222222222','3333333333']
 	addresses = ['39 Waverly Drive, Mount Waverly','17 Anchora Palace, Glen Waverly','1 Venice Street, Box Hill']
 	phones = ['0455611990','0418224233','0411909988']
@@ -94,7 +94,7 @@ if __name__ == "__main__":
 		generate_emp_dummy_data(cursor)
 
 		# generate collection ceters dummy data
-		generate_collectioncenter_dummy_data(cursor)
+		# generate_collectioncenter_dummy_data(cursor)
 
 		# commit changes
 		cursor.execute("COMMIT;")

@@ -1,9 +1,15 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-from .models import *
+from django.shortcuts import get_object_or_404	# so that a 404 page will be shown on an invalid req
+from rest_framework.views import APIView	# so that normal view can return an API data
+from rest_framework.response import Response # HTTP status response
+from rest_framework import status
+from .serializers import EmployeeSerializer
+from .models import Employee
 from django.contrib.auth.forms import UserCreationForm
 import os
 import sqlite3
+
 
 # Create your views here.
 def homepage_view(request, *args, **kwargs):
@@ -65,3 +71,15 @@ def register_view(request):
 			return HttpResponse("Registeration Failed")
 
 	return render(request,'register.html',context)
+
+
+class EmployeeList(APIView):
+
+	def get(self, request):
+		employees1 = Employee.objects.all()
+		# serializer_class = EmployeeSerializer
+		serializer = EmployeeSerializer(employees1, many=True)
+		return Response(serializer.data)
+
+	def post(self, request):
+		pass
