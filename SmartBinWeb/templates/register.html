@@ -125,18 +125,34 @@
 <body>
   <div class="login">
     <p class="sign" align="center">Employee Registeration</p>
-    <form class="form1" method="post" action="" id="registerForm">
-      <input class="un" type="text" align="center" id="username" placeholder="Username" id="username">
-      <input class="un" type="text" align="center" id="password" placeholder="Password" id="password">
-      <input class="un" type="text" align="center" id="name" placeholder="Full Name" id="name">
-      <input class="un" type="date" align="center" id="DOB" placeholder="D.O.B" id="dob">
-      <input class="un" type="text" align="center" id="TFN" placeholder="TFN No" id="tfn">
-      <input class="un" type="text" align="center" id="address" placeholder="Full Address" id="address">
-      <input class="un" type="text" align="center" id="phone" placeholder="Phone" id="phone">
-      <button type="submit" align="center" class="submit" form="loginForm" formmethod="post">Register</button>
+    <form class="form1">
+      <input class="un" type="text" align="center" id="username" placeholder="Username" id="username" required />
+      <input class="un" type="password" align="center" id="password" placeholder="Password" id="password" required>
+      <input class="un" type="text" align="center" id="name" placeholder="Full Name" id="name" required>
+      <input class="un" type="date" align="center" id="DOB" placeholder="D.O.B" id="dob" required>
+      <input class="un" type="text" align="center" id="TFN" placeholder="TFN No" id="tfn" required>
+      <input class="un" type="text" align="center" id="address" placeholder="Full Address" id="address" required>
+      <input class="un" type="text" align="center" id="phone" placeholder="Phone" id="phone" required>
+      <button align="center" class="submit" onclick="register()">Register</button>
     </form>
   </div>
 
 </body>
+
+<script type="text/javascript">
+    function register(){
+        // gather data from user inputs
+        let username_input = document.getElementById('username');
+        let password_inpit = document.getElementById('password');
+        let name_input = document.getElementById('name');
+        let dob_input = document.getElementById('dob');
+        let tfn_input = document.getElementById('tfn');
+        let address_input = document.getElementById('address');
+        let phone_input = document.getElementById('phone');
+        console.log("hey")
+        
+
+    }
+</script>
 
 </html>

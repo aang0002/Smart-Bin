@@ -1,7 +1,10 @@
 from django.http import HttpResponse, JsonResponse
+from django.views.generic import View
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404	# so that a 404 page will be shown on an invalid req
 from rest_framework.views import APIView	# so that normal view can return an API data
+from rest_framework import viewsets
+from rest_framework import generics
 from rest_framework.response import Response # HTTP status response
 from rest_framework import status
 from .serializers import EmployeeSerializer
@@ -12,28 +15,47 @@ import sqlite3
 
 
 # Create your views here.
-def homepage_view(request, *args, **kwargs):
-	print(args, kwargs)
-	print(request.user)
-	return render(request, "home.html", {})
+class HomePageView(View):
+	template_name = "home.html"
 
-def login_view(request, *args, **kwargs):
-	print(args, kwargs)
-	print(request.user)
-	return render(request, "login.html", {})
+	def get(self, request, *args, **kwargs):
+		print(args, kwargs)
+		print(request.user)
+		return render(request, "home.html", {})
 
-def contact_view(request, *args, **kwargs):
-	return render(request, "contact.html", {})
+class LoginView(View):
+	template_name = "login.html"
 
-def todolist_view(response, id):
-	ls = ToDoList.objects.get(id=id)
-	return HttpResponse(ls.name)
+	def get(self, request, *args, **kwargs):
+		return render(request, "login.html", {})
 
-def login(request):
-	context = {}
-	system = request.POST.get('system', None)
-	context['system'] = system
-	return JsonResponse(data)
+
+
+"""
+####################### REST-API views  ###################################################
+"""
+
+class EmployeeList(APIView):
+
+	def get(self, request):
+		employees1 = Employee.objects.all()
+		serializer = EmployeeSerializer(employees1, many=True)
+		return Response(serializer.data)
+
+	def post(self, request):
+		pass
+
+class ValidateLoginView(generics.ListAPIView):
+	serializer_class = EmployeeSerializer
+
+	def get_queryset(self):
+	    username = self.kwargs['username']
+	    password = self.kwargs['password']
+
+	    queryset = Employee.objects.filter(emp_username=username, emp_password=password)
+
+	    return queryset
+
 
 def register_view(request):
 	context = {}
@@ -71,15 +93,3 @@ def register_view(request):
 			return HttpResponse("Registeration Failed")
 
 	return render(request,'register.html',context)
-
-
-class EmployeeList(APIView):
-
-	def get(self, request):
-		employees1 = Employee.objects.all()
-		# serializer_class = EmployeeSerializer
-		serializer = EmployeeSerializer(employees1, many=True)
-		return Response(serializer.data)
-
-	def post(self, request):
-		pass

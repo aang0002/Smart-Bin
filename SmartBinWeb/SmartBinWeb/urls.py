@@ -17,22 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path, include
-from pages.views import homepage_view
-from pages.views import contact_view
-from pages.views import todolist_view
+from pages.views import HomePageView
 from pages.views import register_view
-from pages.views import login
-from pages.views import login_view
+from pages.views import ValidateLoginView
+from pages.views import LoginView
 from pages.views import EmployeeList
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
-    path('', login_view, name='home'),
-    path('home/', homepage_view, name='home'),
-    path('contact/', contact_view, name='contact'),
+    path('', LoginView.as_view(), name='home'),
+    path('home/', HomePageView.as_view(), name='home'),
     path('register/', register_view, name='register'),
     path('admin/', admin.site.urls),
-    path('<int:id>', todolist_view, name='todolist'),
-    path('login/', login, name='login'),
+    url('^validatelogin/(?P<username>.+)/(?P<password>.+)/$', ValidateLoginView.as_view()),
     url(r'^employees', EmployeeList.as_view()),
 ]

@@ -40,7 +40,7 @@ def generate_emp_dummy_data(cursor):
 	cursor.execute("DELETE FROM pages_employee;")
 
 	# create a list of datas
-	usernames = ['aang0002','ylao0001','mgad0001']
+	usernames = ['aang0002','ylao0002','mgad0002']
 	passwords = ['fit','fit','fit']
 	names = ['Adrian Ang', 'Jayden Lao', 'Matthew Gadsden']
 	dobs = ['1998-09-04','1998-11-12','1998-11-05']

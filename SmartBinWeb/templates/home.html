@@ -100,6 +100,26 @@
         bin2Marker.setMap(map);
         bin3Marker.setMap(map);
         }
+
+        var request = new XMLHttpRequest()
+
+        request.open('GET', 'http://127.0.0.1:8000/employees', true)
+        request.onload = function () {
+          // Begin accessing JSON data here
+          var data = JSON.parse(this.response).data
+
+          if (request.status >= 200 && request.status < 400) {
+            data.forEach((emp) => {
+              console.log("username = ",emp.attributes.emp_username)
+              console.log("password = ",emp.attributes.emp_password)
+            })
+          } else {
+            console.log('error')
+          }
+        }
+
+        request.send()
+
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?AIzaSyCrh0_YAzTIlGi1HzKArllNHIh1rHCbf5c&callback=myMap"></script>
 
