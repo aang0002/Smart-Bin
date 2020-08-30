@@ -30,10 +30,7 @@ class Employee(models.Model):
 	emp_address = models.CharField(max_length=100)
 	emp_phone = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
 	on_shift = models.BooleanField(default=True, blank=True, null=True)
-	emp_points = models.PositiveSmallIntegerField(default=0, blank=True, null=True) 
-
-	def __str__(self):
-		return self.emp_id
+	emp_points = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
 
 # CollectionCenter Model
 class CollectionCenter(models.Model):
