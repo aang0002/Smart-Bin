@@ -53,10 +53,130 @@
 
 </style>
 
-  <!-- <link rel="stylesheet" href="css/style.css"> -->
-  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<style type="text/css">
+    /*  
+    Side Navigation Menu V2, RWD
+    ===================
+    Author: @heyPablete
 
-      <title>Smart Bin - Home</title>
+     */
+
+    @charset "UTF-8";
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.42em;
+      color:#A7A1AE;
+      /*background-color:#1F2739;*/
+    }
+
+    h1 {
+      font-size:3em; 
+      font-weight: 300;
+      line-height:1em;
+      text-align: center;
+      color: #4DC3FA;
+    }
+
+    h2 {
+      font-size:1em; 
+      font-weight: 300;
+      text-align: center;
+      display: block;
+      line-height:1em;
+      padding-bottom: 2em;
+      color: #FB667A;
+    }
+
+    h2 a {
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #FB667A;
+      text-decoration: none;
+    }
+
+    .blue { color: #185875; }
+    .yellow { color: #FFF842; }
+
+    .container th h1 {
+          font-weight: bold;
+          font-size: 1em;
+      text-align: left;
+      color: #185875;
+    }
+
+    .container td {
+          font-weight: normal;
+          font-size: 1em;
+      -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+           -moz-box-shadow: 0 2px 2px -2px #0E1119;
+                box-shadow: 0 2px 2px -2px #0E1119;
+    }
+
+    .container {
+          text-align: left;
+          overflow: hidden;
+          width: 80%;
+          margin: 0 auto;
+      display: table;
+      padding: 0 0 8em 0;
+    }
+
+    .container td, .container th {
+          padding-bottom: 2%;
+          padding-top: 2%;
+      padding-left:2%;  
+    }
+
+    /* Background-color of the odd rows */
+    .container tr:nth-child(odd) {
+          background-color: #323C50;
+    }
+
+    /* Background-color of the even rows */
+    .container tr:nth-child(even) {
+          background-color: #2C3446;
+    }
+
+    .container th {
+          background-color: #1F2739;
+    }
+
+    .container td:first-child { color: #FB667A; }
+
+    .container tr:hover {
+       background-color: #464A52;
+    -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+           -moz-box-shadow: 0 6px 6px -6px #0E1119;
+                box-shadow: 0 6px 6px -6px #0E1119;
+    }
+
+    .container td:hover {
+      background-color: #FFF842;
+      color: #403E10;
+      font-weight: bold;
+      
+      box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+      transform: translate3d(6px, -6px, 0);
+      
+      transition-delay: 0s;
+          transition-duration: 0.4s;
+          transition-property: all;
+      transition-timing-function: line;
+    }
+
+    @media (max-width: 800px) {
+    .container td:nth-child(4),
+    .container th:nth-child(4) { display: none; }
+    }
+</style>
+
+<!-- <link rel="stylesheet" href="css/style.css"> -->
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+
+<title>Smart Bin - Home</title>
 </head>
 
 
@@ -64,73 +184,196 @@
 
     <h1 style="color: #38BB36; text-align: center; font-family: 'Ubuntu', sans-serif; ">SMART-BIN</h1>
 
-
     <div class="map", id="googleMap", style="width:650px;height:450px;">
-        <script>
+    <script>
+        // // Clayton
+        // var myLatitude = -37.9144 
+        // var myLongitude = 145.1300
+        // Melbournce Central
+        var myLatitude = -37.809967
+        var myLongitude = 144.962640
+        var binsToGet;
+
         function myMap() {
-        var mapProp= {
-          center:new google.maps.LatLng(-37.9144,145.1300),
-          zoom:15,
-        };
+            var mapProp= {
+              center:new google.maps.LatLng(myLatitude, myLongitude),
+              zoom:15,
+            };
 
-        var myPos = {lat: -37.9144, lng: 145.1300};
-        var bin1Pos = {lat: -37.913587, lng: 145.125013};
-        var bin2Pos = {lat: -37.913147, lng: 145.129337};
-        var bin3Pos = {lat: -37.912757, lng: 145.131966};
+            var myPos = {lat: myLatitude, lng: myLongitude};
 
-        var myMarker = new google.maps.Marker({
-            position: myPos,
-            icon: {url: "http://maps.google.com/mapfiles/ms/micons/man.png"}});
+            var myMarker = new google.maps.Marker({
+                position: myPos,
+                icon: {url: "http://maps.google.com/mapfiles/ms/micons/man.png"}});
 
-        var bin1Marker = new google.maps.Marker({
-            position: bin1Pos,
-            icon: {url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"}});
+            var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+            myMarker.setMap(map);
 
-        var bin2Marker = new google.maps.Marker({
-            position: bin2Pos,
-            icon: {url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"}});
 
-        var bin3Marker = new google.maps.Marker({
-            position: bin3Pos,
-            icon: {url: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png"}});
+            var request = new XMLHttpRequest()
+            binsToGet = 5;
+            var path = 'http://127.0.0.1:8000/getbins/'
 
-        var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-        myMarker.setMap(map);
-        bin1Marker.setMap(map);
-        bin2Marker.setMap(map);
-        bin3Marker.setMap(map);
+            request.open('GET', path, true)
+            request.onload = function () {
+              // Begin accessing JSON data here
+              var data = JSON.parse(this.response).data
+
+              // store the bins data to local storage
+              window.localStorage.setItem('bins', JSON.stringify(data));
+
+              if (request.status >= 200 && request.status < 400) {
+                data.forEach((bin) => {
+                    // draw the bin on the map
+                    var binPos = {lat: parseFloat(bin.attributes.bin_latitude), lng: parseFloat(bin.attributes.bin_longitude)}
+                    var binFullness = parseInt(bin.attributes.bin_fullness)
+                    let binIcon;
+                    if (binFullness>=0 && binFullness<=24){
+                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"};
+                    }
+                    else if (binFullness>=25 && binFullness<=49){
+                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"};
+                    }
+                    else if (binFullness>=50 && binFullness<=74){
+                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png"};
+                    }
+                    else{
+                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"};
+                    }
+                    var binMarker = new google.maps.Marker({
+                         position: binPos,
+                         icon: binIcon
+                     });
+                    binMarker.setMap(map);
+                })
+              } else {
+                console.log('error')
+              }
+            }
+
+            request.send()
         }
 
-        var request = new XMLHttpRequest()
+        // var request = new XMLHttpRequest()
 
-        request.open('GET', 'http://127.0.0.1:8000/employees', true)
-        request.onload = function () {
-          // Begin accessing JSON data here
-          var data = JSON.parse(this.response).data
+        // request.open('GET', 'http://127.0.0.1:8000/employees', true)
+        // request.onload = function () {
+        //   // Begin accessing JSON data here
+        //   var data = JSON.parse(this.response).data
 
-          if (request.status >= 200 && request.status < 400) {
-            data.forEach((emp) => {
-              console.log("username = ",emp.attributes.emp_username)
-              console.log("password = ",emp.attributes.emp_password)
-            })
-          } else {
-            console.log('error')
-          }
+        //   if (request.status >= 200 && request.status < 400) {
+        //     data.forEach((emp) => {
+        //       console.log("username = ",emp.attributes.emp_username)
+        //       console.log("password = ",emp.attributes.emp_password)
+        //     })
+        //   } else {
+        //     console.log('error')
+        //   }
+        // }
+
+        // request.send()
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?AIzaSyCrh0_YAzTIlGi1HzKArllNHIh1rHCbf5c&callback=myMap"></script>
+    </div>
+
+    <br>
+    <table class="container" id="binTable">
+        <!-- <thead>
+            <tr>
+                <th><h1>Bin Num</h1></th>
+                <th><h1>Type</h1></th>
+                <th><h1>Fullness</h1></th>
+                <th><h1>Last Cleared</h1></th>
+                <th><h1>Status</h1></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>00001</td>
+                <td>Recycle</td>
+                <td>34</td>
+                <td>13 July 2020</td>
+                <td>No defect</td>
+                <td>Get direction</td>
+            </tr>
+            <tr>
+                <td>00002</td>
+                <td>Recycle</td>
+                <td>55</td>
+                <td>13 July 2020</td>
+                <td>No defect</td>
+                <td>Get direction</td>
+            </tr>
+        </tbody> -->
+    </table>
+
+    <script type="text/javascript">
+        /*
+        Create a table dynamically
+        */
+        function generateTableHead(table, headers) {
+            let thead = table.createTHead();
+            let row = thead.insertRow();
+            headers.forEach((header) => {
+                let th = document.createElement("th");
+                let text = document.createTextNode(header);
+                th.appendChild(text);
+                row.appendChild(th);
+                })
         }
 
-        request.send()
+        function generateTableContent(table, attributes) {
+            var bins = JSON.parse(window.localStorage.getItem('bins'));
+            for (key in bins) {
+                bin = bins[key]
+                let row = table.insertRow();
+                attributes.forEach((key) => {
+                    let cell = row.insertCell();
+                    let content = document.createTextNode(bin.attributes[key])
+                    cell.appendChild(content);
+                })
+                let cell = row.insertCell();
+                let button = document.createElement("BUTTON");
+                button.innerHTML = "GET DIRECTION";
+                button.onclick = function (){
+                    alert("Implement to method to direct user to this position")
+                }
+                cell.appendChild(button)
+            }
 
-        </script>
-        <script src="https://maps.googleapis.com/maps/api/js?AIzaSyCrh0_YAzTIlGi1HzKArllNHIh1rHCbf5c&callback=myMap"></script>
+            // let request = new XMLHttpRequest()
+            // let path = 'http://127.0.0.1:8000/nearestbins/' + myLatitude + '/' + myLongitude + '/' + binsToGet
+            
+            // request.open('GET', path, true)
+            // request.onload = function () {
+            //   // Begin accessing JSON data here
+            //   var data = JSON.parse(this.response).data
 
-    </div>
-    <div class = "stat1">
-        <div class = "stat2">
-            <div class = "stat3">
-            </div>
-        </div>
-    </div>
+            //   if (request.status >= 200 && request.status < 400) {
+            //     data.forEach((bin) => {
+            //         // render a row in the table
+            //         console.log(bin)
+            //         let row = table.insertRow();
+            //         for (key in bin.attributes){
+            //             let cell = row.insertCell();
+            //             let content = document.createTextNode(bin.attributes.key)
+            //             cell.appendChild(content);
+            //         }
+            //     })
+            //   } 
+            //   else {
+            //     console.log('error')
+            //   }
+            // }
+        }
 
+        let headers = ["Bin Num", "Type", "Fullness", "Last Cleared", "Status"]
+        let attributes = ["bin_num", "bin_type", "bin_fullness", "last_cleared_datetime", "bin_status"]
+        let table = document.getElementById("binTable");
+        generateTableHead(table, headers);
+        generateTableContent(table, attributes);
+    </script>
 
 </body>
 

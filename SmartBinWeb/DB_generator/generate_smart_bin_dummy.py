@@ -24,10 +24,11 @@ def generate_bin_dummy_data(cursor):
 	# create N dummy bin datas
 	bin_num = 1
 	for i in range(N):
+
 		cursor.execute("""INSERT INTO pages_bin
 			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, last_cleared_datetime, installation_date, bin_status)
-			VALUES ('{bin_num}', 'GENERAL_WASTE', 0, {bin_latitude}, {bin_longitude}, '2020-08-19', '2020-08-19', 'no defect');"""
-			.format(bin_num=format(bin_num,'05d'), bin_latitude=random.uniform(MIN_LAT, MAX_LAT), bin_longitude=random.uniform(MIN_LONG, MAX_LONG)))
+			VALUES ('{bin_num}', 'GENERAL_WASTE', {bin_fullness}, {bin_latitude}, {bin_longitude}, '2007-01-01 10:00:00', '2020-08-19', 'perfect condition');"""
+			.format(bin_num=format(bin_num,'05d'), bin_fullness=random.randint(0,100), bin_latitude=random.uniform(MIN_LAT, MAX_LAT), bin_longitude=random.uniform(MIN_LONG, MAX_LONG)))
 		bin_num += 1
 
 	return

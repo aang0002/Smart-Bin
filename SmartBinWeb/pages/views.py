@@ -3,15 +3,20 @@ from django.views.generic import View
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404	# so that a 404 page will be shown on an invalid req
 from rest_framework.views import APIView	# so that normal view can return an API data
+from django.db.models import ExpressionWrapper, FloatField, F
+from django.db.models.functions import Sqrt
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.response import Response # HTTP status response
 from rest_framework import status
 from .serializers import EmployeeSerializer
+from .serializers import BinSerializer
 from .models import Employee
+from .models import Bin
 from django.contrib.auth.forms import UserCreationForm
 import os
 import sqlite3
+import math
 
 
 # Create your views here.
@@ -44,6 +49,29 @@ class EmployeeList(APIView):
 
 	def post(self, request):
 		pass
+
+class BinList(generics.ListAPIView):
+	serializer_class = BinSerializer
+
+	def get_queryset(self):
+	    queryset = Bin.objects.all()
+	    return queryset
+
+class NearestBinList(generics.ListAPIView):
+	serializer_class = BinSerializer
+
+	def get_queryset(self):
+	    cleaner_long = self.kwargs['long']
+	    cleaner_lat = self.kwargs['lat']
+	    limit = self.kwargs['limit']
+
+	    queryset = Bin.objects.annotate(distance = Sqrt((cleaner_long-F('bin_longitude'))**2 + (cleaner_lat-F('bin_latitude'))**2))
+	    queryset = queryset.order_by('distance')[:5]
+
+	    return queryset
+
+	def distance(self, x1, y1, x2, y2):
+	 	return math.sqrt(((y2-y1)**2) + ((x2-x1)**2))
 
 class ValidateLoginView(generics.ListAPIView):
 	serializer_class = EmployeeSerializer

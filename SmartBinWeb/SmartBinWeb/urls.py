@@ -22,13 +22,19 @@ from pages.views import register_view
 from pages.views import ValidateLoginView
 from pages.views import LoginView
 from pages.views import EmployeeList
+from pages.views import BinList
+from pages.views import NearestBinList
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
+    ### GET page urls ###
     path('', LoginView.as_view(), name='home'),
     path('home/', HomePageView.as_view(), name='home'),
     path('register/', register_view, name='register'),
     path('admin/', admin.site.urls),
+    ### REST API urls ###
     url('^validatelogin/(?P<username>.+)/(?P<password>.+)/$', ValidateLoginView.as_view()),
-    url(r'^employees', EmployeeList.as_view()),
+    url(r'^getemployees', EmployeeList.as_view()),
+    url(r'^getbins', BinList.as_view()),
+    url('^nearestbins/(?P<lat>.+)/(?P<long>.+)/(?P<limit>.+)/', NearestBinList.as_view()),
 ]
