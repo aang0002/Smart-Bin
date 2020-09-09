@@ -254,59 +254,12 @@
             request.send()
         }
 
-        // var request = new XMLHttpRequest()
-
-        // request.open('GET', 'http://127.0.0.1:8000/employees', true)
-        // request.onload = function () {
-        //   // Begin accessing JSON data here
-        //   var data = JSON.parse(this.response).data
-
-        //   if (request.status >= 200 && request.status < 400) {
-        //     data.forEach((emp) => {
-        //       console.log("username = ",emp.attributes.emp_username)
-        //       console.log("password = ",emp.attributes.emp_password)
-        //     })
-        //   } else {
-        //     console.log('error')
-        //   }
-        // }
-
-        // request.send()
-
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?AIzaSyCrh0_YAzTIlGi1HzKArllNHIh1rHCbf5c&callback=myMap"></script>
     </div>
 
     <br>
-    <table class="container" id="binTable">
-        <!-- <thead>
-            <tr>
-                <th><h1>Bin Num</h1></th>
-                <th><h1>Type</h1></th>
-                <th><h1>Fullness</h1></th>
-                <th><h1>Last Cleared</h1></th>
-                <th><h1>Status</h1></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>00001</td>
-                <td>Recycle</td>
-                <td>34</td>
-                <td>13 July 2020</td>
-                <td>No defect</td>
-                <td>Get direction</td>
-            </tr>
-            <tr>
-                <td>00002</td>
-                <td>Recycle</td>
-                <td>55</td>
-                <td>13 July 2020</td>
-                <td>No defect</td>
-                <td>Get direction</td>
-            </tr>
-        </tbody> -->
-    </table>
+    <table class="container" id="binTable"></table>
 
     <script type="text/javascript">
         /*
@@ -324,48 +277,38 @@
         }
 
         function generateTableContent(table, attributes) {
-            var bins = JSON.parse(window.localStorage.getItem('bins'));
-            for (key in bins) {
-                bin = bins[key]
-                let row = table.insertRow();
-                attributes.forEach((key) => {
+            
+            let request = new XMLHttpRequest()
+            let path = 'http://127.0.0.1:8000/nearestbins/' + myLatitude + '/' + myLongitude + '/' + binsToGet
+            
+            request.open('GET', path, true)
+            request.onload = function () {
+              // Begin accessing JSON data here
+              var data = JSON.parse(this.response).data
+
+              if (request.status >= 200 && request.status < 400) {
+                data.forEach((bin) => {
+                    // render a row in the table
+                    let row = table.insertRow();
+                    attributes.forEach((key) => {
+                        let cell = row.insertCell();
+                        let content = document.createTextNode(bin.attributes[key])
+                        cell.appendChild(content);
+                    })
                     let cell = row.insertCell();
-                    let content = document.createTextNode(bin.attributes[key])
-                    cell.appendChild(content);
-                })
-                let cell = row.insertCell();
-                let button = document.createElement("BUTTON");
-                button.innerHTML = "GET DIRECTION";
-                button.onclick = function (){
-                    alert("Implement to method to direct user to this position")
-                }
-                cell.appendChild(button)
+                    let button = document.createElement("BUTTON");
+                    button.innerHTML = "GET DIRECTION";
+                    button.onclick = function (){
+                        alert("Implement the method to direct user to this position")
+                    }
+                    cell.appendChild(button)
+                })}
+              else {
+                console.log('error');
+              }
             }
 
-            // let request = new XMLHttpRequest()
-            // let path = 'http://127.0.0.1:8000/nearestbins/' + myLatitude + '/' + myLongitude + '/' + binsToGet
-            
-            // request.open('GET', path, true)
-            // request.onload = function () {
-            //   // Begin accessing JSON data here
-            //   var data = JSON.parse(this.response).data
-
-            //   if (request.status >= 200 && request.status < 400) {
-            //     data.forEach((bin) => {
-            //         // render a row in the table
-            //         console.log(bin)
-            //         let row = table.insertRow();
-            //         for (key in bin.attributes){
-            //             let cell = row.insertCell();
-            //             let content = document.createTextNode(bin.attributes.key)
-            //             cell.appendChild(content);
-            //         }
-            //     })
-            //   } 
-            //   else {
-            //     console.log('error')
-            //   }
-            // }
+            request.send();
         }
 
         let headers = ["Bin Num", "Type", "Fullness", "Last Cleared", "Status"]
@@ -373,6 +316,23 @@
         let table = document.getElementById("binTable");
         generateTableHead(table, headers);
         generateTableContent(table, attributes);
+
+        var origin1 = new google.maps.LatLng(55.930385, -3.118425);
+        var origin2 = 'Greenwich, England';
+        var destinationA = 'Stockholm, Sweden';
+        var destinationB = new google.maps.LatLng(50.087692, 14.421150);
+
+        var service = new google.maps.DistanceMatrixService();
+        service.getDistanceMatrix(
+          {
+            origins: [origin1, origin2],
+            destinations: [destinationA, destinationB],
+            travelMode: 'WALKING',
+          }, callback);
+
+        function callback(response, status) {
+            console.log(response)
+        }
     </script>
 
 </body>

@@ -24,8 +24,6 @@ class HomePageView(View):
 	template_name = "home.html"
 
 	def get(self, request, *args, **kwargs):
-		print(args, kwargs)
-		print(request.user)
 		return render(request, "home.html", {})
 
 class LoginView(View):
@@ -67,7 +65,7 @@ class NearestBinList(generics.ListAPIView):
 
 	    queryset = Bin.objects.annotate(distance = Sqrt((cleaner_long-F('bin_longitude'))**2 + (cleaner_lat-F('bin_latitude'))**2))
 	    queryset = queryset.order_by('distance')[:5]
-
+	    print(queryset)
 	    return queryset
 
 	def distance(self, x1, y1, x2, y2):
