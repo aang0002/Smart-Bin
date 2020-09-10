@@ -173,8 +173,9 @@
     }
 </style>
 
-<!-- <link rel="stylesheet" href="css/style.css"> -->
-<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
 
 <title>Smart Bin - Home</title>
 </head>
@@ -184,32 +185,42 @@
 
     <h1 style="color: #38BB36; text-align: center; font-family: 'Ubuntu', sans-serif; ">SMART-BIN</h1>
 
-    <div class="map", id="googleMap", style="width:650px;height:450px;">
+    <div class="map", id="map", style="width:650px;height:450px;">
+
     <script>
-        // // Clayton
-        // var myLatitude = -37.9144 
-        // var myLongitude = 145.1300
-        // Melbournce Central
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWFuZzAwMDIiLCJhIjoiY2tldmdmamttMXk3ZzJ4bXJseGt4cDBybyJ9.FPvgW8PxjOUeEV33WTfABg';
         var myLatitude = -37.809967
         var myLongitude = 144.962640
         var binsToGet;
+        // if ("geolocation" in navigator) { 
+        //     navigator.geolocation.getCurrentPosition(position => { 
+        //         console.log(position.coords.latitude, position.coords.longitude); 
+        //         myLatitude = position.coords.latitude;
+        //         myLongitude = position.coords.longitude;
+        //     }); 
+        // } 
+        // else { 
+        //     console.log("Default position will be used")
+        // }
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v10',
+            center: [myLongitude, myLatitude], // starting position
+            zoom: 14
+        });
 
-        function myMap() {
-            var mapProp= {
-              center:new google.maps.LatLng(myLatitude, myLongitude),
-              zoom:15,
-            };
+        // initialize the map canvas to interact with later
+        var canvas = map.getCanvasContainer();
 
-            var myPos = {lat: myLatitude, lng: myLongitude};
+        map.on('load', function() {
+            //getRoute([myLongitude, myLatitude], [144.962640, -37.909967]);
 
-            var myMarker = new google.maps.Marker({
-                position: myPos,
-                icon: {url: "http://maps.google.com/mapfiles/ms/micons/man.png"}});
+            // Add starting point to the map
+            var marker = new mapboxgl.Marker()
+                .setLngLat([myLongitude, myLatitude])
+                .addTo(map);
 
-            var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-            myMarker.setMap(map);
-
-
+            // add bin markers to the map
             var request = new XMLHttpRequest()
             binsToGet = 5;
             var path = 'http://127.0.0.1:8000/getbins/'
@@ -225,26 +236,20 @@
               if (request.status >= 200 && request.status < 400) {
                 data.forEach((bin) => {
                     // draw the bin on the map
-                    var binPos = {lat: parseFloat(bin.attributes.bin_latitude), lng: parseFloat(bin.attributes.bin_longitude)}
+                    var binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
                     var binFullness = parseInt(bin.attributes.bin_fullness)
-                    let binIcon;
-                    if (binFullness>=0 && binFullness<=24){
-                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"};
-                    }
-                    else if (binFullness>=25 && binFullness<=49){
-                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"};
-                    }
-                    else if (binFullness>=50 && binFullness<=74){
-                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png"};
-                    }
-                    else{
-                        binIcon = {url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"};
-                    }
-                    var binMarker = new google.maps.Marker({
-                         position: binPos,
-                         icon: binIcon
-                     });
-                    binMarker.setMap(map);
+                    let binColor;
+                    // green
+                    if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
+                    // yellow
+                    else if (binFullness>=25 && binFullness<=49){ binColor = 'yellow';}
+                    // orange
+                    else if (binFullness>=50 && binFullness<=74){ binColor = 'orange';}
+                    // red
+                    else{ binColor = 'red';}
+                    let binMarker = new mapboxgl.Marker({color: binColor})
+                                    .setLngLat(binPos)
+                                    .addTo(map);
                 })
               } else {
                 console.log('error')
@@ -252,10 +257,8 @@
             }
 
             request.send()
-        }
-
+        });
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?AIzaSyCrh0_YAzTIlGi1HzKArllNHIh1rHCbf5c&callback=myMap"></script>
     </div>
 
     <br>
@@ -277,7 +280,6 @@
         }
 
         function generateTableContent(table, attributes) {
-            
             let request = new XMLHttpRequest()
             let path = 'http://127.0.0.1:8000/nearestbins/' + myLatitude + '/' + myLongitude + '/' + binsToGet
             
@@ -287,6 +289,8 @@
               var data = JSON.parse(this.response).data
 
               if (request.status >= 200 && request.status < 400) {
+                // store data into local storage
+                // display the 5 nearest bin entries in the HTML table
                 data.forEach((bin) => {
                     // render a row in the table
                     let row = table.insertRow();
@@ -299,7 +303,9 @@
                     let button = document.createElement("BUTTON");
                     button.innerHTML = "GET DIRECTION";
                     button.onclick = function (){
-                        alert("Implement the method to direct user to this position")
+                        let start_pos = [myLongitude, myLatitude]
+                        let target_pos = [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']]
+                        getRoute(start_pos, target_pos);
                     }
                     cell.appendChild(button)
                 })}
@@ -311,28 +317,59 @@
             request.send();
         }
 
+        function getRoute(start, end) {
+            // https://www.mapbox.com/api-documentation/#directions
+            var url = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+            var req = new XMLHttpRequest();
+            req.responseType = 'json';
+            req.open('GET', url, true);
+            req.onload  = function() {
+              var jsonResponse = req.response;
+              var distance = jsonResponse.routes[0].distance*0.001; // convert to km
+              var duration = jsonResponse.routes[0].duration/60; // convert to minutes
+              var coords = jsonResponse.routes[0].geometry;
+              // add the route to the map
+              addRoute(coords);
+            };
+            req.send();
+        }
+
+        // adds the route as a layer on the map
+        function addRoute (coords) {
+          // check if the route is already loaded
+          if (map.getSource('route')) {
+            map.removeLayer('route')
+            map.removeSource('route')
+          } else{
+            map.addLayer({
+              "id": "route",
+              "type": "line",
+              "source": {
+                "type": "geojson",
+                "data": {
+                  "type": "Feature",
+                  "properties": {},
+                  "geometry": coords
+                }
+              },
+              "layout": {
+                "line-join": "round",
+                "line-cap": "round"
+              },
+              "paint": {
+                "line-color": "#3b9ddd",
+                "line-width": 6,
+                "line-opacity": 0.8
+              }
+            });
+          };
+        }
+
         let headers = ["Bin Num", "Type", "Fullness", "Last Cleared", "Status"]
         let attributes = ["bin_num", "bin_type", "bin_fullness", "last_cleared_datetime", "bin_status"]
         let table = document.getElementById("binTable");
         generateTableHead(table, headers);
         generateTableContent(table, attributes);
-
-        var origin1 = new google.maps.LatLng(55.930385, -3.118425);
-        var origin2 = 'Greenwich, England';
-        var destinationA = 'Stockholm, Sweden';
-        var destinationB = new google.maps.LatLng(50.087692, 14.421150);
-
-        var service = new google.maps.DistanceMatrixService();
-        service.getDistanceMatrix(
-          {
-            origins: [origin1, origin2],
-            destinations: [destinationA, destinationB],
-            travelMode: 'WALKING',
-          }, callback);
-
-        function callback(response, status) {
-            console.log(response)
-        }
     </script>
 
 </body>

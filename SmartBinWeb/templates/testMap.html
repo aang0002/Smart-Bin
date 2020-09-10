@@ -1,0 +1,126 @@
+<!-- <!DOCTYPE html>
+
+<head>
+	<script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+	 <style type="text/css">
+	 	#mapid { height: 180px; }
+	 </style>
+</head>
+
+<body>
+	<div class="map", id="map", style="width:650px;height:450px;">
+	<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYWFuZzAwMDIiLCJhIjoiY2tldmdmamttMXk3ZzJ4bXJseGt4cDBybyJ9.FPvgW8PxjOUeEV33WTfABg';
+	var myLatitude = -37.809967
+    var myLongitude = 144.962640	
+	var map = new mapboxgl.Map({
+		container: 'map',
+		style: 'mapbox://styles/mapbox/streets-v11',
+		center: [myLongitude, myLatitude],
+		zoom: 13,
+	});
+	var marker = new mapboxgl.Marker()
+		.setLngLat([myLongitude, myLatitude])
+		.addTo(map);
+
+	</script>
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="map", id="map", style="width:650px;height:450px;">
+    <script>
+	    mapboxgl.accessToken = 'pk.eyJ1IjoiYWFuZzAwMDIiLCJhIjoiY2tldmdmamttMXk3ZzJ4bXJseGt4cDBybyJ9.FPvgW8PxjOUeEV33WTfABg';
+	    var myLatitude = -37.809967
+    	var myLongitude = 144.962640
+		var map = new mapboxgl.Map({
+		  container: 'map',
+		  style: 'mapbox://styles/mapbox/streets-v10',
+		  center: [myLongitude, myLatitude], // starting position
+		  zoom: 10
+		});
+
+		// initialize the map canvas to interact with later
+		var canvas = map.getCanvasContainer();
+
+		map.on('load', function() {
+		  // make an initial directions request that
+		  // starts and ends at the same location
+		  getRoute([myLongitude, myLatitude], [144.962640, -37.909967]);
+
+		  // Add starting point to the map
+		  var marker = new mapboxgl.Marker()
+			.setLngLat([myLongitude, myLatitude])
+			.addTo(map);
+		  // this is where the code from the next step will go
+		});
+
+		function getRoute(start, end) {
+		    // https://www.mapbox.com/api-documentation/#directions
+		    var url = 'https://api.mapbox.com/directions/v5/mapbox/walking/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+		    var req = new XMLHttpRequest();
+		    req.responseType = 'json';
+		    req.open('GET', url, true);
+		    req.onload  = function() {
+		      var jsonResponse = req.response;
+		      var distance = jsonResponse.routes[0].distance*0.001; // convert to km
+		      var duration = jsonResponse.routes[0].duration/60; // convert to minutes
+		      var coords = jsonResponse.routes[0].geometry;
+		      // add the route to the map
+		      addRoute(coords);
+		    };
+		    req.send();
+		}
+
+		// adds the route as a layer on the map
+		function addRoute (coords) {
+		  // check if the route is already loaded
+		  if (map.getSource('route')) {
+		    map.removeLayer('route')
+		    map.removeSource('route')
+		  } else{
+		    map.addLayer({
+		      "id": "route",
+		      "type": "line",
+		      "source": {
+		        "type": "geojson",
+		        "data": {
+		          "type": "Feature",
+		          "properties": {},
+		          "geometry": coords
+		        }
+		      },
+		      "layout": {
+		        "line-join": "round",
+		        "line-cap": "round"
+		      },
+		      "paint": {
+		        "line-color": "#3b9ddd",
+		        "line-width": 8,
+		        "line-opacity": 0.8
+		      }
+		    });
+		  };
+		}
+    </script>
+  </body>
+</html>
