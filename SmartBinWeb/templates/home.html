@@ -3,57 +3,80 @@
 <head>
 
 <style>
-        body {
-        background-color: #0D0D0D;
-        font-family: 'Ubuntu', sans-serif;
+    body {
+      background-color: #0D0D0D;
+      font-family: 'Ubuntu', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     .map {
-        background-image: linear-gradient(to bottom, #202120, grey);
-        width: 650px;
-        height: 450px;
-        border-radius: 1.5em;
-        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
-        margin-left: 50px;
-        margin-top: 50px;
+      background-image: linear-gradient(to bottom, #202120, grey);
+      width: 650px;
+      height: 450px;
+      border-radius: 1.5em;
+      box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+      margin-left: 50px;
+      margin-top: 50px;
     }
 
     .stat1 {
-        background-image: linear-gradient(to bottom, #202120, grey);
-        width: 250px;
-        height: 150px;
-        border-radius: 1.5em;
-        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
-        margin-left: 50px;
-        margin-bottom: 20px;
-        margin-top: 30px;
+      background-image: linear-gradient(to bottom, #202120, grey);
+      width: 250px;
+      height: 150px;
+      border-radius: 1.5em;
+      box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+      margin-left: 50px;
+      margin-bottom: 20px;
+      margin-top: 30px;
     }
 
     .stat2 {
-        background-image: linear-gradient(to bottom, #202120, grey);
-        width: 250px;
-        height: 150px;
-        border-radius: 1.5em;
-        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
-        margin-left: 300px;
-        margin-bottom: 20px;
-        margin-top: 30px;
+      background-image: linear-gradient(to bottom, #202120, grey);
+      width: 250px;
+      height: 150px;
+      border-radius: 1.5em;
+      box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+      margin-left: 300px;
+      margin-bottom: 20px;
+      margin-top: 30px;
     }
 
     .stat3 {
-        background-image: linear-gradient(to bottom, #202120, grey);
-        width: 250px;
-        height: 150px;
-        border-radius: 1.5em;
-        box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
-        margin-left: 300px;
-        margin-bottom: 20px;
-        margin-top: 30px;
+      background-image: linear-gradient(to bottom, #202120, grey);
+      width: 250px;
+      height: 150px;
+      border-radius: 1.5em;
+      box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+      margin-left: 300px;
+      margin-bottom: 20px;
+      margin-top: 30px;
+    }
+
+    .mapboxgl-popup {
+      max-width: 100px;
+      max-height: 400px;
+      font: 12px/20px 'Open Sans', sans-serif;
+      border-radius: 5px;
+    }
+
+    .mapboxgl-popup-content {
+      font: 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+      font-size: 11;
+      color: rgb(0,0,0);
+      padding: 0;
+      width: 180px;
     }
 
 </style>
 
 <style type="text/css">
+    html {
+      scroll-behavior: smooth;
+    }
+    
     /*  
     Side Navigation Menu V2, RWD
     ===================
@@ -247,7 +270,16 @@
                     else if (binFullness>=50 && binFullness<=74){ binColor = 'orange';}
                     // red
                     else{ binColor = 'red';}
+                    let bin_text =  "<p>" +
+                                    "Bin Num: " + bin.attributes.bin_num + "<br>" +
+                                    "Fullness: " + bin.attributes.bin_fullness + "<br>" +
+                                    "Bin Type: " + bin.attributes.bin_type +
+                                    "</p>"
+                    let popup = new mapboxgl.Popup()
+                              .setHTML(bin_text)
+                              .addTo(map);
                     let binMarker = new mapboxgl.Marker({color: binColor})
+                                    .setPopup(popup)
                                     .setLngLat(binPos)
                                     .addTo(map);
                 })
@@ -258,6 +290,36 @@
 
             request.send()
         });
+
+        // // Create a popup, but don't add it to the map yet.
+        // var popup = new mapboxgl.Popup({
+        //   closeButton: false,
+        //   closeOnClick: false
+        // });
+
+        // map.on('mouseenter', 'places', function (e) {
+        //   // Change the cursor style as a UI indicator.
+        //   map.getCanvas().style.cursor = 'pointer';
+           
+        //   var coordinates = e.features[0].geometry.coordinates.slice();
+        //   var description = e.features[0].properties.description;
+           
+        //   // Ensure that if the map is zoomed out such that multiple
+        //   // copies of the feature are visible, the popup appears
+        //   // over the copy being pointed to.
+        //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        //   }
+           
+        //   // Populate the popup and set its coordinates
+        //   // based on the feature found.
+        //   popup.setLngLat(coordinates).setHTML(description).addTo(map);
+        //   });
+           
+        //   map.on('mouseleave', 'places', function () {
+        //     map.getCanvas().style.cursor = '';
+        //     popup.remove();
+        // });
     </script>
     </div>
 
@@ -306,6 +368,7 @@
                         let start_pos = [myLongitude, myLatitude]
                         let target_pos = [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']]
                         getRoute(start_pos, target_pos);
+                        window.scrollTo(0,0);
                     }
                     cell.appendChild(button)
                 })}
