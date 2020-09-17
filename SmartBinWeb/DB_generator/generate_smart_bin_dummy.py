@@ -3,7 +3,7 @@ Run this to generate dummy bin datas in the DB
 The bins will be located around Melbourne Central Station
 """
 
-import os
+import os, sys
 import sqlite3
 import random
 
@@ -12,11 +12,11 @@ Fill in pages_bin table in the DB
 """
 def generate_bin_dummy_data(cursor):
 	# bin datas constraints
-	N = 20	# number of bins that we want to generate
-	MAX_LAT = -37.794240
-	MIN_LAT = -37.816393
-	MAX_LONG = 144.995321
-	MIN_LONG = 144.952883
+	N = 30	# number of bins that we want to generate
+	MAX_LAT = -37.794729
+	MIN_LAT = -37.818508
+	MAX_LONG = 144.993702
+	MIN_LONG = 144.946693
 
 	# clear all existing bin datas
 	cursor.execute("DELETE FROM pages_bin;")
@@ -55,13 +55,6 @@ def generate_emp_dummy_data(cursor):
 			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}');"""
 			.format(username=usernames[i], password=passwords[i], name=names[i], dob=dobs[i], tfn=tfns[i], address=addresses[i], phone=phones[i]))
 	
-	# test
-	sqlite_select_Query = "SELECT emp_username, emp_password FROM pages_employee;"
-	cursor.execute(sqlite_select_Query)
-	records = cursor.fetchall()
-	for row in records:
-		# row is returned in tuple
-		print(row)
 
 	return
 
@@ -72,6 +65,19 @@ Fill in pages_collectioncenter table in the DB
 def generate_collectioncenter_dummy_data(cursor):
 	# clear all existing collection center datas
 	cursor.execute("DELETE FROM pages_collectioncenter;")
+
+	# create a list of datas
+	colcen_id = [1111,2222,3333] #models.CharField(max_length=4, validators=[RegexValidator(r'^[0-9]{4}$')], primary_key=True)
+	colcen_longitude = [144.969851, 144.989234, 144.992626] 
+	colcen_latitude = [-37.786885, -37.816558, -37.795310] 
+	colcen_phone = ['0311784655','0376335877', '0311990723']
+	manager_name = ['Bradley Park', 'Henry Cooper', 'Garry Maxima']
+
+	# start filling in datas
+	for i in range(len(colcen_id)):
+		cursor.execute("""INSERT INTO pages_collectioncenter (colcen_id, colcen_longitude, colcen_latitude, colcen_phone, manager_name) 
+			VALUES ('{id}', '{long}', '{lat}', '{ph}', '{manager}');"""
+			.format(id=colcen_id[i], long=colcen_longitude[i], lat=colcen_latitude[i], ph=colcen_phone[i], manager=manager_name[i]))
 
 
 
@@ -95,7 +101,7 @@ if __name__ == "__main__":
 		generate_emp_dummy_data(cursor)
 
 		# generate collection ceters dummy data
-		# generate_collectioncenter_dummy_data(cursor)
+		generate_collectioncenter_dummy_data(cursor)
 
 		# commit changes
 		cursor.execute("COMMIT;")

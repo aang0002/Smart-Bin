@@ -1,0 +1,8 @@
+### Wed, 16-Sep-2020 ###
+- Side navigtion bar
+- Created a functioning logout button
+- Top title bar
+- Added collection center dummy data to DB
+- Created API to retrieve collection centers data
+- Created user profile card that displays the logged-in user's information
+- "GET DIRECTION" button now also direct user to the nerest collection center

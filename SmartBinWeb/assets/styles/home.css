@@ -1,0 +1,337 @@
+body {
+  background-color: #0D0D0D;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.map {
+  background-image: linear-gradient(to bottom, #202120, grey);
+  width: 650px;
+  height: 450px;
+  border-radius: 1.5em;
+  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  float: right;
+}
+
+.stat1 {
+  background-image: linear-gradient(to bottom, #202120, grey);
+  width: 250px;
+  height: 150px;
+  border-radius: 1.5em;
+  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+  margin-left: 50px;
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+
+.stat2 {
+  background-image: linear-gradient(to bottom, #202120, grey);
+  width: 250px;
+  height: 150px;
+  border-radius: 1.5em;
+  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+  margin-left: 300px;
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+
+.stat3 {
+  background-image: linear-gradient(to bottom, #202120, grey);
+  width: 250px;
+  height: 150px;
+  border-radius: 1.5em;
+  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+  margin-left: 300px;
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+
+.mapboxgl-popup {
+  max-width: 100px;
+  max-height: 400px;
+  font: 12px/20px 'Open Sans', sans-serif;
+  border-radius: 5px;
+}
+
+.mapboxgl-popup-content {
+  font: 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+  font-size: 11;
+  color: rgb(0,0,0);
+  padding: 0;
+  width: 180px;
+}
+
+/*  
+    Side Navigation Menu V2, RWD
+    ===================
+    Author: @heyPablete
+
+     */
+
+@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.42em;
+  color:#A7A1AE;
+  /*background-color:#1F2739;*/
+}
+
+h1 {
+  font-weight: 300;
+  line-height:1em;
+  text-align: center;
+  color: #4DC3FA;
+}
+
+
+h2 a {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #FB667A;
+  text-decoration: none;
+}
+
+.blue { color: #185875; }
+.yellow { color: #FFF842; }
+
+.container th h1 {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: left;
+  color: #185875;
+}
+
+.container td {
+  font-weight: normal;
+  font-size: 1em;
+  -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+  -moz-box-shadow: 0 2px 2px -2px #0E1119;
+  box-shadow: 0 2px 2px -2px #0E1119;
+}
+
+.container {
+  text-align: left;
+  overflow: hidden;
+  width: 80%;
+  margin: 0 auto;
+  display: table;
+  padding: 0 0 8em 0;
+}
+
+.container td, .container th {
+  padding-bottom: 2%;
+  padding-top: 2%;
+  padding-left:2%;  
+}
+
+/* Background-color of the odd rows */
+.container tr:nth-child(odd) {
+  background-color: #323C50;
+}
+
+/* Background-color of the even rows */
+.container tr:nth-child(even) {
+  background-color: #2C3446;
+}
+
+.container th {
+  background-color: #1F2739;
+}
+
+.container td:first-child { color: #FB667A; }
+
+.container tr:hover {
+  background-color: #464A52;
+  -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+  -moz-box-shadow: 0 6px 6px -6px #0E1119;
+  box-shadow: 0 6px 6px -6px #0E1119;
+}
+
+/*.container td:hover {
+  background-color: #FFF842;
+  color: #403E10;
+  font-weight: bold;
+  
+  box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+  transform: translate3d(6px, -6px, 0);
+  
+  transition-delay: 0s;
+  transition-duration: 0.4s;
+  transition-property: all;
+  transition-timing-function: line;
+}*/
+
+@media (max-width: 800px) {
+  .container td:nth-child(4),
+  .container th:nth-child(4) { display: none; }
+}
+
+
+/*
+TOP NAVIGATION STYLE
+*/
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.topnav button {
+  float: right;
+  padding: 14px 16px;
+  background-color: red;
+  color: white;
+}
+
+.topnav button:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+
+/*
+Side NAVIGATION BAR
+*/
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 180px;
+  background-color: #333;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar a {
+  display: block;
+  color: #f2f2f2;
+  padding: 16px;
+  text-decoration: none;
+}
+ 
+.sidebar a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+.sidebar a.logout {
+  /*padding: 14px 16px;*/
+  background-color: red;
+  color: white;
+  position: absolute;
+  bottom:   30px;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.sidebar a.logout:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+div.main {
+  margin-left: 180px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+/*
+USER CARD STYLE
+*/
+.userprofile {
+  float: left;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 120px;
+  margin-bottom: 20px;
+  width: 355px;
+  height: 380px;
+  -moz-border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.075);
+  -webkit-box-shadow: 0 2px 5px rgba(0,0,0,0.075);
+  -moz-box-shadow: 0 2px 5px rgba(0,0,0,0.075);
+  text-align: left;
+  background-color: #333;
+  padding-left: 10px;
+}
+.avatar {
+  border-radius: 100px;
+  overflow: hidden;
+  height: 150px;
+  width: 150px;
+  position: relative;
+  margin: auto;
+  top: -60px;
+  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 0 13px #f0f0f0;
+  -webkit-box-shadow: 0 0 0 13px #f0f0f0;
+  -moz-box-shadow: 0 0 0 13px #f0f0f0;
+}
+.avatar img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 100px;
+  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+}
+.avatar img:first-child {
+  z-index: 1;
+}
+
+.userprofile h2 {
+  font-size: 30px;
+  font-weight: 300;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.userprofile h4 {
+  font-size: 13px;
+  color: #00baff;
+  letter-spacing: 1px;
+  margin-bottom: 25px
+}
+
+.userprofile p {
+  font-size: 16px;
+  line-height: 26px;
+  margin-bottom: 5px;
+  color: white;
+}

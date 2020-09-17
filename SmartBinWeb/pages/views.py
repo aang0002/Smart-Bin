@@ -9,14 +9,17 @@ from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.response import Response # HTTP status response
 from rest_framework import status
-from .serializers import EmployeeSerializer
-from .serializers import BinSerializer
-from .models import Employee
-from .models import Bin
 from django.contrib.auth.forms import UserCreationForm
 import os
 import sqlite3
 import math
+
+from .serializers import EmployeeSerializer
+from .serializers import BinSerializer
+from .serializers import CollectionCenterSerializer
+from .models import Employee
+from .models import Bin
+from .models import CollectionCenter
 
 
 # Create your views here.
@@ -55,6 +58,13 @@ class BinList(generics.ListAPIView):
 	    queryset = Bin.objects.all()
 	    return queryset
 
+class CollectionCenterList(generics.ListAPIView):
+	serializer_class = CollectionCenterSerializer
+
+	def get_queryset(self):
+	    queryset = CollectionCenter.objects.all()
+	    return queryset
+
 class NearestBinList(generics.ListAPIView):
 	serializer_class = BinSerializer
 
@@ -65,7 +75,22 @@ class NearestBinList(generics.ListAPIView):
 
 	    queryset = Bin.objects.annotate(distance = Sqrt((cleaner_long-F('bin_longitude'))**2 + (cleaner_lat-F('bin_latitude'))**2))
 	    queryset = queryset.order_by('distance')[:5]
-	    print(queryset)
+
+	    return queryset
+
+	def distance(self, x1, y1, x2, y2):
+	 	return math.sqrt(((y2-y1)**2) + ((x2-x1)**2))
+
+class NearestCollectionCenterList(generics.ListAPIView):
+	serializer_class = CollectionCenterSerializer
+
+	def get_queryset(self):
+	    cleaner_long = self.kwargs['long']
+	    cleaner_lat = self.kwargs['lat']
+
+	    queryset = CollectionCenter.objects.annotate(distance = Sqrt((cleaner_long-F('colcen_longitude'))**2 + (cleaner_lat-F('colcen_latitude'))**2))
+	    queryset = queryset.order_by('distance')[:1]
+
 	    return queryset
 
 	def distance(self, x1, y1, x2, y2):
