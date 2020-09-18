@@ -2,24 +2,6 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.core.validators import MaxValueValidator, MinValueValidator 
 
-# Create your models here.
-class ToDoList(models.Model):
-	name = models.CharField(max_length=200)
-
-	def __str__(self):
-		return self.name
-
-
-# In here, Item is the parent of ToDoList
-class Item(models.Model):
-	todolist = models.ForeignKey(ToDoList, on_delete=models.CASCADE)
-	text = models.CharField(max_length=300)
-	complete = models.BooleanField()
-
-	def __str__(self):
-		return self.text
-
-
 # Employee Model
 class Employee(models.Model):
 	emp_username = models.CharField(max_length=50, primary_key=True)
@@ -57,15 +39,15 @@ class Bin(models.Model):
 	last_cleared_datetime = models.DateTimeField()
 	installation_date = models.DateField(blank=True)
 	bin_status = models.CharField(max_length=300)
+	postcode = models.CharField(max_length=4, validators=[RegexValidator(r'^[0-9]{4}$')])
 
 # Assignment Model
 class Assignment(models.Model):
 	asgn_id = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')], primary_key=True)
-	emp_username = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)
-	bin_num = models.ForeignKey(Bin, on_delete=models.CASCADE, blank=False)
+	emp_username = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True)	# column stored will be emp_username_id
+	bin_num = models.ForeignKey(Bin, on_delete=models.CASCADE, blank=False)				# column stored will be bin_num_id
 	colcen_id =  models.ForeignKey(CollectionCenter, on_delete=models.SET_NULL, null=True)
 	datetime_created = models.DateTimeField()
-	datetime_finished = models.DateTimeField()
 	desc = models.CharField(max_length=200)
 
 

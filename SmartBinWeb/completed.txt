@@ -6,3 +6,10 @@
 - Created API to retrieve collection centers data
 - Created user profile card that displays the logged-in user's information
 - "GET DIRECTION" button now also direct user to the nerest collection center
+
+### Wed, 18-Sep-2020 ###
+- Created an admin login username and password
+- Created admin home page
+- Created table which lists all employees (in admin page)
+- Created table which lists all bins (in admin page)
+- Created a random column chart in admin page

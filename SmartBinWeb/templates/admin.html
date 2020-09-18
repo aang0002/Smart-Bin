@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+
+<head>
+  <link rel="stylesheet" href="{% static 'styles/admin.css' %}">
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://cdn.anychart.com/releases/8.0.0/themes/dark_earth.min.js" type="text/javascript"></script>
+  <script src="https://cdn.anychart.com/releases/8.0.0/js/anychart-base.min.js"></script>
+  <script type="text/javascript">
+    /* CREATE GLOBAL VARIABLES*/
+    var active_id = "employees"
+  </script>
+  <title>Smart Bin - Admin</title>
+</head>
+
+
+<body>
+
+  <div class="sidebar">
+    <a id="employees" class="active" href="#employees" onclick="return renderEmployeesTable('employees');">Employees</a>
+    <a id="bins" class="" href="#bins" onclick="return renderBinsTable('bins');">Bins</a>
+    <a id="employeeperformance" class="" href="#employeeperformance" onclick="return renderEmployeePerformance('employeeperformance');">Employee Performance</a>
+    <a id="binfrequency" class="" href="#binfrequency">Bin Frequency</a>
+    <a id="wasteproduction" class="" href="#wasteproduction">Waste Production</a>
+    <a href="/login" class="logout">Logout</a>
+  </div>
+
+  <div class="main">
+    <div class="topnav">
+      <h1 style="color: #38BB36; text-align: center; font-family: 'Ubuntu', sans-serif; ">SMART-BIN ADMIN</h1>
+    </div>
+
+    <div id="content"> </div>
+  </div>
+
+  <script src="{% static 'script/admin-main.js' %}"></script>
+  <script src="{% static 'script/admin-chart.js' %}"></script>
+
+</body>
+
+</html>
+

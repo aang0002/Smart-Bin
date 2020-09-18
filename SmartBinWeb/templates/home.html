@@ -13,10 +13,8 @@
 <body>
 
   <div class="sidebar">
-    <a class="active" href="/home">Home</a>
-    <a href="/profile">Profile</a>
-    <a href="#contact">Bin</a>
-    <a href="#about">Employee</a>
+    <a class="active" href="/smartbinadmin">Home</a>
+    <a href="#rofile">Profile</a>
     <a href="/login" class="logout">Logout</a>
   </div>
 
@@ -29,7 +27,7 @@
       <!--User Profile-->
       <div class="userprofile">
         <div class="avatar">
-          <img src="http://media.idownloadblog.com/wp-content/uploads/2012/04/Phil-Schiller-headshot-e1362692403868.jpg" height="150" width="150">
+          <img src="{% static 'images/no-photo-profile.png' %}" height="150" width="150">
         </div>
         <h2 id="emp_name">Name</h2>
         <p id="emp_username">username</p>
@@ -197,6 +195,42 @@
 
         request.send()
     });
+
+    /* ADD BIN COLOUR LEGEND */
+    map.addLayer(
+    {
+      'id': 'state-population',
+      'source': 'population',
+      'source-layer': 'state_county_population_2014_cen',
+      'type': 'fill',
+      'filter': ['==', 'isState', true],
+      'paint': {
+        'fill-color': ['interpolate',
+          ['linear'],
+          ['get', 'population'],
+          0,
+          '#F2F12D',
+          500000,
+          '#EED322',
+          750000,
+          '#E6B71E',
+          1000000,
+          '#DA9C20',
+          2500000,
+          '#CA8323',
+          5000000,
+          '#B86B25',
+          7500000,
+          '#A25626',
+          10000000,
+          '#8B4225',
+          25000000,
+          '#723122'
+        ],
+        'fill-opacity': 0.75
+      }
+    },
+    'waterway-label');
   </script>
   <script src="{% static 'script/home-table.js' %}"></script>
   <script src="{% static 'script/home-usercard.js' %}"></script>

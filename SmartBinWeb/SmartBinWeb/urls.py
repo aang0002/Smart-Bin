@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path, include
 from pages.views import HomePageView
+from pages.views import AdminMainPageView
 from pages.views import register_view
 from pages.views import ValidateLoginView
 from pages.views import LoginView
@@ -36,6 +37,7 @@ urlpatterns = [
     path('home/', HomePageView.as_view(), name='home'),
     path('register/', register_view, name='register'),
     path('admin/', admin.site.urls),
+    path('smartbinadmin/', AdminMainPageView.as_view(), name='admin-main'),
     ### REST API urls ###
     url('^validatelogin/(?P<username>.+)/(?P<password>.+)/$', ValidateLoginView.as_view()),
     url(r'^getemployees', EmployeeList.as_view()),

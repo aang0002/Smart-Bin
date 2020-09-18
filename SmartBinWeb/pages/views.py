@@ -35,6 +35,12 @@ class LoginView(View):
 	def get(self, request, *args, **kwargs):
 		return render(request, "login.html", {})
 
+class AdminMainPageView(View):
+	template_name = "admin.html"
+
+	def get(self, request, *args, **kwargs):
+		return render(request, "admin.html", {})
+
 
 
 """
@@ -44,7 +50,7 @@ class LoginView(View):
 class EmployeeList(APIView):
 
 	def get(self, request):
-		employees1 = Employee.objects.all()
+		employees1 = Employee.objects.all().exclude(emp_username='admin')
 		serializer = EmployeeSerializer(employees1, many=True)
 		return Response(serializer.data)
 

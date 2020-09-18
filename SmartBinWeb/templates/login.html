@@ -50,9 +50,14 @@
           console.log("Login successfull");
           // store user's data in local storage
           let userdata = response.data[0].attributes;
-          userdata = JSON.stringify(userdata);
-          localStorage.setItem('user', userdata);
-          window.location.replace("http://127.0.0.1:8000/home");
+          if (userdata.emp_username == 'admin'){
+            window.location.replace("http://127.0.0.1:8000/smartbinadmin");
+          }
+          else{
+            userdata = JSON.stringify(userdata);
+            localStorage.setItem('user', userdata);
+            window.location.replace("http://127.0.0.1:8000/home");
+          }
         }
       } else {
         console.log('error')
