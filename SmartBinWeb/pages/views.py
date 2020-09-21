@@ -17,9 +17,13 @@ import math
 from .serializers import EmployeeSerializer
 from .serializers import BinSerializer
 from .serializers import CollectionCenterSerializer
+from .serializers import AssignmentSerializer
 from .models import Employee
 from .models import Bin
 from .models import CollectionCenter
+from .models import Assignment
+
+from django.db.models import Sum
 
 
 # Create your views here.
@@ -28,6 +32,12 @@ class HomePageView(View):
 
 	def get(self, request, *args, **kwargs):
 		return render(request, "home.html", {})
+
+class ProfileView(View):
+	template_name = "profile.html"
+
+	def get(self, request, *args, **kwargs):
+		return render(request, "profile.html", {})
 
 class LoginView(View):
 	template_name = "login.html"
@@ -40,6 +50,18 @@ class AdminMainPageView(View):
 
 	def get(self, request, *args, **kwargs):
 		return render(request, "admin.html", {})
+
+class EmployeePerformanceView(View):
+	template_name = "employeePerformance.html"
+
+	def get(self, request, *args, **kwargs):
+		return render(request, "employeePerformance.html", {})
+
+class BinFrequencyView(View):
+	template_name = "binFrequency.html"
+
+	def get(self, request, *args, **kwargs):
+		return render(request, "binFrequency.html", {})
 
 
 
@@ -57,6 +79,7 @@ class EmployeeList(APIView):
 	def post(self, request):
 		pass
 
+
 class BinList(generics.ListAPIView):
 	serializer_class = BinSerializer
 
@@ -64,12 +87,14 @@ class BinList(generics.ListAPIView):
 	    queryset = Bin.objects.all()
 	    return queryset
 
+
 class CollectionCenterList(generics.ListAPIView):
 	serializer_class = CollectionCenterSerializer
 
 	def get_queryset(self):
 	    queryset = CollectionCenter.objects.all()
 	    return queryset
+
 
 class NearestBinList(generics.ListAPIView):
 	serializer_class = BinSerializer
@@ -84,8 +109,6 @@ class NearestBinList(generics.ListAPIView):
 
 	    return queryset
 
-	def distance(self, x1, y1, x2, y2):
-	 	return math.sqrt(((y2-y1)**2) + ((x2-x1)**2))
 
 class NearestCollectionCenterList(generics.ListAPIView):
 	serializer_class = CollectionCenterSerializer
@@ -99,19 +122,43 @@ class NearestCollectionCenterList(generics.ListAPIView):
 
 	    return queryset
 
-	def distance(self, x1, y1, x2, y2):
-	 	return math.sqrt(((y2-y1)**2) + ((x2-x1)**2))
+
+class WasteProduction(APIView):
+
+	def get(self, request):
+		queryset = {}
+		assignments = Assignment.objects.all()
+		for asgn in assignments:
+			try:
+				queryset[asgn.bin_num.bin_type] += asgn.waste_volume
+			except KeyError:
+				queryset[asgn.bin_num.bin_type] = asgn.waste_volume
+
+		return Response(queryset)
+
+
+class BinFrequency(APIView):
+
+	def get(self, request):
+		queryset = {}
+		assignments = Assignment.objects.all()
+		for asgn in assignments:
+			try:
+				queryset[asgn.bin_num.bin_num] += 1
+			except KeyError:
+				queryset[asgn.bin_num.bin_num] = 1
+		print(queryset)
+		return Response(queryset)
+
 
 class ValidateLoginView(generics.ListAPIView):
 	serializer_class = EmployeeSerializer
 
 	def get_queryset(self):
-	    username = self.kwargs['username']
-	    password = self.kwargs['password']
-
-	    queryset = Employee.objects.filter(emp_username=username, emp_password=password)
-
-	    return queryset
+		username = self.kwargs['username']
+		password = self.kwargs['password']
+		queryset = Employee.objects.filter(emp_username=username, emp_password=password)
+		return queryset
 
 
 def register_view(request):

@@ -2,20 +2,32 @@
 <!DOCTYPE html>
 
 <head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="{% static 'styles/home.css' %}">
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
-  <title>Smart Bin - Home</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    /* CREATE GLOBAL VARIABLES*/
+    var active_id = "home";
+    var myLatitude = -37.809967;
+    var myLongitude = 144.962640;
+    var GLOBAL_PATH = '{{ STATIC_PATH }}';
+    var map;
+  </script>
+  <title>Smart Bin - Profile</title>
 </head>
 
 
-<body>
+<body onload="fillMapData(); fillBinTable(); fillUserCardData();">
 
   <div class="sidebar">
-    <a class="active" href="/smartbinadmin">Home</a>
-    <a href="#rofile">Profile</a>
-    <a href="/login" class="logout">Logout</a>
+    <a class="active" href="#home" id="home" onclick="return renderHomeMain('home');">Home</a>
+    <a class="" href="#profile" id="profile" onclick="return renderProfile('profile');">Profile</a>
+    <a href="/login" class="btn btn-info btn-lg; logout">
+      <span class="glyphicon glyphicon-log-out"></span> Log out
+    </a>
   </div>
 
   <div class="main">
@@ -23,217 +35,31 @@
       <h1 style="color: #38BB36; text-align: center; font-family: 'Ubuntu', sans-serif; ">SMART-BIN</h1>
     </div>
 
-    <div>
-      <!--User Profile-->
-      <div class="userprofile">
-        <div class="avatar">
-          <img src="{% static 'images/no-photo-profile.png' %}" height="150" width="150">
+    <div id="content">
+      <div>
+        <!--User Profile-->
+        <div class="userprofile">
+          <div class="avatar">
+            <img src="{% static 'images/no-photo-profile.png' %}" height="150" width="150">
+          </div>
+          <h2 id="emp_name">Name</h2>
+          <p id="emp_username">username</p>
+          <p id="emp_dob">DOB</p>
+          <p id="bins_collected">Bins Collected</p>
         </div>
-        <h2 id="emp_name">Name</h2>
-        <p id="emp_username">username</p>
-        <p id="emp_dob">DOB</p>
-        <p id="bins_collected">Bins Collected</p>
+
+        <!--map-->
+        <div class="map", id="map"> </div>
       </div>
 
-      <!--map-->
-      <div class="map", id="map">
+      <table class="container" id="binTable"></table>
 
-      </div>
     </div>
 
-    <table class="container" id="binTable"></table>
-  </div>
-
-  <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiYWFuZzAwMDIiLCJhIjoiY2tldmdmamttMXk3ZzJ4bXJseGt4cDBybyJ9.FPvgW8PxjOUeEV33WTfABg';
-    var myLatitude = -37.809967
-    var myLongitude = 144.962640
-    var binsToGet;
-    // if ("geolocation" in navigator) { 
-    //     navigator.geolocation.getCurrentPosition(position => { 
-    //         console.log(position.coords.latitude, position.coords.longitude); 
-    //         myLatitude = position.coords.latitude;
-    //         myLongitude = position.coords.longitude;
-    //     }); 
-    // } 
-    // else { 
-    //     console.log("Default position will be used")
-    // }
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v10',
-        center: [myLongitude, myLatitude], // starting position
-        zoom: 14
-    });
-
-    // initialize the map canvas to interact with later
-    var canvas = map.getCanvasContainer();
-
-    map.on('load', function() {
-        // Add starting point to the map
-        map.addSource('points', {
-          'type': 'geojson',
-          'data': {
-            'type': 'FeatureCollection',
-            'features': [
-            {
-              // feature for Mapbox DC
-              'type': 'Feature',
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [myLongitude, myLatitude]
-              },
-              'properties': {
-                'title': 'Mapbox DC'
-              }
-            },
-            ]
-          }
-          });
-
-        map.addLayer({
-          'id': 'points',
-          'type': 'symbol',
-          'source': 'points',
-          'layout': {
-            'icon-image': 'circle-15',
-          }
-        });
-
-         map.on("styleimagemissing", e => {
-          console.log("loading missing image: " + e.id);
-          map.loadImage('images/' + e.id + ".png", (error, image) => {
-            if (error) throw error;
-            if (!map.hasImage(e.id)) map.addImage(e.id, image);
-            map.getSource('markers').setData(url);
-          });
-        });
-
-        // var marker = new mapboxgl.Marker()
-        //     .setLngLat([myLongitude, myLatitude])
-        //     .addTo(map);
-
-        /* add BIN MARKERS to the map*/
-        var request = new XMLHttpRequest()
-        binsToGet = 5;
-        var path = 'http://127.0.0.1:8000/getbins/'
-
-        request.open('GET', path, true)
-        request.onload = function () {
-          // Begin accessing JSON data here
-          var data = JSON.parse(this.response).data
-
-          // store the bins data to local storage
-          window.localStorage.setItem('bins', JSON.stringify(data));
-
-          if (request.status >= 200 && request.status < 400) {
-            data.forEach((bin) => {
-                // draw the bin on the map
-                var binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
-                var binFullness = parseInt(bin.attributes.bin_fullness)
-                let binColor;
-                // green
-                if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
-                // yellow
-                else if (binFullness>=25 && binFullness<=49){ binColor = 'yellow';}
-                // orange
-                else if (binFullness>=50 && binFullness<=74){ binColor = 'orange';}
-                // red
-                else{ binColor = 'red';}
-                let bin_text =  "<p>" +
-                                "Bin Num: " + bin.attributes.bin_num + "<br>" +
-                                "Fullness: " + bin.attributes.bin_fullness + "<br>" +
-                                "Bin Type: " + bin.attributes.bin_type +
-                                "</p>"
-                let popup = new mapboxgl.Popup()
-                          .setHTML(bin_text)
-                          .addTo(map);
-                let binMarker = new mapboxgl.Marker({color: binColor})
-                                .setPopup(popup)
-                                .setLngLat(binPos)
-                                .addTo(map);
-            })
-          } else {
-            console.log('error')
-          }
-        }
-        request.send()
-
-        /* Add COLLECTION CENTER MARKERS*/
-        var request = new XMLHttpRequest()
-        binsToGet = 5;
-        var path = 'http://127.0.0.1:8000/getcolcens/'
-
-        request.open('GET', path, true)
-        request.onload = function () {
-          // Begin accessing JSON data here
-          var data = JSON.parse(this.response).data
-
-          // store the bins data to local storage
-          window.localStorage.setItem('colcens', JSON.stringify(data));
-
-          if (request.status >= 200 && request.status < 400) {
-            data.forEach((colcen) => {
-                // draw the bin on the map
-                var colcenPos = [parseFloat(colcen.attributes.colcen_longitude), parseFloat(colcen.attributes.colcen_latitude)]
-                let colcen_text =  "<p>" +
-                                "Manager: " + colcen.attributes.manager_name + "<br>" +
-                                "Phone: " + colcen.attributes.colcen_phone +
-                                "</p>"
-                let popup = new mapboxgl.Popup()
-                          .setHTML(colcen_text)
-                          .addTo(map);
-                let binMarker = new mapboxgl.Marker({color: 'black'})
-                                .setPopup(popup)
-                                .setLngLat(colcenPos)
-                                .addTo(map);
-            })
-          } else {
-            console.log('error')
-          }
-        }
-
-        request.send()
-    });
-
-    /* ADD BIN COLOUR LEGEND */
-    map.addLayer(
-    {
-      'id': 'state-population',
-      'source': 'population',
-      'source-layer': 'state_county_population_2014_cen',
-      'type': 'fill',
-      'filter': ['==', 'isState', true],
-      'paint': {
-        'fill-color': ['interpolate',
-          ['linear'],
-          ['get', 'population'],
-          0,
-          '#F2F12D',
-          500000,
-          '#EED322',
-          750000,
-          '#E6B71E',
-          1000000,
-          '#DA9C20',
-          2500000,
-          '#CA8323',
-          5000000,
-          '#B86B25',
-          7500000,
-          '#A25626',
-          10000000,
-          '#8B4225',
-          25000000,
-          '#723122'
-        ],
-        'fill-opacity': 0.75
-      }
-    },
-    'waterway-label');
-  </script>
+  <script src="{% static 'script/home-map.js' %}"></script>
   <script src="{% static 'script/home-table.js' %}"></script>
   <script src="{% static 'script/home-usercard.js' %}"></script>
+  <script src="{% static 'script/home-main.js' %}"></script>
 
 </body>
 

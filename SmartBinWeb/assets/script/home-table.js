@@ -37,10 +37,14 @@ function generateTableContent(table, attributes) {
             let button = document.createElement("BUTTON");
             button.innerHTML = "GET DIRECTION";
             button.onclick = function () {
-                let cleaner_pos = [myLongitude, myLatitude]
-                let bin_pos = [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']]
-                renderBinCollectionRoute(cleaner_pos, bin_pos)
+                let cleaner_pos = [myLongitude, myLatitude];
+                let bin_pos = [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']];
+                renderBinCollectionRoute(cleaner_pos, bin_pos);
                 window.scrollTo(0,100);
+                map.flyTo({
+                  center: [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']],
+                  zoom: 14
+                });
             }
             cell.appendChild(button)
         })}
@@ -126,8 +130,10 @@ function addRoute (coords, routeNum) {
   });
 }
 
-let headers = ["Bin Num", "Type", "Fullness", "Last Cleared", "Status"]
-let attributes = ["bin_num", "bin_type", "bin_fullness", "last_cleared_datetime", "bin_status"]
-let table = document.getElementById("binTable");
-generateTableHead(table, headers);
-generateTableContent(table, attributes);
+function fillBinTable(){
+  let headers = ["Bin Num", "Type", "Fullness", "Last Cleared", "Status"]
+  let attributes = ["bin_num", "bin_type", "bin_fullness", "last_cleared_datetime", "bin_status"]
+  let table = document.getElementById("binTable");
+  generateTableHead(table, headers);
+  generateTableContent(table, attributes);
+}

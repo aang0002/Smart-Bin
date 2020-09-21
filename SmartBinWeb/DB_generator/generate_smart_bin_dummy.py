@@ -10,6 +10,7 @@ import random
 # pages_dir = os.path.join(BASE_DIR, "pages")
 # sys.path.insert(0, pages_dir)
 # from models import Employee
+# from pages.models import Employee
 
 NUMBER_OF_BINS = 30
 NUMBER_OF_COLCENS = 3
@@ -26,6 +27,8 @@ def generate_bin_dummy_data(cursor):
 	MAX_LONG = 144.993702
 	MIN_LONG = 144.946693
 	bin_types = ['RECYCLE', "ORGANIC", "GENERAL_WASTE"]
+	bin_volumes = [360, 240, 120, 80]
+	postcodes = ['3000','3005','3016','3011']
 
 	# clear all existing bin datas
 	cursor.execute("DELETE FROM pages_bin;")
@@ -35,9 +38,16 @@ def generate_bin_dummy_data(cursor):
 	for i in range(N):
 
 		cursor.execute("""INSERT INTO pages_bin
-			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, last_cleared_datetime, installation_date, bin_status, postcode)
-			VALUES ('{bin_num}', '{bin_type}', {bin_fullness}, {bin_latitude}, {bin_longitude}, '2007-01-01 10:00:00', '2020-08-19', 'perfect condition', '3000');"""
-			.format(bin_num=format(bin_num,'05d'),bin_type=bin_types[random.randint(0,len(bin_types)-1)], bin_fullness=random.randint(0,100), bin_latitude=random.uniform(MIN_LAT, MAX_LAT), bin_longitude=random.uniform(MIN_LONG, MAX_LONG)))
+			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, bin_volume, last_cleared_datetime, installation_date, bin_status, postcode)
+			VALUES ('{bin_num}', '{bin_type}', {bin_fullness}, {bin_latitude}, {bin_longitude}, {bin_volume}, '2007-01-01 10:00:00', '2020-08-19', 'perfect condition', {postcode});"""
+			.format(bin_num=format(bin_num,'05d'),
+					bin_type=bin_types[random.randint(0,len(bin_types)-1)], 
+					bin_fullness=random.randint(0,100), 
+					bin_latitude=random.uniform(MIN_LAT, MAX_LAT), 
+					bin_longitude=random.uniform(MIN_LONG, MAX_LONG), 
+					bin_volume=bin_volumes[random.randint(0, len(bin_volumes)-1)],
+					postcode=postcodes[random.randint(0, len(postcodes)-1)]
+					))
 		bin_num += 1
 
 	return
@@ -59,9 +69,16 @@ def generate_emp_dummy_data(cursor):
 
 	# start filling in datas
 	for i in range(len(emp_usernames)):
-		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone) 
-			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}');"""
-			.format(username=emp_usernames[i], password=passwords[i], name=names[i], dob=dobs[i], tfn=tfns[i], address=addresses[i], phone=phones[i]))
+		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone, bins_collected) 
+			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', {bins_collected});"""
+			.format(username=emp_usernames[i], 
+				password=passwords[i], 
+				name=names[i], 
+				dob=dobs[i], 
+				tfn=tfns[i], 
+				address=addresses[i], 
+				phone=phones[i],
+				bins_collected=random.randint(100,300)))
 	
 	# create one admin user
 	cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone) 
@@ -108,15 +125,17 @@ def generate_assignment_dummy_data(cursor):
 	# start filling datas
 	for i in range(30):
 		for j in range(tasks_in_a_day):
- 			cursor.execute("""INSERT INTO pages_assignment (asgn_id, emp_username_id, bin_num_id, colcen_id_id, datetime_created, desc)
-							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', '{desc}')"""
+ 			cursor.execute("""INSERT INTO pages_assignment (asgn_id, emp_username_id, bin_num_id, colcen_id_id, datetime_created, desc, waste_volume)
+							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', '{desc}', {waste_volume})"""
 							.format(
 								asgn_id = format(asgn_id, '010d'),
 								emp_username = emp_usernames[random.randint(0,len(emp_usernames)-1)],
 								bin_num = format(random.randint(1,NUMBER_OF_BINS), '05d'),
 								colcen_id = format(random.randint(1,3), '04d'),
 								datetime_created = str(year) + '-' + str(month) + '-' + str(date) + ' ' + str(random.randint(0,23)) + ':' + str(random.randint(0,59)) + ':' + str(random.randint(0,59)),
-								desc = "This is an empty bin assignment"))
+								desc = "This is an empty bin assignment",
+								waste_volume = random.randint(0, 200)
+							))
  			asgn_id += 1
 		date += 1
 

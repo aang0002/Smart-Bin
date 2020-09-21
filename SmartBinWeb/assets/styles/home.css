@@ -122,7 +122,7 @@ h2 a {
 .container {
   text-align: left;
   overflow: hidden;
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   display: table;
   padding: 0 0 8em 0;
@@ -248,13 +248,11 @@ Side NAVIGATION BAR
 }
 
 .sidebar a.logout {
-  /*padding: 14px 16px;*/
-  background-color: red;
-  color: white;
   position: absolute;
-  bottom:   30px;
-  margin-left: 50px;
-  margin-right: 50px;
+  bottom: 30px;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 .sidebar a.logout:hover {

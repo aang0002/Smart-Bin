@@ -22,8 +22,13 @@ from pages.views import AdminMainPageView
 from pages.views import register_view
 from pages.views import ValidateLoginView
 from pages.views import LoginView
+from pages.views import ProfileView
+from pages.views import EmployeePerformanceView
+from pages.views import BinFrequencyView
 from pages.views import EmployeeList
 from pages.views import BinList
+from pages.views import WasteProduction
+from pages.views import BinFrequency
 from pages.views import CollectionCenterList
 from pages.views import NearestBinList
 from pages.views import NearestCollectionCenterList
@@ -35,6 +40,9 @@ urlpatterns = [
     path('', LoginView.as_view(), name='login'),
     path('login/', LoginView.as_view(), name='login'),
     path('home/', HomePageView.as_view(), name='home'),
+    path('profile/', ProfileView.as_view(), name='profile'),
+    path('employeeperformance/', EmployeePerformanceView.as_view(), name='employee pergormance'),
+    path('binfrequency/', BinFrequencyView.as_view(), name='bin frequency'),
     path('register/', register_view, name='register'),
     path('admin/', admin.site.urls),
     path('smartbinadmin/', AdminMainPageView.as_view(), name='admin-main'),
@@ -42,6 +50,8 @@ urlpatterns = [
     url('^validatelogin/(?P<username>.+)/(?P<password>.+)/$', ValidateLoginView.as_view()),
     url(r'^getemployees', EmployeeList.as_view()),
     url(r'^getbins', BinList.as_view()),
+    url(r'^getwasteproduction', WasteProduction.as_view()),
+    url(r'^getbinfrequency', BinFrequency.as_view()),
     url(r'^getcolcens', CollectionCenterList.as_view()),
     url('^nearestbins/(?P<lat>.+)/(?P<long>.+)/(?P<limit>.+)/', NearestBinList.as_view()),
     url('^nearestcolcen/(?P<lat>.+)/(?P<long>.+)/', NearestCollectionCenterList.as_view()),

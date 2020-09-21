@@ -13,6 +13,7 @@ class Employee(models.Model):
 	emp_phone = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
 	on_shift = models.BooleanField(default=True, blank=True, null=True)
 	emp_points = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
+	bins_collected = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
 
 # CollectionCenter Model
 class CollectionCenter(models.Model):
@@ -36,6 +37,7 @@ class Bin(models.Model):
 	bin_fullness = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 	bin_longitude = models.DecimalField(max_digits=8, decimal_places=5)
 	bin_latitude = models.DecimalField(max_digits=8, decimal_places=5)
+	bin_volume = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(300)]) # in Litre
 	last_cleared_datetime = models.DateTimeField()
 	installation_date = models.DateField(blank=True)
 	bin_status = models.CharField(max_length=300)
@@ -49,7 +51,7 @@ class Assignment(models.Model):
 	colcen_id =  models.ForeignKey(CollectionCenter, on_delete=models.SET_NULL, null=True)
 	datetime_created = models.DateTimeField()
 	desc = models.CharField(max_length=200)
-
+	waste_volume = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(360)], default=0)
 
 # Damage Model
 class DamageReport(models.Model):
