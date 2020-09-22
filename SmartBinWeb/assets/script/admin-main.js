@@ -51,7 +51,7 @@ function renderEmployeesTable(elemId){
 
 	// fill div with a table
 	let headers = ["Username", "Full Name", "D.O.B", "Address", "Phone", "Bins Collected"]
-	let attributes = ["emp_username", "emp_name", "emp_dob", "emp_address", "emp_phone", "emp_points"]
+	let attributes = ["emp_username", "emp_name", "emp_dob", "emp_address", "emp_phone", "bins_collected"]
 	let table = document.createElement("table"); 
 	table.className = 'container'
 	div.appendChild(table)

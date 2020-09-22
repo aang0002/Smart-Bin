@@ -5,4 +5,5 @@ function fillUserCardData(){
 	document.getElementById("emp_name").innerHTML = userdata.emp_name;
 	document.getElementById("emp_username").innerHTML = userdata.emp_username;
 	document.getElementById("emp_dob").innerHTML = userdata.emp_dob;
+	document.getElementById("bins_collected").innerHTML = "Bins Collected: " + userdata.bins_collected;
 }

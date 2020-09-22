@@ -77,37 +77,33 @@ function fillMapData(){
 
         // store the bins data to local storage
         window.localStorage.setItem('bins', JSON.stringify(data));
-
-        if (request.status >= 200 && request.status < 400) {
-          data.forEach((bin) => {
-              // draw the bin on the map
-              var binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
-              var binFullness = parseInt(bin.attributes.bin_fullness)
-              let binColor;
-              // green
-              if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
-              // yellow
-              else if (binFullness>=25 && binFullness<=49){ binColor = 'yellow';}
-              // orange
-              else if (binFullness>=50 && binFullness<=74){ binColor = 'orange';}
-              // red
-              else{ binColor = 'red';}
-              let bin_text =  "<p>" +
-                              "Bin Num: " + bin.attributes.bin_num + "<br>" +
-                              "Fullness: " + bin.attributes.bin_fullness + "<br>" +
-                              "Bin Type: " + bin.attributes.bin_type +
-                              "</p>"
-              let popup = new mapboxgl.Popup()
-                        .setHTML(bin_text)
-                        .addTo(map);
-              let binMarker = new mapboxgl.Marker({color: binColor})
-                              .setPopup(popup)
-                              .setLngLat(binPos)
-                              .addTo(map);
-          })
-        } else {
-          console.log('error')
-        }
+        data.forEach((bin) => {
+            // draw the bin on the map
+            var binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
+            var binFullness = parseInt(bin.attributes.bin_fullness)
+            let binColor;
+            // green
+            if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
+            // yellow
+            else if (binFullness>=25 && binFullness<=49){ binColor = 'yellow';}
+            // orange
+            else if (binFullness>=50 && binFullness<=74){ binColor = 'orange';}
+            // red
+            else{ binColor = 'red';}
+            let bin_text =  "<p>" +
+                            "Bin Num: " + bin.attributes.bin_num + "<br>" +
+                            "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
+                            "Bin Type: " + bin.attributes.bin_type +
+                            "</p>"
+            let popup = new mapboxgl.Popup()
+                      .setHTML(bin_text)
+                      .addTo(map);
+            let binMarker = new mapboxgl.Marker({color: binColor})
+                            .setPopup(popup)
+                            .setLngLat(binPos)
+                            .addTo(map);
+            binMarkers[bin.attributes.bin_num] = binMarker; // push it to global variable
+        })
       }
       request.send()
 

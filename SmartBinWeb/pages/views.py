@@ -72,8 +72,9 @@ class BinFrequencyView(View):
 class EmployeeList(APIView):
 
 	def get(self, request):
-		employees1 = Employee.objects.all().exclude(emp_username='admin')
-		serializer = EmployeeSerializer(employees1, many=True)
+		employees = Employee.objects.all().exclude(emp_username='admin')
+		serializer = EmployeeSerializer(employees, many=True)
+		serializer.data[0].x = "x"
 		return Response(serializer.data)
 
 	def post(self, request):
@@ -102,10 +103,10 @@ class NearestBinList(generics.ListAPIView):
 	def get_queryset(self):
 	    cleaner_long = self.kwargs['long']
 	    cleaner_lat = self.kwargs['lat']
-	    limit = self.kwargs['limit']
+	    limit = int(self.kwargs['limit'])
 
 	    queryset = Bin.objects.annotate(distance = Sqrt((cleaner_long-F('bin_longitude'))**2 + (cleaner_lat-F('bin_latitude'))**2))
-	    queryset = queryset.order_by('distance')[:5]
+	    queryset = queryset.order_by('distance')[:limit]
 
 	    return queryset
 
@@ -147,7 +148,7 @@ class BinFrequency(APIView):
 				queryset[asgn.bin_num.bin_num] += 1
 			except KeyError:
 				queryset[asgn.bin_num.bin_num] = 1
-		print(queryset)
+
 		return Response(queryset)
 
 

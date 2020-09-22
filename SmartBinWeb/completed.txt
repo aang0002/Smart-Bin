@@ -22,6 +22,11 @@
 - We can now use BootStrap in our HTML (the reason is because BootStrap makes styling a HTML page easier)
 - Instead of refreshing the entire page when a link is being clicked, now, the app only refreshes some components of the HTML page (with this, the application runs faster, and the code looks neater)
 
+### Tue, 22-Sep-2020 ###
+- Fixed the bug where bin markers don't load ocassionally
+- Added clear bin button (this button will turn the "bin_fullness" property to 0, and turn the bin marker's colour to green)
+- Added "edit profile" page (half done)
+
 ### suggestions
 # 1) texts in user profile block at home page not bounded, they are out of the block
 # 2) maybe it is better to select fonts with slightly rounded edges since the blocks in home page has round corners

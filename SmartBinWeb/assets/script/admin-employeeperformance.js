@@ -60,12 +60,3 @@ function renderEmployeePerformance(elemId) {
 		});
 	}
 }
-
-function sortEmployeePerformanceChart(e){
-	if (e.target.value === "asc") {
-		alert("implement an asc ordering mechanism")
-	}
-	else if (e.target.value === "desc") {
-		alert("implement a desc ordering mechanism")
-	}
-}

@@ -78,7 +78,7 @@ def generate_emp_dummy_data(cursor):
 				tfn=tfns[i], 
 				address=addresses[i], 
 				phone=phones[i],
-				bins_collected=random.randint(100,300)))
+				bins_collected=0))
 	
 	# create one admin user
 	cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone) 
@@ -140,6 +140,18 @@ def generate_assignment_dummy_data(cursor):
 		date += 1
 
 
+def create_trigger(cursor):
+	cursor.execute("""
+					CREATE TRIGGER increment_bins_collected
+						AFTER INSERT ON pages_assignment
+					BEGIN
+						UPDATE pages_employee
+						SET bins_collected = bins_collected + 1
+						WHERE emp_username = NEW.emp_username_id;
+					END;
+				""");
+
+
 
 if __name__ == "__main__":
 	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -151,6 +163,9 @@ if __name__ == "__main__":
 	cursor.execute(sqlite_select_Query)
 	record = cursor.fetchall()
 	print("SQLite Database Version is: ", record)
+
+	# create trigger in the DB
+	create_trigger(cursor)
 
 	# generate bin dummy date
 	generate_bin_dummy_data(cursor)
