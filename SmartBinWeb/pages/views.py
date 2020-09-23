@@ -74,7 +74,6 @@ class EmployeeList(APIView):
 	def get(self, request):
 		employees = Employee.objects.all().exclude(emp_username='admin')
 		serializer = EmployeeSerializer(employees, many=True)
-		serializer.data[0].x = "x"
 		return Response(serializer.data)
 
 	def post(self, request):
@@ -87,6 +86,17 @@ class BinList(generics.ListAPIView):
 	def get_queryset(self):
 	    queryset = Bin.objects.all()
 	    return queryset
+
+
+class AssignmentList(APIView):
+
+	def get(self, request):
+		assignments = Assignment.objects.all()
+		serializer = AssignmentSerializer(assignments, many=True)
+		return Response(serializer.data)
+
+	def post(self, request):
+		pass
 
 
 class CollectionCenterList(generics.ListAPIView):

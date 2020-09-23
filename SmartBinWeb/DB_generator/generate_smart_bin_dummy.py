@@ -6,6 +6,7 @@ The bins will be located around Melbourne Central Station
 import os, sys
 import sqlite3
 import random
+from datetime import datetime, timedelta
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # pages_dir = os.path.join(BASE_DIR, "pages")
 # sys.path.insert(0, pages_dir)
@@ -69,8 +70,8 @@ def generate_emp_dummy_data(cursor):
 
 	# start filling in datas
 	for i in range(len(emp_usernames)):
-		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone, bins_collected) 
-			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', {bins_collected});"""
+		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone, on_shift, bins_collected) 
+			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', {on_shift}, {bins_collected});"""
 			.format(username=emp_usernames[i], 
 				password=passwords[i], 
 				name=names[i], 
@@ -78,11 +79,12 @@ def generate_emp_dummy_data(cursor):
 				tfn=tfns[i], 
 				address=addresses[i], 
 				phone=phones[i],
+				on_shift=1,
 				bins_collected=0))
 	
 	# create one admin user
-	cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone) 
-			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}');"""
+	cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone, on_shift) 
+			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', 1);"""
 			.format(username='admin', password='admin', name='admin', dob='1970-01-01', tfn='0000000000', address='address', phone='0000000000'))
 
 	return
@@ -116,38 +118,53 @@ def generate_assignment_dummy_data(cursor):
 	cursor.execute("DELETE FROM pages_assignment;")
 
 	# create dummy datas
-	date = 1
-	month = 10
-	year = 2020
-	tasks_in_a_day = 20
+	date = datetime.strptime('01/01/18', "%d/%m/%y")	# the date of first assignment
+	number_of_days = 90 #450
+	tasks_in_a_day = 10 #20
 	asgn_id = 1
 
 	# start filling datas
-	for i in range(30):
+	for i in range(number_of_days):
 		for j in range(tasks_in_a_day):
- 			cursor.execute("""INSERT INTO pages_assignment (asgn_id, emp_username_id, bin_num_id, colcen_id_id, datetime_created, desc, waste_volume)
-							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', '{desc}', {waste_volume})"""
+ 			cursor.execute("""INSERT INTO pages_assignment (asgn_id, emp_username_id, bin_num_id, colcen_id_id, datetime_created, desc, waste_volume, is_done, total_distance)
+							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', '{desc}', {waste_volume}, 0, {total_distance})"""
 							.format(
 								asgn_id = format(asgn_id, '010d'),
 								emp_username = emp_usernames[random.randint(0,len(emp_usernames)-1)],
 								bin_num = format(random.randint(1,NUMBER_OF_BINS), '05d'),
 								colcen_id = format(random.randint(1,3), '04d'),
-								datetime_created = str(year) + '-' + str(month) + '-' + str(date) + ' ' + str(random.randint(0,23)) + ':' + str(random.randint(0,59)) + ':' + str(random.randint(0,59)),
+								datetime_created = date.strftime("%Y-%m-%d") + ' ' + str(random.randint(0,23)) + ':' + str(random.randint(0,59)) + ':' + str(random.randint(0,59)),
 								desc = "This is an empty bin assignment",
-								waste_volume = random.randint(0, 200)
+								waste_volume = random.randint(0, 200),
+								total_distance = random.uniform(0.1, 5.0)
 							))
  			asgn_id += 1
-		date += 1
+		date += timedelta(days=1)
 
 
 def create_trigger(cursor):
+	cursor.execute("DROP TRIGGER IF EXISTS increment_bins_collected;");
+	# incerements bins_collected whenever an assignment is created
 	cursor.execute("""
-					CREATE TRIGGER increment_bins_collected
+					CREATE TRIGGER IF NOT EXISTS increment_bins_collected
 						AFTER INSERT ON pages_assignment
 					BEGIN
 						UPDATE pages_employee
 						SET bins_collected = bins_collected + 1
 						WHERE emp_username = NEW.emp_username_id;
+					END;
+				""");
+
+	cursor.execute("DROP TRIGGER IF EXISTS update_bin_last_cleared_datetime;");
+	# updates the "last_cleared" attribute of bin whenever the 
+	cursor.execute("""
+					CREATE TRIGGER IF NOT EXISTS update_bin_last_cleared_datetime
+						AFTER UPDATE ON pages_assignment
+					WHEN NEW.is_done = 1
+					BEGIN
+						UPDATE pages_bin
+						SET last_cleared_datetime = datetime('now')
+						WHERE bin_num = NEW.bin_num_id;
 					END;
 				""");
 

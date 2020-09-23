@@ -1,0 +1,10 @@
+### suggestions
+# 1) texts in user profile block at home page not bounded, they are out of the block
+# 2) maybe it is better to select fonts with slightly rounded edges since the blocks in home page has round corners
+# 3) links are not navigating properly, once i sign in I'm brought to home page, but it is stated as profile in the link
+# 4) If i press home again when I'm at home page, I'm brought to admin page?????
+
+# 5) I think the employee performance graph looks pretty good
+# 6) sorting options should be available in admin, i.e the bins section
+# 7) What is the account used for admin? right now if i log in using my account I can access admin and home page, which
+     should not be the case 

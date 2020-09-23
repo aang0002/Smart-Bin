@@ -27,6 +27,7 @@ from pages.views import EmployeePerformanceView
 from pages.views import BinFrequencyView
 from pages.views import EmployeeList
 from pages.views import BinList
+from pages.views import AssignmentList
 from pages.views import WasteProduction
 from pages.views import BinFrequency
 from pages.views import CollectionCenterList
@@ -41,15 +42,16 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('home/', HomePageView.as_view(), name='home'),
     path('profile/', ProfileView.as_view(), name='profile'),
-    path('employeeperformance/', EmployeePerformanceView.as_view(), name='employee pergormance'),
-    path('binfrequency/', BinFrequencyView.as_view(), name='bin frequency'),
     path('register/', register_view, name='register'),
     path('admin/', admin.site.urls),
+    path('binfrequency/', BinFrequencyView.as_view(), name='bin frequency'),
+    path('employeeperformance/', EmployeePerformanceView.as_view(), name='employee-performance-all-time'),
     path('smartbinadmin/', AdminMainPageView.as_view(), name='admin-main'),
     ### REST API urls ###
     url('^validatelogin/(?P<username>.+)/(?P<password>.+)/$', ValidateLoginView.as_view()),
     url(r'^getemployees', EmployeeList.as_view()),
     url(r'^getbins', BinList.as_view()),
+    url(r'^getassignments', AssignmentList.as_view()),
     url(r'^getwasteproduction', WasteProduction.as_view()),
     url(r'^getbinfrequency', BinFrequency.as_view()),
     url(r'^getcolcens', CollectionCenterList.as_view()),

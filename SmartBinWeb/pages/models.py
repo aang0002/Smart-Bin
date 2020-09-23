@@ -11,8 +11,7 @@ class Employee(models.Model):
 	tfn_no = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
 	emp_address = models.CharField(max_length=100)
 	emp_phone = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
-	on_shift = models.BooleanField(default=True, blank=True, null=True)
-	emp_points = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
+	on_shift = models.BooleanField(default=True, blank=True)
 	bins_collected = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
 
 # CollectionCenter Model
@@ -52,6 +51,8 @@ class Assignment(models.Model):
 	datetime_created = models.DateTimeField()
 	desc = models.CharField(max_length=200)
 	waste_volume = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(360)], default=0)
+	is_done = models.BooleanField(default=False, blank=True)
+	total_distance = models.PositiveIntegerField(default=0)
 
 # Damage Model
 class DamageReport(models.Model):

@@ -6,32 +6,37 @@ function renderWasteProduction(elemId){
 
 	// clear all content
 	let div = document.getElementById('content');
-	div.innerHTML = ''
+	div.innerHTML = '';
+
+	// render spinner while loading for data to be ready
+	div.innerHTML = `<div class="loader" style="margin: auto; margin-top:200px"></div>`
 
 	// fill div with a bar chart
 	renderWasteProductionChart(div);
 
 	/* LOCAL FUNCTIONS */
 	function renderWasteProductionChart(div){
-		let chartDiv = document.createElement("div"); 
-		chartDiv.id = 'chart'
-		chartDiv.style = 'height:400px; margin-top:10px'
-		div.appendChild(chartDiv)
+	    var request = new XMLHttpRequest()
+		var path = 'http://127.0.0.1:8000/getwasteproduction/'
 
-		// create chart
-		anychart.theme(anychart.themes.darkEarth);
-		anychart.onDocumentReady(function() {
-		    // the data 
-		    var chartData = [ ];
+		request.open('GET', path, true)
+		request.onload = function () {
+			// clear the div
+			div.innerHTML = '';
+			let chartDiv = document.createElement("div"); 
+			chartDiv.id = 'chart'
+			chartDiv.style = 'height:400px; margin-top:10px'
+			div.appendChild(chartDiv)
 
-		    var request = new XMLHttpRequest()
-			var path = 'http://127.0.0.1:8000/getwasteproduction/'
+			// create chart
+			anychart.theme(anychart.themes.darkEarth);
 
-			request.open('GET', path, true)
-				request.onload = function () {
-				// Begin accessing JSON data here
-				var data = JSON.parse(this.response).data
+			// Begin accessing JSON data here
+			var data = JSON.parse(this.response).data
 
+			anychart.onDocumentReady(function() {
+			    // the data 
+			    var chartData = [ ];
 				if (request.status >= 200 && request.status < 400) {
 				  	for (var key in data) {
 						if (data.hasOwnProperty(key)) {
@@ -53,8 +58,8 @@ function renderWasteProduction(elemId){
 				else {
 					console.log('error')
 				}
-			}
-			request.send()
-		});
+			});
+		}
+		request.send();
 	}	
 }

@@ -1,9 +1,21 @@
 <div class="btn-group" role="group" aria-label="Basic example" style="margin-top: 10px">
-  <button type="button" class="btn btn-primary">1 Day</button>
-  <button type="button" class="btn btn-primary">5 Days</button>
-  <button type="button" class="btn btn-primary">1 Month</button>
-  <button type="button" class="btn btn-primary">6 Months</button>
-  <button type="button" class="btn btn-primary active">All Time</button>
+  <button type="button" class="btn btn-primary" id="bnt-day-1" onclick="changeButtonFilter('bnt-day-1')">1 Day</button>
+  <button type="button" class="btn btn-primary" id="bnt-day-5" onclick="changeButtonFilter('bnt-day-5')">5 Days</button>
+  <button type="button" class="btn btn-primary" id="btn-mon-1" onclick="changeButtonFilter('bnt-mon-1')">1 Month</button>
+  <button type="button" class="btn btn-primary" id="btn-mon-6" onclick="changeButtonFilter('bnt-mon-6')">6 Months</button>
+  <button type="button" class="btn btn-primary active" id="btn-all-time" onclick="changeButtonFilter('bnt-all-time')">All Time</button>
 </div>
 
 <div id="binfrequencyChart" style="height:500px; margin-top:10px"> </div>
+
+<script type="text/javascript">
+	function changeButtonFilter(btnId){
+		alert(btnId);
+		// disactivate the currently active button
+		$('#'+active_filter_id).removeClass('active');
+		active_filter_id = btnId;
+
+		// activate the selected button
+		$('#'+btnId).addClass('active');
+	};
+</script>
