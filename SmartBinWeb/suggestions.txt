@@ -8,3 +8,5 @@
 # 6) sorting options should be available in admin, i.e the bins section
 # 7) What is the account used for admin? right now if i log in using my account I can access admin and home page, which
      should not be the case 
+
+GIT TEST
