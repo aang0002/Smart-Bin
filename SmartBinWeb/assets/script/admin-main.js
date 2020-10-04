@@ -50,13 +50,13 @@ function renderEmployeesTable(elemId){
 	div.innerHTML = ''
 
 	// fill div with a table
-	let headers = ["Username", "Full Name", "D.O.B", "Address", "Phone", "Bins Collected"]
-	let attributes = ["emp_username", "emp_name", "emp_dob", "emp_address", "emp_phone", "bins_collected"]
+	let headers = ["Username", "Firstname", "Lastname", "D.O.B", "Address", "Phone", "Bins Collected"]
+	let attributes = ["emp_username", "emp_firstname", "emp_lastname", "emp_dob", "emp_address", "emp_phone", "bins_collected"]
 	let table = document.createElement("table"); 
 	table.className = 'container'
 	div.appendChild(table)
 	generateTableHead(table, headers);
-	generateTableContent(table, attributes, 'http://127.0.0.1:8000/getemployees');
+	generateTableContent(table, attributes, '/employees');
 }
 
 
@@ -77,5 +77,5 @@ function renderBinsTable(elemId){
 	table.className = 'container'
 	div.appendChild(table)
 	generateTableHead(table, headers);
-	generateTableContent(table, attributes, 'http://127.0.0.1:8000/getbins');
+	generateTableContent(table, attributes, '/getbins');
 }

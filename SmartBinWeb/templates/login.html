@@ -20,7 +20,7 @@
       <button align="center" class="submit" form="loginForm" onclick="login()">Sign In</button>
     <div align="center">
         <br>
-        <a href="http://127.0.0.1:8000/register" align="center">Register</a>
+        <a href="/register" align="center">Register</a>
     </div>
   </div>
 
@@ -36,7 +36,7 @@
     var request = new XMLHttpRequest()
 
     // url pattern: http://127.0.0.1:8000/validatelogin/username/password
-    url = 'http://127.0.0.1:8000/validatelogin' + '/' + username_input + '/' + password_input;
+    url = '/validatelogin' + '/' + username_input + '/' + password_input;
     request.open('GET', url, true);
 
     request.onload = function () {
@@ -52,12 +52,12 @@
           // store user's data in local storage
           let userdata = response.data[0].attributes;
           if (userdata.emp_username == 'admin'){
-            window.location.replace("http://127.0.0.1:8000/smartbinadmin");
+            window.location.replace("/smartbinadmin");
           }
           else{
             userdata = JSON.stringify(userdata);
             localStorage.setItem('user', userdata);
-            window.location.replace("http://127.0.0.1:8000/home");
+            window.location.replace("/home");
           }
         }
       } else {

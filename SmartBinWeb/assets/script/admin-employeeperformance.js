@@ -1,3 +1,76 @@
+function changeEmpPerformanceChartFilter(btnId){
+	// disactivate the currently active button
+	$('#'+active_filter_id).removeClass('active');
+	active_filter_id = btnId;
+
+	// activate the selected button
+	$('#'+btnId).addClass('active');
+
+	// display a loader
+	document.getElementById("employeeperformanceChart").innerHTML = '';
+	document.getElementById("employeeperformanceChart").innerHTML = `<div class="loader" style="margin: auto; margin-top:200px"></div>`;
+
+	// construct API path
+	var path = '/getemployeeperformance'
+	switch(btnId) {
+		case "btn-day-1":
+			path += "/days/1"
+			break;
+		case "btn-day-7":
+			path += "/days/7"
+			break;
+		case "btn-mon-1":
+			path += "/months/1"
+			break;
+		case "btn-mon-6":
+			path += "/months/6"
+			break;
+		default:
+			path = "/getemployeeperformance/alltime/alltime"
+	}
+
+	// make a request
+	var request = new XMLHttpRequest();
+	request.open('GET', path, true);
+	request.onload = function () {
+
+		if (request.status >= 200 && request.status < 400) {
+			// remove the loader
+			document.getElementById("employeeperformanceChart").innerHTML = '';
+			// Begin accessing JSON data here
+			let chartData = [];
+			let data = JSON.parse(this.response).data;
+		  	for (let emp_username in data) {
+				if (data.hasOwnProperty(emp_username)) { 
+				    chartData.push([ emp_username, data[emp_username] ])
+				};
+			};
+			// create a data object
+		  	let dataSet = anychart.data.set(chartData);
+		  	let view = dataSet.mapAs();
+		  	let sortedView = view.sort("value", "desc");
+			// create chart
+			anychart.theme(anychart.themes.darkEarth);
+			anychart.onDocumentReady(function() {
+			   	let chart = anychart.bar();
+				let series = chart.bar(sortedView);
+
+				// render the chart
+				chart.title("Employee Performance");
+		        chart.yAxis().title('# Bin Collected');
+		        chart.xScroller().enabled(true);	// turn on Y-scroller
+		        chart.palette(anychart.palettes.defaultPalette);
+		        chart.container('employeeperformanceChart');
+				chart.draw(); 
+			});		
+		}
+		else{
+			console.log("error");
+		}
+	}
+	request.send();
+};
+
 function renderEmployeePerformance(elemId) {
 	var today = new Date();
 	var date = today.getDate() + '-' + (today.getMonth()+1) + '-' + today.getFullYear();
@@ -15,16 +88,13 @@ function renderEmployeePerformance(elemId) {
 	div.innerHTML = `<div class="loader" style="margin: auto; margin-top:200px"></div>`
 
 	// Getting elements from server and saving the in the variable data
-	$.get("/employeeperformance", function(data) {
-		$(data).appendTo(div)
-		renderEmployeePerformanceChart(div);
-	});
+	renderEmployeePerformanceChart(div);
 
 
 	/* LOCAL FUNCTIONS */
 	function renderEmployeePerformanceChart(div){
 		var request = new XMLHttpRequest()
-		var path = 'http://127.0.0.1:8000/getemployees/'
+		var path = '/getemployeeperformance/alltime/alltime'
 
 		request.open('GET', path, true)
 		request.onload = function () {
@@ -33,17 +103,17 @@ function renderEmployeePerformance(elemId) {
 				// delete loader from UI
 				div.innerHTML = '';
 				// Begin accessing JSON data here
-				var chartData = [];
-				var data = JSON.parse(this.response).data;
-			  	data.forEach((emp) => {
-			  		let emp_name = emp.attributes['emp_name'];
-			  		let bins_collected = emp.attributes['bins_collected'];
-			  		chartData.push([emp_name, bins_collected])
-			  	})
+				let chartData = [];
+				let data = JSON.parse(this.response).data;
+			  	for (let emp_username in data) {
+					if (data.hasOwnProperty(emp_username)) { 
+					    chartData.push([ emp_username, data[emp_username] ])
+					}
+				}
 			  	// create a data object
-			  	var dataSet = anychart.data.set(chartData);
-			  	var view = dataSet.mapAs();
-			  	var sortedView = view.sort("value", "desc");
+			  	let dataSet = anychart.data.set(chartData);
+			  	let view = dataSet.mapAs();
+			  	let sortedView = view.sort("value", "desc");
 
 				// create the chart
 				$.get("/employeeperformance", function(data) {
@@ -51,8 +121,8 @@ function renderEmployeePerformance(elemId) {
 					// create chart
 					anychart.theme(anychart.themes.darkEarth);
 					anychart.onDocumentReady(function() {
-					   	var chart = anychart.bar();
-						var series = chart.bar(sortedView);
+					   	let chart = anychart.bar();
+						let series = chart.bar(sortedView);
 
 						// render the chart
 						chart.title("Employee Performance");

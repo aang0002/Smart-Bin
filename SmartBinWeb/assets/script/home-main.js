@@ -17,7 +17,9 @@ function renderProfile(elemId){
 
 	// Getting elements from server and saving the in the variable data
 	$.get("/profile", function(data) {
-		$(data).appendTo(div)
+		$(data).appendTo(div);
+		// pre-fill data
+		fillDefaultPofileData();
 	});
 }
 
@@ -70,6 +72,7 @@ function renderHomeMain(elemId){
 
 
 function renderProfileCard(div){
+	console.log("hey")
 	let userprofile = document.createElement("div");
 	userprofile.className = "userprofile";
 
@@ -85,18 +88,22 @@ function renderProfileCard(div){
 	// create emp name element
 	let empname = document.createElement("h2");
 	empname.id = "emp_name";
+	empname.innerHTML = "";
 
 	// create username element
 	let empusername = document.createElement("p");
 	empusername.id = "emp_username";
+	empusername.innerHTML = "Username: ";
 
 	// create DOB element
 	let empdob = document.createElement("p");
 	empdob.id = "emp_dob";
+	empdob.innerHTML += "D.O.B: ";
 
 	// create Bin Collected element
 	let binscollected = document.createElement("p");
 	binscollected.id = "bins_collected";
+	binscollected.innerHTML += "Bins Collected: ";
 
 	// append all element to userprofile div
 	userprofile.appendChild(avatar);
@@ -121,4 +128,17 @@ function renderTable(div){
 	table.className = "container";
 	table.id = "binTable";
 	div.appendChild(table);
+}
+
+function fillDefaultPofileData(){
+	var user = JSON.parse(localStorage.getItem("user"));
+	var address = user['emp_address'].split(",");
+	document.getElementById("emp_firstname").value = user['emp_firstname'];
+	document.getElementById("emp_lastname").value = user['emp_lastname'];
+	document.getElementById("tfn_no").value = user['tfn_no'];
+	document.getElementById("emp_address_street").value = address[0];
+	document.getElementById("emp_address_suburb").value = address[1];
+	document.getElementById("emp_address_state").value = address[2];
+	document.getElementById("emp_address_postcode").value = address[3];
+	document.getElementById("emp_phone").value = user['emp_phone'];
 }

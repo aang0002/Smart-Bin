@@ -19,15 +19,18 @@ from django.conf.urls import url
 from django.urls import path, include
 from pages.views import HomePageView
 from pages.views import AdminMainPageView
-from pages.views import register_view
+from pages.views import RegisterView
 from pages.views import ValidateLoginView
 from pages.views import LoginView
 from pages.views import ProfileView
 from pages.views import EmployeePerformanceView
 from pages.views import BinFrequencyView
+from pages.views import BinFrequencyFilteredView
 from pages.views import EmployeeList
+from pages.views import EditEmployeeView
 from pages.views import BinList
 from pages.views import AssignmentList
+from pages.views import EmployeePerformance
 from pages.views import WasteProduction
 from pages.views import BinFrequency
 from pages.views import CollectionCenterList
@@ -42,19 +45,22 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('home/', HomePageView.as_view(), name='home'),
     path('profile/', ProfileView.as_view(), name='profile'),
-    path('register/', register_view, name='register'),
+    path('register/', RegisterView.as_view(), name='register'),
     path('admin/', admin.site.urls),
     path('binfrequency/', BinFrequencyView.as_view(), name='bin frequency'),
     path('employeeperformance/', EmployeePerformanceView.as_view(), name='employee-performance-all-time'),
     path('smartbinadmin/', AdminMainPageView.as_view(), name='admin-main'),
     ### REST API urls ###
     url('^validatelogin/(?P<username>.+)/(?P<password>.+)/$', ValidateLoginView.as_view()),
-    url(r'^getemployees', EmployeeList.as_view()),
-    url(r'^getbins', BinList.as_view()),
-    url(r'^getassignments', AssignmentList.as_view()),
-    url(r'^getwasteproduction', WasteProduction.as_view()),
-    url(r'^getbinfrequency', BinFrequency.as_view()),
-    url(r'^getcolcens', CollectionCenterList.as_view()),
+    url('^employees/', EmployeeList.as_view()),
+    url('^editemployee/', EditEmployeeView.as_view()),
+    url('^getbins/', BinList.as_view()),
+    url('^getassignments/', AssignmentList.as_view()),
+    url('^getemployeeperformance/(?P<period>.+)/(?P<time>.+)', EmployeePerformance.as_view()),
+    url('^getwasteproduction/', WasteProduction.as_view()),
+    url('^getbinfrequency/', BinFrequency.as_view()),
+    url('^getbinfrequencyfiltered/(?P<period>.+)/(?P<time>.+)/', BinFrequencyFilteredView.as_view()),
+    url('^getcolcens/', CollectionCenterList.as_view()),
     url('^nearestbins/(?P<lat>.+)/(?P<long>.+)/(?P<limit>.+)/', NearestBinList.as_view()),
     url('^nearestcolcen/(?P<lat>.+)/(?P<long>.+)/', NearestCollectionCenterList.as_view()),
 ]

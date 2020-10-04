@@ -26,3 +26,10 @@
 - Fixed the bug where bin markers don't load ocassionally
 - Added clear bin button (this button will turn the "bin_fullness" property to 0, and turn the bin marker's colour to green)
 - Added "edit profile" page (half done)
+
+### Wed, 23-Sep-2020 ###
+- Created filters for both "Employee Performance" and "Bin Frequenct" pages
+
+### Sun, 4-10-2020 ###
+- Created an "edit profile page" (still has to change the UI, but functionality-wise is working)
+- Created register employee page (still has to change the UI, but functionality-wise is working)

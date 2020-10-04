@@ -15,7 +15,7 @@ function generateTableHead(table, headers) {
 function generateTableContent(table, attributes) {
     let binsToGet =5
     let request = new XMLHttpRequest()
-    let path = 'http://127.0.0.1:8000/nearestbins/' + myLatitude + '/' + myLongitude + '/' + binsToGet
+    let path = '/nearestbins/' + myLatitude + '/' + myLongitude + '/' + binsToGet
     
     request.open('GET', path, true)
     request.onload = function () {
@@ -57,9 +57,14 @@ function generateTableContent(table, attributes) {
             clearBinButton.onclick =  function () {
                                         let confirmationMessage = "Clear bin " + bin.attributes.bin_num.toString() + "?"
                                         if (confirm(confirmationMessage)){
-                                          // disable button
+                                          // update the bins collected property of current user
+                                          let userdata = JSON.parse(localStorage.getItem('user'));
+                                          document.getElementById("bins_collected").innerHTML = "Bins collected: " + (userdata.bins_collected + 1);
+                                          userdata.bins_collected += 1;
+                                          localStorage.setItem('user', JSON.stringify(userdata));
+                                          // remove clear button
                                           clearBinButton.remove();
-                                          // remove the bin marker
+                                          // remove the current bin marker
                                           let binMarker = binMarkers[bin.attributes.bin_num];
                                           binMarker.remove();
                                           // add a new marker
@@ -103,7 +108,7 @@ function renderBinCollectionRoute(cleaner_pos, bin_pos) {
   let request = new XMLHttpRequest()
   let binLong = bin_pos[0]
   let binLat = bin_pos[1]
-  let path = 'http://127.0.0.1:8000/nearestcolcen/' + binLat + '/' + binLong
+  let path = '/nearestcolcen/' + binLat + '/' + binLong
   
   request.open('GET', path, true)
   request.onload = function () {

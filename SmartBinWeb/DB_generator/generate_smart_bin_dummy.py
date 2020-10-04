@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 
 NUMBER_OF_BINS = 30
 NUMBER_OF_COLCENS = 3
-emp_usernames = ['aang0002','ylao0002','mgad0002']
+emp_usernames = ['aang0002','ylao0002','mgad0002','mjan0001','jdoe0001']
 
 """
 Fill in pages_bin table in the DB
@@ -40,7 +40,7 @@ def generate_bin_dummy_data(cursor):
 
 		cursor.execute("""INSERT INTO pages_bin
 			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, bin_volume, last_cleared_datetime, installation_date, bin_status, postcode)
-			VALUES ('{bin_num}', '{bin_type}', {bin_fullness}, {bin_latitude}, {bin_longitude}, {bin_volume}, '2007-01-01 10:00:00', '2020-08-19', 'perfect condition', {postcode});"""
+			VALUES ('{bin_num}', '{bin_type}', {bin_fullness}, {bin_latitude}, {bin_longitude}, {bin_volume}, '2018-01-01 10:00:00', '2020-08-19', 'perfect condition', {postcode});"""
 			.format(bin_num=format(bin_num,'05d'),
 					bin_type=bin_types[random.randint(0,len(bin_types)-1)], 
 					bin_fullness=random.randint(0,100), 
@@ -61,20 +61,22 @@ def generate_emp_dummy_data(cursor):
 	cursor.execute("DELETE FROM pages_employee;")
 
 	# create a list of datas
-	passwords = ['fit','fit','fit']
-	names = ['Adrian Ang', 'Jayden Lao', 'Matthew Gadsden']
-	dobs = ['1998-09-04','1998-11-12','1998-11-05']
-	tfns = ['1111111111','2222222222','3333333333']
-	addresses = ['39 Waverly Drive, Mount Waverly','17 Anchora Palace, Glen Waverly','1 Venice Street, Box Hill']
-	phones = ['0455611990','0418224233','0411909988']
+	passwords = ['fit','fit','fit','fit','fit']
+	firstnames = ['Adrian', 'Jayden', 'Matthew', 'Mary', 'John']
+	lastnames = ['Ang', 'Lao', 'Gadsden', 'Jane', 'Doe']
+	dobs = ['1998-04-09','1998-11-15','1998-11-05','1998-11-05','1998-11-05']
+	tfns = ['1111111111','2222222222','3333333333','4444444444','5555555555']
+	addresses = ['39 Waverly Drive, Mount Waverly','17 Anchora Palace, Glen Waverly','1 Venice Street, Box Hill','39 Waverly Drive, Mount Waverly','39 Waverly Drive, Mount Waverly']
+	phones = ['0455611990','0418224233','0411909988','0418273333','0411772189']
 
 	# start filling in datas
 	for i in range(len(emp_usernames)):
-		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone, on_shift, bins_collected) 
-			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', {on_shift}, {bins_collected});"""
+		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_firstname, emp_lastname, emp_dob, tfn_no, emp_address, emp_phone, on_shift, bins_collected) 
+			VALUES ('{username}', '{password}', '{firstname}', '{lastname}', '{dob}', '{tfn}', '{address}', '{phone}', {on_shift}, {bins_collected});"""
 			.format(username=emp_usernames[i], 
 				password=passwords[i], 
-				name=names[i], 
+				firstname=firstnames[i],
+				lastname=lastnames[i], 
 				dob=dobs[i], 
 				tfn=tfns[i], 
 				address=addresses[i], 
@@ -83,8 +85,8 @@ def generate_emp_dummy_data(cursor):
 				bins_collected=0))
 	
 	# create one admin user
-	cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone, on_shift) 
-			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', 1);"""
+	cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_firstname, emp_lastname, emp_dob, tfn_no, emp_address, emp_phone, on_shift) 
+			VALUES ('{username}', '{password}', '{name}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', 1);"""
 			.format(username='admin', password='admin', name='admin', dob='1970-01-01', tfn='0000000000', address='address', phone='0000000000'))
 
 	return
@@ -99,8 +101,8 @@ def generate_collectioncenter_dummy_data(cursor):
 
 	# create a list of datas
 	colcen_id = ["0001","0002","0003"] #models.CharField(max_length=4, validators=[RegexValidator(r'^[0-9]{4}$')], primary_key=True)
-	colcen_longitude = [144.969851, 144.989234, 144.992626] 
-	colcen_latitude = [-37.786885, -37.816558, -37.795310] 
+	colcen_longitude = [144.989234, 144.992626, 144.940649] 
+	colcen_latitude = [-37.816558, -37.795310, -37.800840] 
 	colcen_phone = ['0311784655','0376335877', '0311990723']
 	manager_name = ['Bradley Park', 'Henry Cooper', 'Garry Maxima']
 
@@ -118,9 +120,9 @@ def generate_assignment_dummy_data(cursor):
 	cursor.execute("DELETE FROM pages_assignment;")
 
 	# create dummy datas
-	date = datetime.strptime('01/01/18', "%d/%m/%y")	# the date of first assignment
-	number_of_days = 90 #450
-	tasks_in_a_day = 10 #20
+	number_of_days = 300 #450
+	tasks_in_a_day = 5 #10
+	date = datetime.now() - timedelta(days=number_of_days)	# the date of first assignment
 	asgn_id = 1
 
 	# start filling datas

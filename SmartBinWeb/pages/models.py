@@ -6,7 +6,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Employee(models.Model):
 	emp_username = models.CharField(max_length=50, primary_key=True)
 	emp_password = models.CharField(max_length=100, default="fit")
-	emp_name = models.CharField(max_length=100)
+	emp_firstname = models.CharField(max_length=100)
+	emp_lastname = models.CharField(max_length=100)
 	emp_dob = models.DateField()
 	tfn_no = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
 	emp_address = models.CharField(max_length=100)

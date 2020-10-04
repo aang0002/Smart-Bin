@@ -3,7 +3,7 @@ from django.views.generic import View
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404	# so that a 404 page will be shown on an invalid req
 from rest_framework.views import APIView	# so that normal view can return an API data
-from django.db.models import ExpressionWrapper, FloatField, F
+from django.db.models import ExpressionWrapper, FloatField, F, Q
 from django.db.models.functions import Sqrt
 from rest_framework import viewsets
 from rest_framework import generics
@@ -24,6 +24,11 @@ from .models import CollectionCenter
 from .models import Assignment
 
 from django.db.models import Sum
+from django.utils import timezone
+from datetime import timedelta
+from dateutil.relativedelta import relativedelta
+
+from django.db import IntegrityError
 
 
 # Create your views here.
@@ -44,6 +49,12 @@ class LoginView(View):
 
 	def get(self, request, *args, **kwargs):
 		return render(request, "login.html", {})
+
+class RegisterView(View):
+	template_name = "register.html"
+
+	def get(self, request, *args, **kwargs):
+		return render(request, "register.html", {})
 
 class AdminMainPageView(View):
 	template_name = "admin.html"
@@ -77,8 +88,47 @@ class EmployeeList(APIView):
 		return Response(serializer.data)
 
 	def post(self, request):
-		pass
+		emp_username = request.data.get("emp_username")
+		emp_firstname = request.data.get("emp_firstname")
+		emp_lastname = request.data.get("emp_lastname")
+		emp_dob = request.data.get("emp_dob")	# YYYY-MM-DD
+		emp_password1 = request.data.get("emp_password1")
+		emp_password2 = request.data.get("emp_password2")
+		tfn_no = request.data.get("tfn_no")
+		emp_address = request.data.get("emp_address_street") + "," + request.data.get("emp_address_suburb") + "," + request.data.get("emp_address_state") + "," + request.data.get("emp_address_postcode")
+		emp_phone = request.data.get("emp_phone")
+		# check rather password matched
+		if emp_password1 != emp_password2:
+			return Response("UNMATCHED_PASSWORD")
+		# create a new employee instance in the DB
+		try:
+			new_emp = Employee.objects.create(	emp_username = emp_username,
+										emp_firstname = emp_firstname,
+										emp_lastname = emp_lastname,
+										emp_dob = emp_dob,
+										emp_password = emp_password1,
+										tfn_no = tfn_no,
+										emp_address = emp_address,
+										emp_phone = emp_phone
+										)
+			new_emp.save()
+			return Response("OK")
+		except IntegrityError as e:
+			return Response("USERNAME_USED")
 
+class EditEmployeeView(APIView):
+	def post(self, request):
+		emp = Employee.objects.get(pk = request.data.get("emp_username"))
+		# change the emp details
+		try:
+			emp.emp_firstname = request.data.get("emp_firstname")
+			emp.emp_lastname = request.data.get("emp_lastname")
+			emp.emp_address = request.data.get("emp_address_street") + "," + request.data.get("emp_address_suburb") + "," + request.data.get("emp_address_state") + "," + request.data.get("emp_address_postcode")
+			emp.emp_phone = request.data.get("emp_phone")
+			emp.save()
+			return Response("OK")
+		except Exception as e:
+			return Response("error")
 
 class BinList(generics.ListAPIView):
 	serializer_class = BinSerializer
@@ -133,6 +183,29 @@ class NearestCollectionCenterList(generics.ListAPIView):
 
 	    return queryset
 
+class EmployeePerformance(APIView):
+	serializer_class = AssignmentSerializer
+
+	def get(self, request, *args, **kwargs):
+		period = kwargs.get('period', None) # days/months
+		time = kwargs.get('time')
+		if period == 'days':
+			date_treshold = timezone.now().date() - timedelta(days=int(time))
+			assignments = Assignment.objects.filter(datetime_created__gte=date_treshold)
+		elif period == 'months':
+			date_treshold = timezone.now().date() - relativedelta(months=+int(time))
+			assignments = Assignment.objects.filter(datetime_created__gte=date_treshold)
+		else:
+			assignments = Assignment.objects.all()
+		queryset = {}
+		for asgn in assignments:
+			try:
+				queryset[asgn.emp_username.emp_username] += 1
+			except KeyError:
+				queryset[asgn.emp_username.emp_username] = 1
+
+		return Response(queryset)
+
 
 class WasteProduction(APIView):
 
@@ -153,6 +226,28 @@ class BinFrequency(APIView):
 	def get(self, request):
 		queryset = {}
 		assignments = Assignment.objects.all()
+		for asgn in assignments:
+			try:
+				queryset[asgn.bin_num.bin_num] += 1
+			except KeyError:
+				queryset[asgn.bin_num.bin_num] = 1
+
+		return Response(queryset)
+
+
+class BinFrequencyFilteredView(APIView):
+	serializer_class = AssignmentSerializer
+
+	def get(self, request, *args, **kwargs):
+		period = kwargs.get('period') # days/months
+		time = int(kwargs.get('time'))
+		if period == 'days':
+			date_treshold = timezone.now().date() - timedelta(days=time)
+			assignments = Assignment.objects.filter(datetime_created__gte=date_treshold)
+		elif period == 'months':
+			date_treshold = timezone.now().date() - relativedelta(months=+time)
+			assignments = Assignment.objects.filter(datetime_created__gte=date_treshold)
+		queryset = {}
 		for asgn in assignments:
 			try:
 				queryset[asgn.bin_num.bin_num] += 1

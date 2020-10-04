@@ -1,79 +1,96 @@
-<!-- edit form column -->
-<div class="col-md-9 personal-info" style="margin-top:15px">
-  <div class="alert alert-info alert-dismissable">
-    <a class="panel-close close" data-dismiss="alert">×</a> 
-    <i class="fa fa-coffee"></i>
-    This is an <strong>.alert</strong>. Use this to show important messages to the user.
-  </div>
-  <h3>Personal info</h3>
-  
-  <form class="form-horizontal" role="form">
-    <div class="form-group">
-      <label class="col-lg-3 control-label">First name:</label>
-      <div class="col-lg-8">
-        <input class="form-control" type="text" value="Jane">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-3 control-label">Last name:</label>
-      <div class="col-lg-8">
-        <input class="form-control" type="text" value="Bishop">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-3 control-label">Company:</label>
-      <div class="col-lg-8">
-        <input class="form-control" type="text" value="">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-3 control-label">Email:</label>
-      <div class="col-lg-8">
-        <input class="form-control" type="text" value="janesemail@gmail.com">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-3 control-label">Time Zone:</label>
-      <div class="col-lg-8">
-        <div class="ui-select">
-          <select id="user_time_zone" class="form-control">
-            <option value="Hawaii">(GMT-10:00) Hawaii</option>
-            <option value="Alaska">(GMT-09:00) Alaska</option>
-            <option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US &amp; Canada)</option>
-            <option value="Arizona">(GMT-07:00) Arizona</option>
-            <option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time (US &amp; Canada)</option>
-            <option value="Central Time (US &amp; Canada)" selected="selected">(GMT-06:00) Central Time (US &amp; Canada)</option>
-            <option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
-            <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
-          </select>
+<form action="/editemployee/" method="post" id="employeeRegistrationForm">
+    {% csrf_token %}
+    <div class="row">
+        <div class="form-group col-xs-6">
+            <label>First Name</label>
+            <input type="text" class="form-control" name="emp_firstname" id="emp_firstname" required>
         </div>
-      </div>
+        <div class="form-group col-xs-6">
+            <label>Last Name</label>
+            <input type="text" class="form-control" name="emp_lastname" id="emp_lastname" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-4">
+            <label>TFN</label>
+            <input type="text" class="form-control" name="tfn_no" id="tfn_no" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-5">
+            <label>Street Address</label>
+            <input type="text" class="form-control" name="emp_address_street" id="emp_address_street" required>
+        </div>
+        <div class="form-group col-xs-3">
+            <label>Suburb Name</label>
+            <input type="text" class="form-control" name="emp_address_suburb" id="emp_address_suburb" required>
+        </div>
+        <div class="form-group col-xs-2">
+            <label>State</label>
+                <select type="text" class="form-control" name="emp_address_state" id="emp_address_state">
+                    <option>ACT</option>
+                    <option>NSW</option>
+                    <option>NT</option>
+                    <option>QLD</option>
+                    <option>SA</option>
+                    <option>TAS</option>
+                    <option>WA</option>
+                    <option>VIC</option>
+                </select>
+        </div>
+        <div class="form-group col-xs-2">
+            <label>Postcode</label>
+            <input type="number" class="form-control" name="emp_address_postcode" id="emp_address_postcode" required>
+        </div>
     </div>
     <div class="form-group">
-      <label class="col-md-3 control-label">Username:</label>
-      <div class="col-md-8">
-        <input class="form-control" type="text" value="janeuser">
-      </div>
+        <label>Phone</label>
+        <input type="text" class="form-control" name="emp_phone" id="emp_phone" required>
     </div>
-    <div class="form-group">
-      <label class="col-md-3 control-label">Password:</label>
-      <div class="col-md-8">
-        <input class="form-control" type="password" value="11111122333">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-3 control-label">Confirm password:</label>
-      <div class="col-md-8">
-        <input class="form-control" type="password" value="11111122333">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-md-3 control-label"></label>
-      <div class="col-md-8">
-        <input type="button" class="btn btn-primary" value="Save Changes">
-        <span></span>
-        <input type="reset" class="btn btn-default" value="Cancel">
-      </div>
-    </div>
-  </form>
-</div>
+    <button type="submit" class="btn btn-primary signupbtn">Save Changes</button>
+    <button type="submit" class="btn btn-warning cacnlebtn" onclick="location.href='../';">Cancle</button>
+</form>
+
+<script type="text/javascript">
+    // before submit
+    $('#employeeRegistrationForm').submit(function(){ //listen for submit event
+        let user = JSON.parse(localStorage.getItem('user'));
+        $('<input />').attr('type', 'hidden')
+            .attr('name', 'emp_username')
+            .attr('value', user['emp_username'])
+            .appendTo('#employeeRegistrationForm');
+        return true;
+    });
+
+    // after submit
+    $(function(){
+        $('form[id=employeeRegistrationForm]').submit(function(){
+            $.post($(this).attr('action'), $(this).serialize(), function(data) {
+                let response = data.data;
+                if (response == 'OK'){
+                    alert("Changes saved");
+                    // edit local storage
+                    let user = JSON.parse(localStorage.getItem('user'));
+                    user['emp_firstname'] = $('#emp_firstname').val();
+                    user['emp_lastname'] = $('#emp_lastname').val();
+                    user['emp_address'] = $('#emp_address_street').val() + ',' + $('#emp_address_suburb').val() + ',' + $('#emp_address_state').val() + ',' + $('#emp_address_postcode').val();
+                    user['tfn_no'] = $('#tfn_no').val();
+                    user['emp_phone'] = $('#emp_phone').val();
+                    localStorage.setItem('user', JSON.stringify(user));
+                    // go the the main page
+                    window.location.href = '/home';  
+                }
+                else if (response == 'UNMATCHED_PASSWORD'){
+                    alert("Password not match")
+                }
+                else if (response == 'USERNAME_USED'){
+                    alert("Username already exist")
+                }
+                else{
+                    alert("Unidentified response")
+                }
+            }, 'json');
+        return false;
+        });
+    });
+</script>

@@ -8,7 +8,7 @@ class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
 
 	class Meta:
 		model = Employee
-		fields = ('emp_username', 'emp_name', 'emp_dob', 'tfn_no', 'emp_address', 'emp_phone', 'on_shift', 'bins_collected')
+		fields = ('emp_username', 'emp_firstname', 'emp_lastname','emp_dob', 'tfn_no', 'emp_address', 'emp_phone', 'on_shift', 'bins_collected')
 
 class BinSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -22,7 +22,7 @@ class CollectionCenterSerializer(serializers.HyperlinkedModelSerializer):
 		model = CollectionCenter
 		fields = ('colcen_id', 'colcen_longitude', 'colcen_latitude', 'colcen_phone', 'manager_name')
 
-class AssignmentSerializer(serializers.ModelSerializer):
+class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
 
 	class Meta:
 		model = Assignment

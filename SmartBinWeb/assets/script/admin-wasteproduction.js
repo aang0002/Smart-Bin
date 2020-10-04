@@ -17,7 +17,7 @@ function renderWasteProduction(elemId){
 	/* LOCAL FUNCTIONS */
 	function renderWasteProductionChart(div){
 	    var request = new XMLHttpRequest()
-		var path = 'http://127.0.0.1:8000/getwasteproduction/'
+		var path = '/getwasteproduction/'
 
 		request.open('GET', path, true)
 		request.onload = function () {
