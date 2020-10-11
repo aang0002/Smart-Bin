@@ -72,6 +72,9 @@ function changeEmpPerformanceChartFilter(btnId){
 };
 
 function renderEmployeePerformance(elemId) {
+	// scroll to top
+	window.scrollTo(0,0);
+	// get today's date
 	var today = new Date();
 	var date = today.getDate() + '-' + (today.getMonth()+1) + '-' + today.getFullYear();
 	console.log(date); 

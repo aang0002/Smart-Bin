@@ -42,3 +42,8 @@
 - added "Report", "Cancle" buttons when user click the 'go' button on a bin marker
 - generated damage report dummy datas
 - created a "damage report" UI in admin page
+
+### next to do ###
+- damage report form
+- add more editable attributes in profile page
+- add filter on home page bin table

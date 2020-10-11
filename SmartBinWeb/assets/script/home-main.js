@@ -6,6 +6,8 @@ function activatePage(elemId){
 }
 
 function renderProfile(elemId){
+	// scroll to top
+	window.scrollTo(0,0);
 	// change the UI of active tab
 	document.getElementById(active_id).className = "";
 	document.getElementById(elemId).className = "active";
@@ -40,6 +42,8 @@ function renderProfile(elemId){
 // </div>
 // <table class="container" id="binTable"></table>
 function renderHomeMain(elemId){
+	// scroll to top
+	window.scrollTo(0,0);
 	// change the UI of active tab
 	document.getElementById(active_id).className = "";
 	document.getElementById(elemId).className = "active";

@@ -74,6 +74,8 @@ function changBinFreqChartFilter(btnId){
 
 
 function renderBinFrequency(elemId){
+	// scroll to top
+	window.scrollTo(0,0);
 	// change the UI of active tab
 	document.getElementById(active_id).className = "";
 	document.getElementById(elemId).className = "active";

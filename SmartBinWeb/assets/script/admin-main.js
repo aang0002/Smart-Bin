@@ -44,6 +44,8 @@ function generateTableContent(table, attributes, dataURI) {
 }
 
 function renderEmployeesTable(elemId){
+    // scroll to top
+    window.scrollTo(0,0);
 	// change the UI of active tab
 	document.getElementById(active_id).className = "";
 	document.getElementById(elemId).className = "active";
@@ -65,6 +67,8 @@ function renderEmployeesTable(elemId){
 
 
 function renderBinsTable(elemId){
+    // scroll to top
+    window.scrollTo(0,0);
 	// change the UI of active tab
 	document.getElementById(active_id).className = "";
 	document.getElementById(elemId).className = "active";
@@ -85,6 +89,8 @@ function renderBinsTable(elemId){
 }
 
 function renderDamageReportsTable(elemId){
+    // scroll to top
+    window.scrollTo(0,0);
     // change the UI of active tab
     document.getElementById(active_id).className = "";
     document.getElementById(elemId).className = "active";
@@ -124,6 +130,9 @@ function renderDamageReportsTable(elemId){
 }
 
 function changeReportFilter(selectedOption){
+    // scroll to top
+    window.scrollTo(0,0);
+    
     // clear all content
     let div = document.getElementById('content');
     div.innerHTML = ''
