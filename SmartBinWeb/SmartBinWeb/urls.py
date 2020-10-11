@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.urls import path, include
 from pages.views import HomePageView
+from pages.views import ReportDamageView
 from pages.views import AdminMainPageView
 from pages.views import RegisterView
 from pages.views import ValidateLoginView
@@ -36,6 +37,7 @@ from pages.views import BinFrequency
 from pages.views import CollectionCenterList
 from pages.views import NearestBinList
 from pages.views import NearestCollectionCenterList
+from pages.views import DamageReportView
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -44,6 +46,7 @@ urlpatterns = [
     path('', LoginView.as_view(), name='login'),
     path('login/', LoginView.as_view(), name='login'),
     path('home/', HomePageView.as_view(), name='home'),
+    path('damagereportform/', ReportDamageView.as_view(), name='report_dmg'),
     path('profile/', ProfileView.as_view(), name='profile'),
     path('register/', RegisterView.as_view(), name='register'),
     path('admin/', admin.site.urls),
@@ -63,6 +66,7 @@ urlpatterns = [
     url('^getcolcens/', CollectionCenterList.as_view()),
     url('^nearestbins/(?P<lat>.+)/(?P<long>.+)/(?P<limit>.+)/', NearestBinList.as_view()),
     url('^nearestcolcen/(?P<lat>.+)/(?P<long>.+)/', NearestCollectionCenterList.as_view()),
+    url('^getdamagereports/(?P<reportFilter>.+)/', DamageReportView.as_view()),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -1,3 +1,23 @@
+<style type="text/css">
+    body{
+        background-color: black;
+        color: #38BB36;
+    }
+    .form-control {
+        background-color:  rgba(136, 126, 126, 0.5)!important;
+    }
+    input[type=text], input[type=number], input[type=date], select[type=text]{
+        color: white;
+        padding: 5px;
+    }
+    select{
+        color: white;
+    }
+    option{
+        color: white;
+    }
+</style>
+
 <form action="/editemployee/" method="post" id="employeeRegistrationForm">
     {% csrf_token %}
     <div class="row">
@@ -48,7 +68,7 @@
         <input type="text" class="form-control" name="emp_phone" id="emp_phone" required>
     </div>
     <button type="submit" class="btn btn-primary signupbtn">Save Changes</button>
-    <button type="submit" class="btn btn-warning cacnlebtn" onclick="location.href='../';">Cancle</button>
+    <button type="submit" class="btn btn-warning cacnlebtn" onclick="location.href='../home';">Cancel</button>
 </form>
 
 <script type="text/javascript">

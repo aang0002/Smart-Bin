@@ -133,12 +133,13 @@ function renderTable(div){
 function fillDefaultPofileData(){
 	var user = JSON.parse(localStorage.getItem("user"));
 	var address = user['emp_address'].split(",");
+	console.log(address)
 	document.getElementById("emp_firstname").value = user['emp_firstname'];
 	document.getElementById("emp_lastname").value = user['emp_lastname'];
 	document.getElementById("tfn_no").value = user['tfn_no'];
-	document.getElementById("emp_address_street").value = address[0];
-	document.getElementById("emp_address_suburb").value = address[1];
-	document.getElementById("emp_address_state").value = address[2];
-	document.getElementById("emp_address_postcode").value = address[3];
+	document.getElementById("emp_address_street").value = address[0].trim();
+	document.getElementById("emp_address_suburb").value = address[1].trim();
+	document.getElementById("emp_address_state").value = address[2].trim();
+	document.getElementById("emp_address_postcode").value = address[3].trim();
 	document.getElementById("emp_phone").value = user['emp_phone'];
 }

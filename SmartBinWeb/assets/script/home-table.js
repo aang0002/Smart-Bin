@@ -42,7 +42,7 @@ function generateTableContent(table, attributes) {
             getDirButton.onclick =  function (){
                                       let cleaner_pos = [myLongitude, myLatitude];
                                       let bin_pos = [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']]
-                                      renderBinCollectionRoute(cleaner_pos, bin_pos);
+                                      getDirection(bin.attributes['bin_num'])
                                       window.scrollTo(0,100);
                                       map.flyTo({
                                         center: [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']],
@@ -185,13 +185,13 @@ function fillBinTable(){
   generateTableContent(table, attributes);
 }
 
-function getBinDirection(binLongitude, binLatitude){
-  let cleaner_pos = [myLongitude, myLatitude];
-  let bin_pos = [binLongitude, binLatitude]
-  renderBinCollectionRoute(cleaner_pos, bin_pos);
-  window.scrollTo(0,100);
-  map.flyTo({
-    center: [binLongitude, binLatitude],
-    zoom: 14
-  });
-}
+// function getBinDirection(binLongitude, binLatitude){
+//   let cleaner_pos = [myLongitude, myLatitude];
+//   let bin_pos = [binLongitude, binLatitude]
+//   renderBinCollectionRoute(cleaner_pos, bin_pos);
+//   window.scrollTo(0,100);
+//   map.flyTo({
+//     center: [binLongitude, binLatitude],
+//     zoom: 14
+//   });
+// }

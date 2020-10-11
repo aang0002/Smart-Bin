@@ -1,0 +1,9 @@
+title (mr, mrs) ---------------------------------------
+salary
+employment type (casual, full-time, ...) ------------------
+email ----------------------------------------------------
+bank acc details --------------------------------------
+gender -------------------------------------------
+nationality ---------------------------------------
+Citizenship (citizen, PR, wokring visa)
+home language (mother tounge)

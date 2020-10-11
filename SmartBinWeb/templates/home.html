@@ -15,7 +15,10 @@
     var myLongitude = 144.962640;
     var GLOBAL_PATH = '{{ STATIC_PATH }}';
     var map;
-    var binMarkers = {}; //dict of bin markers
+    var binMarkers = {}; //dict of bin markers (bin_num, marker_obj)
+    var inProgressBinNum = null;
+    var clickedBinNum = null;
+    var updateBinsLoop;
   </script>
   <title>Smart Bin - Profile</title>
 </head>
@@ -53,6 +56,8 @@
         <div class="map", id="map"> </div>
       </div>
 
+
+      <!--Bins table-->
       <table class="container" id="binTable"></table>
 
     </div>

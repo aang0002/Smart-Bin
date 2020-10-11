@@ -4,11 +4,36 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Employee Model
 class Employee(models.Model):
+	EMPLOYMENT_TYPE_CHOICES = [
+    	("FULL-TIME","FULL-TIME"),
+    	("CASUAL","CASUAL"),
+    	("PART-TIME","PART-TIME"),
+    ]
+
+	GENDER_CHOICES = [
+    	("MALE","MALE"),
+    	("FEMALE","FEMALE"),
+    ]
+
+	TITLE_CHOICES = [
+    	("Mr", "Mr"),
+    	("Miss", "Miss"),
+    	("Mrs", "Mrs"),
+    	("Ms", "Ms"),
+    ]
+
 	emp_username = models.CharField(max_length=50, primary_key=True)
 	emp_password = models.CharField(max_length=100, default="fit")
+	emp_title = models.CharField(max_length=4, choices=TITLE_CHOICES)
 	emp_firstname = models.CharField(max_length=100)
 	emp_lastname = models.CharField(max_length=100)
 	emp_dob = models.DateField()
+	emp_gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
+	employment_type = models.CharField(max_length=20, choices=EMPLOYMENT_TYPE_CHOICES)
+	email = models.CharField(max_length=100)
+	bank_acc_name = models.CharField(max_length=100)
+	bank_acc_bsb = models.CharField(max_length=6)
+	bank_acc_number =  models.CharField(max_length=8)
 	tfn_no = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
 	emp_address = models.CharField(max_length=100)
 	emp_phone = models.CharField(max_length=10, validators=[RegexValidator(r'^[0-9]{10}$')])
@@ -32,7 +57,7 @@ class Bin(models.Model):
     	("GENERAL_WASTE", "GENERAL_WASTE"),
     ]
 
-	bin_num = models.CharField(max_length=7, validators=[RegexValidator(r'^[0-9]{7}$')], primary_key=True)
+	bin_num = models.CharField(max_length=7, primary_key=True)
 	bin_type = models.CharField(max_length=50, choices=BIN_TYPE_CHOICES, default="GENERAL_WASTE")
 	bin_fullness = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 	bin_longitude = models.DecimalField(max_digits=8, decimal_places=5)
@@ -58,6 +83,9 @@ class Assignment(models.Model):
 # Damage Model
 class DamageReport(models.Model):
 	dmg_id = models.CharField(max_length=7, validators=[RegexValidator(r'^[0-9]{7}$')], primary_key=True)
+	reported_at = models.DateTimeField()
+	emp_username = models.ForeignKey(Employee, on_delete=models.CASCADE)
 	bin_num = models.ForeignKey(Bin, on_delete=models.CASCADE)
 	desc = models.CharField(max_length=300)
 	severity = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])	# value in the range of 0 to 10
+	is_solved = models.BooleanField(default=False)

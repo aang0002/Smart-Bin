@@ -41,7 +41,7 @@ def generate_bin_dummy_data(cursor):
 		cursor.execute("""INSERT INTO pages_bin
 			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, bin_volume, last_cleared_datetime, installation_date, bin_status, postcode)
 			VALUES ('{bin_num}', '{bin_type}', {bin_fullness}, {bin_latitude}, {bin_longitude}, {bin_volume}, '2018-01-01 10:00:00', '2020-08-19', 'perfect condition', {postcode});"""
-			.format(bin_num=format(bin_num,'05d'),
+			.format(bin_num=bin_num,
 					bin_type=bin_types[random.randint(0,len(bin_types)-1)], 
 					bin_fullness=random.randint(0,100), 
 					bin_latitude=random.uniform(MIN_LAT, MAX_LAT), 
@@ -66,28 +66,77 @@ def generate_emp_dummy_data(cursor):
 	lastnames = ['Ang', 'Lao', 'Gadsden', 'Jane', 'Doe']
 	dobs = ['1998-04-09','1998-11-15','1998-11-05','1998-11-05','1998-11-05']
 	tfns = ['1111111111','2222222222','3333333333','4444444444','5555555555']
-	addresses = ['39 Waverly Drive, Mount Waverly','17 Anchora Palace, Glen Waverly','1 Venice Street, Box Hill','39 Waverly Drive, Mount Waverly','39 Waverly Drive, Mount Waverly']
+	addresses = ['39 Waverly Drive,Mount Waverly,VIC,3150','17 Anchora Palace,Glen Waverly,VIC,3150','1 Venice Street,Box Hill,VIC,3128','39 Waverly Drive,Mount Waverly,VIC,3150','39 Waverly Drive,Mount Waverly,VIC,3150']
 	phones = ['0455611990','0418224233','0411909988','0418273333','0411772189']
 
 	# start filling in datas
 	for i in range(len(emp_usernames)):
-		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_firstname, emp_lastname, emp_dob, tfn_no, emp_address, emp_phone, on_shift, bins_collected) 
-			VALUES ('{username}', '{password}', '{firstname}', '{lastname}', '{dob}', '{tfn}', '{address}', '{phone}', {on_shift}, {bins_collected});"""
+		cursor.execute("""
+			INSERT INTO pages_employee (emp_username, 
+										emp_password, 
+										emp_title,
+										emp_firstname, 
+										emp_lastname, 
+										emp_dob, 
+										emp_gender,
+										employment_type,
+										email, 
+										bank_acc_name,
+										bank_acc_bsb,
+										bank_acc_number,
+										tfn_no,
+										emp_address, 
+										emp_phone, 
+										on_shift, 
+										bins_collected) 
+			VALUES ('{username}', 
+					'{password}', 
+					'Mr',
+					'{firstname}', 
+					'{lastname}', 
+					'{dob}', 
+					'MALE',
+					'FULL-TIME',
+					'test@gmail.com',
+					'{firstname} {lastname}',
+					'123123',
+					'12341234',
+					'{tfn}', 
+					'{address}', 
+					'{phone}', 
+					{on_shift}, 
+					{bins_collected});
+			"""
 			.format(username=emp_usernames[i], 
-				password=passwords[i], 
-				firstname=firstnames[i],
-				lastname=lastnames[i], 
-				dob=dobs[i], 
-				tfn=tfns[i], 
-				address=addresses[i], 
-				phone=phones[i],
-				on_shift=1,
-				bins_collected=0))
+					password=passwords[i], 
+					firstname=firstnames[i],
+					lastname=lastnames[i], 
+					dob=dobs[i], 
+					tfn=tfns[i], 
+					address=addresses[i], 
+					phone=phones[i],
+					on_shift=1,
+					bins_collected=0))
 	
 	# create one admin user
-	cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_firstname, emp_lastname, emp_dob, tfn_no, emp_address, emp_phone, on_shift) 
-			VALUES ('{username}', '{password}', '{name}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}', 1);"""
-			.format(username='admin', password='admin', name='admin', dob='1970-01-01', tfn='0000000000', address='address', phone='0000000000'))
+	cursor.execute("""INSERT INTO pages_employee (emp_username, 
+										emp_password, 
+										emp_title,
+										emp_firstname, 
+										emp_lastname, 
+										emp_dob, 
+										emp_gender,
+										employment_type,
+										email, 
+										bank_acc_name,
+										bank_acc_bsb,
+										bank_acc_number,
+										tfn_no,
+										emp_address, 
+										emp_phone, 
+										on_shift) 
+			VALUES ('admin', 'admin', 'Mr', 'admin', 'admin', '1970-01-01', 'MALE', 'FULL-TIME', 'admin@smartbin.co.au', 
+					'admin', '123123', '12341234', '0000000000', 'address', '0400000000', 1);""")
 
 	return
 
@@ -100,7 +149,7 @@ def generate_collectioncenter_dummy_data(cursor):
 	cursor.execute("DELETE FROM pages_collectioncenter;")
 
 	# create a list of datas
-	colcen_id = ["0001","0002","0003"] #models.CharField(max_length=4, validators=[RegexValidator(r'^[0-9]{4}$')], primary_key=True)
+	colcen_id = ["1","2","3"] #models.CharField(max_length=4, validators=[RegexValidator(r'^[0-9]{4}$')], primary_key=True)
 	colcen_longitude = [144.989234, 144.992626, 144.940649] 
 	colcen_latitude = [-37.816558, -37.795310, -37.800840] 
 	colcen_phone = ['0311784655','0376335877', '0311990723']
@@ -129,18 +178,53 @@ def generate_assignment_dummy_data(cursor):
 	for i in range(number_of_days):
 		for j in range(tasks_in_a_day):
  			cursor.execute("""INSERT INTO pages_assignment (asgn_id, emp_username_id, bin_num_id, colcen_id_id, datetime_created, desc, waste_volume, is_done, total_distance)
-							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', '{desc}', {waste_volume}, 0, {total_distance})"""
+							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', '{desc}', {waste_volume}, 0, {total_distance});"""
 							.format(
-								asgn_id = format(asgn_id, '010d'),
+								asgn_id = asgn_id,
 								emp_username = emp_usernames[random.randint(0,len(emp_usernames)-1)],
-								bin_num = format(random.randint(1,NUMBER_OF_BINS), '05d'),
-								colcen_id = format(random.randint(1,3), '04d'),
+								bin_num = random.randint(1,NUMBER_OF_BINS),
+								colcen_id = random.randint(1,3),
 								datetime_created = date.strftime("%Y-%m-%d") + ' ' + str(random.randint(0,23)) + ':' + str(random.randint(0,59)) + ':' + str(random.randint(0,59)),
 								desc = "This is an empty bin assignment",
 								waste_volume = random.randint(0, 200),
 								total_distance = random.uniform(0.1, 5.0)
 							))
  			asgn_id += 1
+		date += timedelta(days=1)
+
+"""
+Fill in pages_damagereport table in the DB
+"""
+def generate_damagereport_dummy_data(cursor):
+	# clear all existing collection center datas
+	cursor.execute("DELETE FROM pages_damagereport;")
+
+	# create a list of random descriptions
+	descriptions = [
+		'broken handle',
+		'sensor emits wrong reading',
+		'leaks on bin'
+	]
+
+	dmg_id = 1
+	number_of_days = 100
+	date = datetime.now() - timedelta(days=number_of_days)	# the date of first assignment
+
+	for i in range(number_of_days):
+		cursor.execute("""
+						INSERT INTO pages_damagereport (dmg_id, reported_at, emp_username_id, bin_num_id, desc, severity, is_solved)
+						VALUES ('{dmg_id}', '{reported_at}', '{emp_username}', '{bin_num}', '{desc}', {severity}, {is_solved});
+						"""
+						.format(
+							dmg_id = dmg_id,
+							reported_at = date.strftime("%Y-%m-%d") + ' ' + str(random.randint(0,23)) + ':' + str(random.randint(0,59)) + ':' + str(random.randint(0,59)),
+							emp_username = emp_usernames[random.randint(0,len(emp_usernames)-1)],
+							bin_num = random.randint(1,NUMBER_OF_BINS),
+							desc = descriptions[random.randint(0, len(descriptions)-1)],
+							severity = random.randint(2,10),
+							is_solved = [0,1][random.randint(0,1)]
+							))
+		dmg_id += 1
 		date += timedelta(days=1)
 
 
@@ -172,6 +256,7 @@ def create_trigger(cursor):
 
 
 
+
 if __name__ == "__main__":
 	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 	sqliteConnection = sqlite3.connect(os.path.join(BASE_DIR, "db.sqlite3"))
@@ -192,11 +277,14 @@ if __name__ == "__main__":
 	# generate employee dummy data
 	generate_emp_dummy_data(cursor)
 
-	# generate collection ceters dummy data
+	# generate collection centers dummy data
 	generate_collectioncenter_dummy_data(cursor)
 
 	# generate collection ceters dummy data
 	generate_assignment_dummy_data(cursor)
+
+	# generare damage reports dummy data
+	generate_damagereport_dummy_data(cursor)
 
 	# commit changes
 	cursor.execute("COMMIT;")

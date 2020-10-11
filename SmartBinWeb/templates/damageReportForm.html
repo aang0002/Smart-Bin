@@ -20,7 +20,7 @@
         .form-control {
             background-color:  rgba(136, 126, 126, 0.5)!important;
         }
-        input[type=text], input[type=number], input[type=date], select[type=text]{
+        input[type=text], input[type=number], input[type=date], input[type=password]{
             color: white;
             padding: 5px;
         }
@@ -36,21 +36,21 @@
 
 <body>
 <div class="container register" style="width: 100%; padding-left: 5%; padding-right: 5%;">
-    <h1 style="text-align: center; font-weight: bold;">Sign Up Form</h1>
+    <h1 style="text-align: center; font-weight: bold;">Damage Report Form</h1>
 
         <form action="/employees/" method="post" name="employeeRegistrationForm">
             {% csrf_token %}
+            <div class="form-group">
+                <label>Title</label>
+                    <select type="text" class="form-control" name="emp_title">
+                        <option>Mr</option>
+                        <option>Miss</option>
+                        <option>Mrs</option>
+                        <option>Ms</option>
+                    </select>
+            </div>
             <div class="row">
-                <div class="form-group col-xs-1">
-                    <label>Title</label>
-                        <select type="text" class="form-control" name="emp_title">
-                            <option>Mr</option>
-                            <option>Miss</option>
-                            <option>Mrs</option>
-                            <option>Ms</option>
-                        </select>
-                </div>
-                <div class="form-group col-xs-5">
+                <div class="form-group col-xs-6">
                     <label>First Name</label>
                     <input type="text" class="form-control" name="emp_firstname" placeholder="Enter first name" required>
                 </div>
@@ -59,15 +59,15 @@
                     <input type="text" class="form-control" name="emp_lastname" placeholder="Enter last name" required>
                 </div>
             </div>
+            <div class="form-group">
+                <label>Gender</label>
+                    <select type="text" class="form-control" name="emp_gender">
+                        <option>MALE</option>
+                        <option>FEMALE</option>
+                    </select>
+            </div>
             <div class="row">
-                <div class="form-group col-xs-6">
-                    <label>Gender</label>
-                        <select type="text" class="form-control" name="emp_gender">
-                            <option>MALE</option>
-                            <option>FEMALE</option>
-                        </select>
-                </div>
-                <div class="form-group col-xs-6">
+                <div class="form-group col-xs-2">
                     <label>DOB</label>
                     <input type="date" class="form-control" name="emp_dob" required>
                 </div>
@@ -100,14 +100,22 @@
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-xs-5">
+                <div class="form-group col-xs-3">
                     <label>Phone</label>
                     <input type="text" class="form-control" name="emp_phone" placeholder="Enter phone number" maxlength="12" required>
                 </div>
-                <div class="form-group col-xs-7">
+                <div class="form-group col-xs-3">
                     <label>Email</label>
                     <input type="text" class="form-control" name="email" placeholder="Enter email" required>
                 </div> 
+            </div>
+            <div class="form-group">
+                <label>Employment Type</label>
+                    <select type="text" class="form-control" name="employment_type">
+                        <option>FULL-TIME</option>
+                        <option>CASUAL</option>
+                        <option>PART-TIME</option>
+                    </select>
             </div> 
             <div class="row">
                 <div class="form-group col-xs-6">
@@ -122,37 +130,27 @@
                     <label>Bank Account Number</label>
                     <input type="text" class="form-control" name="bank_acc_number" placeholder="Enter bank account number" maxlength="8" required>
                 </div>
-                <div class="form-group col-xs-6">
+                <div class="form-group col-xs-4">
                     <label>TFN</label>
                     <input type="text" class="form-control" name="tfn_no" placeholder="Enter TFN number" maxlength="10" required>
                 </div>
             </div>
             <div class="row">
-                <div class="form-group col-xs-6">
+                <div class="form-group col-xs-4">
                     <label>User Name</label>
                     <input type="text" class="form-control" name="emp_username" placeholder="Enter a new username" required>
                 </div>
-                <div class="form-group col-xs-6">
-                    <label>Employment Type</label>
-                        <select type="text" class="form-control" name="employment_type">
-                            <option>FULL-TIME</option>
-                            <option>CASUAL</option>
-                            <option>PART-TIME</option>
-                        </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-xs-6">
+                <div class="form-group col-xs-4">
                     <label>Password</label>
                     <input type="password" class="form-control" name="emp_password1" placeholder="Password" autocomplete="new-password" required>
                 </div>
-                <div class="form-group col-xs-6">
+                <div class="form-group col-xs-4">
                     <label>Confirm Password</label>
                     <input type="password" class="form-control" name="emp_password2" placeholder="Re-enter Password" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary signupbtn">Submit</button>
-            <button type="submit" class="btn btn-warning cacnlebtn" onclick="location.href='../';">Cancel</button>
+            <button type="submit" class="btn btn-warning cacnlebtn" onclick="location.href='../home';">Cancel</button>
         </form>
 
 </div>

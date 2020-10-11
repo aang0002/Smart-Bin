@@ -33,3 +33,12 @@
 ### Sun, 4-10-2020 ###
 - Created an "edit profile page" (still has to change the UI, but functionality-wise is working)
 - Created register employee page (still has to change the UI, but functionality-wise is working)
+
+### Wed, 7-10-2020 ###
+- added more fields for Employee registration
+
+### Sun 11-10-2020 ###
+- The bin markers now dynamically change colours
+- added "Report", "Cancle" buttons when user click the 'go' button on a bin marker
+- generated damage report dummy datas
+- created a "damage report" UI in admin page

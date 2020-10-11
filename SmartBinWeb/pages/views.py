@@ -18,10 +18,12 @@ from .serializers import EmployeeSerializer
 from .serializers import BinSerializer
 from .serializers import CollectionCenterSerializer
 from .serializers import AssignmentSerializer
+from .serializers import DamageReportSerializer
 from .models import Employee
 from .models import Bin
 from .models import CollectionCenter
 from .models import Assignment
+from .models import DamageReport
 
 from django.db.models import Sum
 from django.utils import timezone
@@ -37,6 +39,12 @@ class HomePageView(View):
 
 	def get(self, request, *args, **kwargs):
 		return render(request, "home.html", {})
+
+class ReportDamageView(View):
+	template_name = 'damageReportForm.html'
+
+	def get(self, request, *args, **kwargs):
+		return render(request, "damageReportForm.html", {})
 
 class ProfileView(View):
 	template_name = "profile.html"
@@ -89,27 +97,43 @@ class EmployeeList(APIView):
 
 	def post(self, request):
 		emp_username = request.data.get("emp_username")
+		emp_password1 = request.data.get("emp_password1")
+		emp_password2 = request.data.get("emp_password2")
+		emp_title = request.data.get("emp_title")
 		emp_firstname = request.data.get("emp_firstname")
 		emp_lastname = request.data.get("emp_lastname")
 		emp_dob = request.data.get("emp_dob")	# YYYY-MM-DD
-		emp_password1 = request.data.get("emp_password1")
-		emp_password2 = request.data.get("emp_password2")
+		emp_gender = request.data.get("emp_gender")
+		employment_type = request.data.get("employment_type")
+		email = request.data.get("email")
+		bank_acc_name = request.data.get("bank_acc_name")
+		bank_acc_bsb = request.data.get("bank_acc_bsb")
+		bank_acc_number = request.data.get("bank_acc_number")	
 		tfn_no = request.data.get("tfn_no")
 		emp_address = request.data.get("emp_address_street") + "," + request.data.get("emp_address_suburb") + "," + request.data.get("emp_address_state") + "," + request.data.get("emp_address_postcode")
 		emp_phone = request.data.get("emp_phone")
+
 		# check rather password matched
 		if emp_password1 != emp_password2:
 			return Response("UNMATCHED_PASSWORD")
 		# create a new employee instance in the DB
 		try:
 			new_emp = Employee.objects.create(	emp_username = emp_username,
+										emp_password = emp_password1,
+										emp_title = emp_title,
 										emp_firstname = emp_firstname,
 										emp_lastname = emp_lastname,
 										emp_dob = emp_dob,
-										emp_password = emp_password1,
+										emp_gender = emp_gender,
+										employment_type = employment_type,
+										email=email,
+										bank_acc_name = bank_acc_name,
+										bank_acc_bsb = bank_acc_bsb,
+										bank_acc_number = bank_acc_number,
 										tfn_no = tfn_no,
 										emp_address = emp_address,
-										emp_phone = emp_phone
+										emp_phone = emp_phone,
+										bins_collected = 0
 										)
 			new_emp.save()
 			return Response("OK")
@@ -213,6 +237,7 @@ class WasteProduction(APIView):
 		queryset = {}
 		assignments = Assignment.objects.all()
 		for asgn in assignments:
+			print(asgn.bin_num_id)
 			try:
 				queryset[asgn.bin_num.bin_type] += asgn.waste_volume
 			except KeyError:
@@ -255,6 +280,23 @@ class BinFrequencyFilteredView(APIView):
 				queryset[asgn.bin_num.bin_num] = 1
 
 		return Response(queryset)
+
+class DamageReportView(generics.ListAPIView):
+	serializer_class = DamageReportSerializer
+
+	def get_queryset(self):
+		reportFilter = self.kwargs['reportFilter']
+		if reportFilter == 'all':
+			queryset = DamageReport.objects.all()
+		elif reportFilter == 'solved':
+			queryset = DamageReport.objects.filter(is_solved=1)
+		elif reportFilter == 'notsolved':
+			queryset = DamageReport.objects.filter(is_solved=0)
+		else:
+			raise Exception("Invalid report filter is being passed")
+
+		return queryset
+		
 
 
 class ValidateLoginView(generics.ListAPIView):
