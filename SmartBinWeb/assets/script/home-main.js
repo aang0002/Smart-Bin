@@ -128,10 +128,24 @@ function renderMap(div){
 
 //<table class="container" id="binTable"></table>
 function renderTable(div){
+	// create search bar
+	div.innerHTML += '<input class="form-control" id="searchInput" type="text" style="margin-top: 10px" placeholder="Search..">';
+
+	// render table 
 	let table = document.createElement("table");
 	table.className = "container";
 	table.id = "binTable";
 	div.appendChild(table);
+
+	// run the search engine once the bins data is filled
+	$(document).ready(function(){
+	  $("#searchInput").on("keyup", function() {
+	      var value = $(this).val().toLowerCase();
+	      $("#binTable tr").filter(function() {
+	          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	      });
+	  });
+	});
 }
 
 function fillDefaultPofileData(){

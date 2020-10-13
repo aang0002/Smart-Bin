@@ -213,7 +213,7 @@ def generate_damagereport_dummy_data(cursor):
 	for i in range(number_of_days):
 		cursor.execute("""
 						INSERT INTO pages_damagereport (dmg_id, reported_at, emp_username_id, bin_num_id, desc, severity, is_solved)
-						VALUES ('{dmg_id}', '{reported_at}', '{emp_username}', '{bin_num}', '{desc}', {severity}, {is_solved});
+						VALUES ({dmg_id}, '{reported_at}', '{emp_username}', '{bin_num}', '{desc}', {severity}, {is_solved});
 						"""
 						.format(
 							dmg_id = dmg_id,

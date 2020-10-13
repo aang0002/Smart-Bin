@@ -237,7 +237,7 @@ function updateBins(){
                                 "Fullness: " + binFullness + "%" + "<br>" +
                                 "Bin Type: " + bin.attributes.bin_type +
                                 "</p>" 
-                    bin_text += `<button class="btn btn-warning" onclick = "reportBinDamage();">
+                    bin_text += `<button class="btn btn-warning" onclick = "reportBinDamage(${bin_num});">
                                   <span class="glyphicon glyphicon-circle-arrow-right"></span> REPORT
                                 </button>
                                 <button class="btn btn-danger" onclick = "cancelJob(${binNum});">
@@ -341,7 +341,7 @@ function changeMarkerButton (bin_num){
                     "Fullness: " + bin_fullness + "%" + "<br>" +
                     "Bin Type: " + bin_type +
                     "</p>" 
-    bin_text += `<button class="btn btn-warning" onclick = "reportBinDamage();">
+    bin_text += `<button class="btn btn-warning" onclick = "reportBinDamage(${bin_num});">
                   <span class="glyphicon glyphicon-circle-arrow-right"></span> REPORT
                 </button>
                 <button class="btn btn-danger" onclick = "cancelJob(${bin_num});">
@@ -427,7 +427,15 @@ function cancelJob(bin_num){
 /*
 Report a damaged bin
 */
-function reportBinDamage(){
+function reportBinDamage(bin_num){
+    let emp_username = JSON.parse(localStorage.getItem('user')).emp_username;
+    // save the report details to local storage
+    let damageReportDetails = {
+        emp_username: emp_username,
+        bin_num: bin_num,
+    }
+    localStorage.setItem('damageReportDetails', JSON.stringify(damageReportDetails));
+
     // direct user to the report damage HTML page
     window.open('/damagereportform/');
 }

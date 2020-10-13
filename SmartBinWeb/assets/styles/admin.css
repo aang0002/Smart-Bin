@@ -269,3 +269,27 @@ LOADER
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/*
+SEARCH BAR
+*/
+input[type=text], input[type=number], input[type=date], select[type=text]{
+  color: white;
+  padding: 5px;
+  background-color:  rgba(0, 0, 0, 0.3);
+}
+
+/*
+SELECT OPTION
+*/
+select {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+select option {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}

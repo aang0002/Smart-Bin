@@ -38,6 +38,7 @@ from pages.views import CollectionCenterList
 from pages.views import NearestBinList
 from pages.views import NearestCollectionCenterList
 from pages.views import DamageReportView
+from pages.views import SubmitDamageReportView
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -67,6 +68,7 @@ urlpatterns = [
     url('^nearestbins/(?P<lat>.+)/(?P<long>.+)/(?P<limit>.+)/', NearestBinList.as_view()),
     url('^nearestcolcen/(?P<lat>.+)/(?P<long>.+)/', NearestCollectionCenterList.as_view()),
     url('^getdamagereports/(?P<reportFilter>.+)/', DamageReportView.as_view()),
+    url('^submitdamagereport/', SubmitDamageReportView.as_view()),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

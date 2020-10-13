@@ -1,36 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
 
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-    <!-- <link rel="stylesheet" href="css/style.css"> --><!-- 
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="{% static 'styles/damageReportForm.css' %}">
 
     <title>Register</title>
-    <style type="text/css">
-        body{
-            background-color: black;
-            color: #38BB36;
-        }
-        .form-control {
-            background-color:  rgba(136, 126, 126, 0.5)!important;
-        }
-        input[type=text], input[type=number], input[type=date], input[type=password]{
-            color: white;
-            padding: 5px;
-        }
-        select{
-            color: white;
-        }
-        option{
-            color: white;
-        }
-    </style>
 
 </head>
 
@@ -38,146 +15,39 @@
 <div class="container register" style="width: 100%; padding-left: 5%; padding-right: 5%;">
     <h1 style="text-align: center; font-weight: bold;">Damage Report Form</h1>
 
-        <form action="/employees/" method="post" name="employeeRegistrationForm">
+        <form action="/submitdamagereport/" method="post" name="damageReportForm" id="damageReportForm">
             {% csrf_token %}
+
             <div class="form-group">
-                <label>Title</label>
-                    <select type="text" class="form-control" name="emp_title">
-                        <option>Mr</option>
-                        <option>Miss</option>
-                        <option>Mrs</option>
-                        <option>Ms</option>
-                    </select>
+                <label>Reporter Username</label>
+                <input type="text" class="form-control" name="emp_username" id="emp_username" required disabled>
             </div>
+
             <div class="row">
                 <div class="form-group col-xs-6">
-                    <label>First Name</label>
-                    <input type="text" class="form-control" name="emp_firstname" placeholder="Enter first name" required>
+                    <label>Bin Num</label>
+                    <input type="text" class="form-control" name="bin_num" id="bin_num" required disabled>
                 </div>
+
                 <div class="form-group col-xs-6">
-                    <label>Last Name</label>
-                    <input type="text" class="form-control" name="emp_lastname" placeholder="Enter last name" required>
+                    <label>Severity</label>
+                    <input type="number" class="form-control" name="severity" max="10" required>
                 </div>
             </div>
+
             <div class="form-group">
-                <label>Gender</label>
-                    <select type="text" class="form-control" name="emp_gender">
-                        <option>MALE</option>
-                        <option>FEMALE</option>
-                    </select>
+                <label>Description</label>
+                <textarea class="form-control" name="desc" rows="3" required></textarea>
             </div>
-            <div class="row">
-                <div class="form-group col-xs-2">
-                    <label>DOB</label>
-                    <input type="date" class="form-control" name="emp_dob" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-xs-5">
-                    <label>Street Address</label>
-                    <input type="text" class="form-control" name="emp_address_street" placeholder="Street address" required>
-                </div>
-                <div class="form-group col-xs-3">
-                    <label>Suburb Name</label>
-                    <input type="text" class="form-control" name="emp_address_suburb" placeholder="Street address" required>
-                </div>
-                <div class="form-group col-xs-2">
-                    <label>State</label>
-                        <select type="text" class="form-control" name="emp_address_state">
-                            <option>ACT</option>
-                            <option>NSW</option>
-                            <option>NT</option>
-                            <option>QLD</option>
-                            <option>SA</option>
-                            <option>TAS</option>
-                            <option>WA</option>
-                            <option>VIC</option>
-                        </select>
-                </div>
-                <div class="form-group col-xs-2">
-                    <label>Postcode</label>
-                    <input type="number" class="form-control" name="emp_address_postcode" placeholder="Postcode" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-xs-3">
-                    <label>Phone</label>
-                    <input type="text" class="form-control" name="emp_phone" placeholder="Enter phone number" maxlength="12" required>
-                </div>
-                <div class="form-group col-xs-3">
-                    <label>Email</label>
-                    <input type="text" class="form-control" name="email" placeholder="Enter email" required>
-                </div> 
-            </div>
-            <div class="form-group">
-                <label>Employment Type</label>
-                    <select type="text" class="form-control" name="employment_type">
-                        <option>FULL-TIME</option>
-                        <option>CASUAL</option>
-                        <option>PART-TIME</option>
-                    </select>
-            </div> 
-            <div class="row">
-                <div class="form-group col-xs-6">
-                    <label>Bank Account Name</label>
-                    <input type="text" class="form-control" name="bank_acc_name" placeholder="Enter bank account name" required>
-                </div>
-                <div class="form-group col-xs-6">
-                    <label>Bank Account BSB</label>
-                    <input type="text" class="form-control" name="bank_acc_bsb" placeholder="Enter bank account BSB" maxlength="6" required>
-                </div>
-                <div class="form-group col-xs-6">
-                    <label>Bank Account Number</label>
-                    <input type="text" class="form-control" name="bank_acc_number" placeholder="Enter bank account number" maxlength="8" required>
-                </div>
-                <div class="form-group col-xs-4">
-                    <label>TFN</label>
-                    <input type="text" class="form-control" name="tfn_no" placeholder="Enter TFN number" maxlength="10" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-xs-4">
-                    <label>User Name</label>
-                    <input type="text" class="form-control" name="emp_username" placeholder="Enter a new username" required>
-                </div>
-                <div class="form-group col-xs-4">
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="emp_password1" placeholder="Password" autocomplete="new-password" required>
-                </div>
-                <div class="form-group col-xs-4">
-                    <label>Confirm Password</label>
-                    <input type="password" class="form-control" name="emp_password2" placeholder="Re-enter Password" required>
-                </div>
-            </div>
+
             <button type="submit" class="btn btn-primary signupbtn">Submit</button>
-            <button type="submit" class="btn btn-warning cacnlebtn" onclick="location.href='../home';">Cancel</button>
+            <button type="submit" class="btn btn-warning cacnlebtn" onclick="window.close()">Cancel</button>
         </form>
 
 </div>
 </body>
 
-<script type="text/javascript">
-    $(function(){
-        $('form[name=employeeRegistrationForm]').submit(function(){
-            $.post($(this).attr('action'), $(this).serialize(), function(data) {
-                let response = data.data;
-                if (response == 'OK'){
-                    alert("Registetration succesful");
-                    window.location.href = '../';   // go the the main page
-                }
-                else if (response == 'UNMATCHED_PASSWORD'){
-                    alert("Password not match")
-                }
-                else if (response == 'USERNAME_USED'){
-                    alert("Username already exist")
-                }
-                else{
-                    alert("Unidentified response")
-                }
-            }, 'json');
-        return false;
-        });
-    });
-</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="{% static 'script/damageReportForm.js' %}"></script>   
 
 </html>

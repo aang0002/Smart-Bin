@@ -9,7 +9,7 @@ function generateTableHead(table, headers) {
         let text = document.createTextNode(header);
         th.appendChild(text);
         row.appendChild(th);
-        })
+    })
 }
 
 function generateTableContent(table, attributes) {
@@ -178,11 +178,22 @@ function addRoute (coords, routeNum) {
 }
 
 function fillBinTable(){
+  // fill the data
   let headers = ["Bin Num", "Type", "Fullness", "Last Cleared", "Status"]
   let attributes = ["bin_num", "bin_type", "bin_fullness", "last_cleared_datetime", "bin_status"]
   let table = document.getElementById("binTable");
   generateTableHead(table, headers);
   generateTableContent(table, attributes);
+
+  // run the search engine once the bins data is filled
+  $(document).ready(function(){
+      $("#searchInput").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#binTable tr").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          });
+      });
+  });
 }
 
 // function getBinDirection(binLongitude, binLatitude){

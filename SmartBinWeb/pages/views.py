@@ -237,7 +237,6 @@ class WasteProduction(APIView):
 		queryset = {}
 		assignments = Assignment.objects.all()
 		for asgn in assignments:
-			print(asgn.bin_num_id)
 			try:
 				queryset[asgn.bin_num.bin_type] += asgn.waste_volume
 			except KeyError:
@@ -281,6 +280,39 @@ class BinFrequencyFilteredView(APIView):
 
 		return Response(queryset)
 
+class SubmitDamageReportView(APIView):
+	serializer_class = DamageReportSerializer
+
+	def post(self, request):
+		# get the armugents from user
+		dmg_id = DamageReport.objects.order_by('-dmg_id')[:1][0].dmg_id + 1
+		emp_username = request.data.get("emp_username")
+		bin_num = request.data.get("bin_num")
+		desc = request.data.get("desc")
+		severity = request.data.get("severity")
+		reported_at = request.data.get("reported_at")
+
+		print("THE DATA ##########################")
+		print("dmg_id",dmg_id)
+		print("emp_username",emp_username)
+		print("bin_num",bin_num)
+		print("desc",desc)
+		print("severity",severity)
+		print("reported_at",reported_at)
+
+		# create a new damageReport instance
+		new_report = DamageReport.objects.create(	dmg_id=dmg_id,
+													reported_at=reported_at,
+													emp_username_id=emp_username,
+													bin_num_id=bin_num,
+													desc=desc,
+													severity=severity
+												)
+		new_report.save()
+
+		return Response("OK")
+
+
 class DamageReportView(generics.ListAPIView):
 	serializer_class = DamageReportSerializer
 
@@ -296,7 +328,6 @@ class DamageReportView(generics.ListAPIView):
 			raise Exception("Invalid report filter is being passed")
 
 		return queryset
-		
 
 
 class ValidateLoginView(generics.ListAPIView):
@@ -311,37 +342,36 @@ class ValidateLoginView(generics.ListAPIView):
 
 def register_view(request):
 	context = {}
-	if request.method == 'POST':
-		try:
-			BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-			conn = sqlite3.connect(os.path.join(BASE_DIR, "db.sqlite3"))
-			cursor = conn.cursor()
+	# if request.method == 'POST':
+	# 	try:
+	# 		BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	# 		conn = sqlite3.connect(os.path.join(BASE_DIR, "db.sqlite3"))
+	# 		cursor = conn.cursor()
 
-			username = request.POST.get('username')
-			password = request.POST.get('password')
-			name = request.POST.get('name')
-			dob = request.POST.get('dob')
-			tfn = request.POST.get('tfn')
-			address = request.POST.get('address')
-			phone = request.POST.get('phone')
+	# 		username = request.POST.get('username')
+	# 		password = request.POST.get('password')
+	# 		name = request.POST.get('name')
+	# 		dob = request.POST.get('dob')
+	# 		tfn = request.POST.get('tfn')
+	# 		address = request.POST.get('address')
+	# 		phone = request.POST.get('phone')
 
-			print(username)
 
-			# insert the the new employee to DB
-			cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone) 
-				VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}');"""
-				.format(username=username, password=password, name=name, dob=dobs, tfn=tfn, address=addresse, phone=phone))
+	# 		# insert the the new employee to DB
+	# 		cursor.execute("""INSERT INTO pages_employee (emp_username, emp_password, emp_name, emp_dob, tfn_no, emp_address, emp_phone) 
+	# 			VALUES ('{username}', '{password}', '{name}', '{dob}', '{tfn}', '{address}', '{phone}');"""
+	# 			.format(username=username, password=password, name=name, dob=dobs, tfn=tfn, address=addresse, phone=phone))
 
-			cursor.close()
+	# 		cursor.close()
 
-			return render(request,'home.html',context)
+	# 		return render(request,'home.html',context)
 
-		except sqlite3.Error as error:
-			print("Error while connecting to sqlite", error)
-			return HttpResponse("Registeration Failed")
+	# 	except sqlite3.Error as error:
+	# 		print("Error while connecting to sqlite", error)
+	# 		return HttpResponse("Registeration Failed")
 
-		except Exception as e:
-			print(e)
-			return HttpResponse("Registeration Failed")
+	# 	except Exception as e:
+	# 		print(e)
+	# 		return HttpResponse("Registeration Failed")
 
 	return render(request,'register.html',context)

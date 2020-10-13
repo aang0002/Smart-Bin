@@ -1,0 +1,20 @@
+body{
+    background-color: black;
+    color: #38BB36;
+}
+.form-control {
+    background-color:  rgba(136, 126, 126, 0.5)!important;
+}
+input[type=text], input[type=number], input[type=date], input[type=password]{
+    color: white;
+    padding: 5px;
+}
+select{
+    color: white;
+}
+option{
+    color: white;
+}
+textarea{
+  color: white;
+}

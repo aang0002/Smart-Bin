@@ -42,8 +42,12 @@
 - added "Report", "Cancle" buttons when user click the 'go' button on a bin marker
 - generated damage report dummy datas
 - created a "damage report" UI in admin page
+- created a filter in damage report admin page (so that user can filter 'solved/unsolved' damage reports)
+
+### Tue 13-10-2020 ###
+- Added a search bar in admin's employee list page (the search bar acts as a search engine)
+- Added a search bar home page bins table (the search bar acts as a search engine)
 
 ### next to do ###
 - damage report form
 - add more editable attributes in profile page
-- add filter on home page bin table

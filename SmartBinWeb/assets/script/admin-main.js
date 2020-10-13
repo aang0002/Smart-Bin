@@ -1,3 +1,62 @@
+function renderEmployeesTable(elemId){
+    // scroll to top
+    window.scrollTo(0,0);
+    // change the UI of active tab
+    document.getElementById(active_id).className = "";
+    document.getElementById(elemId).className = "active";
+    active_id = elemId
+
+    // clear all content
+    let div = document.getElementById('content');
+    div.innerHTML = ''
+
+    // add a search bar 
+    div.innerHTML += '<input class="form-control" id="searchInput" type="text" style="margin-top: 10px" placeholder="Search..">'
+
+    // fill div with a table
+    let headers = ["Username", "Firstname", "Lastname", "D.O.B", "Address", "Phone", "Bins Collected"]
+    let attributes = ["emp_username", "emp_firstname", "emp_lastname", "emp_dob", "emp_address", "emp_phone", "bins_collected"]
+    let table = document.createElement("table"); 
+    table.id = "table";
+    table.className = 'container'
+    div.appendChild(table)
+    generateTableHead(table, headers);
+    generateTableContent(table, attributes, '/employees');
+
+    // run the search engine
+    $(document).ready(function(){
+        $("#searchInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#table tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+}
+
+
+function renderBinsTable(elemId){
+    // scroll to top
+    window.scrollTo(0,0);
+    // change the UI of active tab
+    document.getElementById(active_id).className = "";
+    document.getElementById(elemId).className = "active";
+    active_id = elemId
+
+    // clear all content
+    let div = document.getElementById('content');
+    div.innerHTML = ''
+
+    // fill div with a table
+    let headers = ["Num", "Type", "Installation Date", "Status", "Postcode"]
+    let attributes = ['bin_num', 'bin_type', 'installation_date', 'bin_status', 'postcode']
+    let table = document.createElement("table"); 
+    table.className = 'container'
+    div.appendChild(table)
+    generateTableHead(table, headers);
+    generateTableContent(table, attributes, '/getbins');
+}
+
 function generateTableHead(table, headers) {
     let thead = table.createTHead();
     let row = thead.insertRow();
@@ -41,141 +100,4 @@ function generateTableContent(table, attributes, dataURI) {
     }
 
     request.send();
-}
-
-function renderEmployeesTable(elemId){
-    // scroll to top
-    window.scrollTo(0,0);
-	// change the UI of active tab
-	document.getElementById(active_id).className = "";
-	document.getElementById(elemId).className = "active";
-	active_id = elemId
-
-	// clear all content
-	let div = document.getElementById('content');
-	div.innerHTML = ''
-
-	// fill div with a table
-	let headers = ["Username", "Firstname", "Lastname", "D.O.B", "Address", "Phone", "Bins Collected"]
-	let attributes = ["emp_username", "emp_firstname", "emp_lastname", "emp_dob", "emp_address", "emp_phone", "bins_collected"]
-	let table = document.createElement("table"); 
-	table.className = 'container'
-	div.appendChild(table)
-	generateTableHead(table, headers);
-	generateTableContent(table, attributes, '/employees');
-}
-
-
-function renderBinsTable(elemId){
-    // scroll to top
-    window.scrollTo(0,0);
-	// change the UI of active tab
-	document.getElementById(active_id).className = "";
-	document.getElementById(elemId).className = "active";
-	active_id = elemId
-
-	// clear all content
-	let div = document.getElementById('content');
-	div.innerHTML = ''
-
-	// fill div with a table
-	let headers = ["Num", "Type", "Installation Date", "Status", "Postcode"]
-	let attributes = ['bin_num', 'bin_type', 'installation_date', 'bin_status', 'postcode']
-	let table = document.createElement("table"); 
-	table.className = 'container'
-	div.appendChild(table)
-	generateTableHead(table, headers);
-	generateTableContent(table, attributes, '/getbins');
-}
-
-function renderDamageReportsTable(elemId){
-    // scroll to top
-    window.scrollTo(0,0);
-    // change the UI of active tab
-    document.getElementById(active_id).className = "";
-    document.getElementById(elemId).className = "active";
-    active_id = elemId
-
-    // clear all content
-    let div = document.getElementById('content');
-    div.innerHTML = ''
-
-    // create a filter
-    let filter = document.createElement('div')
-    // set top margin
-    filter.setAttribute("style", "margin-top: 1%;");
-    // set the filter
-    filter.innerHTML = 
-                `
-                <div id="totalDamageReports">TOTAL: </div>
-                <select name="cars" id="cars" onchange="changeReportFilter(this.value);">
-                  <option value="all">All</option>
-                  <option value="solved">Solved Reports</option>
-                  <option value="notsolved">Unsolved Reports</option>
-                </select>
-                `
-    div.appendChild(filter);
-
-    // fill div with a table
-    let headers = ["Id", "Report Date", "Reporter Username", "Bin Num", "Description", "Severity", "Is Solved?"]
-    let attributes = ['dmg_id', 'reported_at', 'emp_username_id', 'bin_num_id', 'desc', 'severity', 'is_solved']
-    let table = document.createElement("table"); 
-    table.className = 'container'
-    div.appendChild(table)
-    generateTableHead(table, headers);
-    generateTableContent(table, attributes, '/getdamagereports/all'); 
-    
-    // update the total damage reports
-    document.getElementById('totalDamageReports').innerHTML = 'TOTAL: ' + totalDamageReports;
-}
-
-function changeReportFilter(selectedOption){
-    // scroll to top
-    window.scrollTo(0,0);
-    
-    // clear all content
-    let div = document.getElementById('content');
-    div.innerHTML = ''
-
-    // create a filter
-    let filter = document.createElement('div')
-    // set top margin
-    filter.setAttribute("style", "margin-top: 1%;");
-    // set the filter
-    filter.innerHTML = '<div id="totalDamageReports">TOTAL: </div>'
-    if (selectedOption == 'solved'){
-        filter.innerHTML += ` <select name="cars" id="cars" onchange="changeReportFilter(this.value);">
-                                  <option value="all">All</option>
-                                  <option value="solved" selected>Solved Reports</option>
-                                  <option value="notsolved">Unsolved Reports</option>
-                              </select>`
-    }
-    else if (selectedOption == 'notsolved'){
-        filter.innerHTML += ` <select name="cars" id="cars" onchange="changeReportFilter(this.value);">
-                                  <option value="all">All</option>
-                                  <option value="solved">Solved Reports</option>
-                                  <option value="notsolved" selected>Unsolved Reports</option>
-                              </select>`
-    }
-    else if (selectedOption == 'all'){
-        filter.innerHTML += ` <select name="cars" id="cars" onchange="changeReportFilter(this.value);">
-                                  <option value="all" selected>All</option>
-                                  <option value="solved">Solved Reports</option>
-                                  <option value="notsolved">Unsolved Reports</option>
-                              </select>`
-    }
-    
-    div.appendChild(filter);
-
-    // fill div with a table
-    let headers = ["Id", "Report Date", "Reporter Username", "Bin Num", "Description", "Severity", "Is Solved?"]
-    let attributes = ['dmg_id', 'reported_at', 'emp_username_id', 'bin_num_id', 'desc', 'severity', 'is_solved']
-    let table = document.createElement("table"); 
-    table.className = 'container'
-    div.appendChild(table)
-    generateTableHead(table, headers);
-    generateTableContent(table, attributes, '/getdamagereports/' + selectedOption);
-
-    // update the total damage reports
-    document.getElementById('totalDamageReports').innerHTML = 'TOTAL: ' + totalDamageReports;
 }

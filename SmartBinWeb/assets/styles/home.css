@@ -333,3 +333,46 @@ USER CARD STYLE
   margin-bottom: 5px;
   color: white;
 }
+
+/*
+Edit profile form
+*/
+.form-control {
+  background-color:  rgba(136, 126, 126, 0.5)!important;
+}
+input[type=text], input[type=number], input[type=date], select[type=text]{
+  color: white;
+  padding: 5px;
+}
+select{
+  color: white;
+}
+option{
+  color: white;
+}
+
+/*
+SEARCH BAR
+*/
+#searchInput{
+  color: white;
+  padding: 5px;
+  background-color:  rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/*
+SELECT OPTION
+*/
+select {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+select option {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}

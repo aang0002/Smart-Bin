@@ -82,7 +82,7 @@ class Assignment(models.Model):
 
 # Damage Model
 class DamageReport(models.Model):
-	dmg_id = models.CharField(max_length=7, validators=[RegexValidator(r'^[0-9]{7}$')], primary_key=True)
+	dmg_id = models.PositiveIntegerField(primary_key=True)
 	reported_at = models.DateTimeField()
 	emp_username = models.ForeignKey(Employee, on_delete=models.CASCADE)
 	bin_num = models.ForeignKey(Bin, on_delete=models.CASCADE)
