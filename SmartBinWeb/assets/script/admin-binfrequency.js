@@ -41,10 +41,9 @@ function changBinFreqChartFilter(btnId){
 			let chartData = [];
 			for (let bin_num in data) {
 				if (data.hasOwnProperty(bin_num)) { 
-				    chartData.push([ bin_num, data[bin_num] ])
+				    chartData.push({x:bin_num, value:data[bin_num], fill: (anychart.color.lighten("#4CAF50", 0))})
 				}
 			}
-			console.log(chartData)
 			anychart.theme(anychart.themes.darkEarth);
 			anychart.onDocumentReady(function() {
 				// create a data object
@@ -56,6 +55,7 @@ function changBinFreqChartFilter(btnId){
 				let series = chart.bar(sortedView);
 
 				// render the chart
+				chart.tooltip().format("Bin Num: {%x}\nEmptied: {%value} times");
 				chart.title("Bin Frequency");
 				chart.xAxis().title('Bin Num');
 		        chart.yAxis().title('# of times collected');
@@ -106,8 +106,8 @@ function renderBinFrequency(elemId){
 				let data = JSON.parse(this.response).data;
 				let chartData = [];
 				for (var bin_num in data) {
-					if (data.hasOwnProperty(bin_num)) { 
-					    chartData.push([ bin_num, data[bin_num] ])
+					if (data.hasOwnProperty(bin_num)) {
+					    chartData.push({x:bin_num, value:data[bin_num], fill: (anychart.color.lighten("#4CAF50", 0))})
 					}
 				}
 				// create chart
@@ -124,6 +124,7 @@ function renderBinFrequency(elemId){
 						let series = chart.bar(sortedView);
 
 						// render the chart
+						chart.tooltip().format("Bin Num: {%x}\nEmptied: {%value} times");
 						chart.title("Bin Frequency");
 						chart.xAxis().title('Bin Num');
 				        chart.yAxis().title('# of times collected');

@@ -11,9 +11,27 @@
         </div>
     </div>
     <div class="row">
-        <div class="form-group col-xs-4">
-            <label>TFN</label>
-            <input type="text" class="form-control" name="tfn_no" id="tfn_no" required>
+        <div class="form-group col-xs-6">
+            <label>Bank Account Name</label>
+            <input type="text" class="form-control" name="bank_acc_name" id="bank_acc_name" placeholder="Enter bank account name" required>
+        </div>
+        <div class="form-group col-xs-6">
+            <label>Bank Account BSB</label>
+            <input type="text" class="form-control" name="bank_acc_bsb" id="bank_acc_bsb" placeholder="Enter bank account BSB" maxlength="6" minlength="6" required>
+        </div>
+        <div class="form-group col-xs-6">
+            <label>Bank Account Number</label>
+            <input type="text" class="form-control" name="bank_acc_number" id="bank_acc_number" placeholder="Enter bank account number" maxlength="8" minlength="8" required>
+        </div>
+        <div class="form-group col-xs-6">
+            <label>Email</label>
+            <input type="text" class="form-control" name="email" id="email" placeholder="Enter email" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-6">
+            <label>Phone</label>
+            <input type="text" class="form-control" name="emp_phone" id="emp_phone" maxlength="10" minlength="10" required>
         </div>
     </div>
     <div class="row">
@@ -40,12 +58,8 @@
         </div>
         <div class="form-group col-xs-2">
             <label>Postcode</label>
-            <input type="number" class="form-control" name="emp_address_postcode" id="emp_address_postcode" required>
+            <input type="number" class="form-control" name="emp_address_postcode" id="emp_address_postcode" min="1000" max="9999" required>
         </div>
-    </div>
-    <div class="form-group">
-        <label>Phone</label>
-        <input type="text" class="form-control" name="emp_phone" id="emp_phone" required>
     </div>
     <button type="submit" class="btn btn-primary signupbtn">Save Changes</button>
     <button type="submit" class="btn btn-warning cacnlebtn" onclick="location.href='../home';">Cancel</button>
@@ -68,7 +82,13 @@
             $.post($(this).attr('action'), $(this).serialize(), function(data) {
                 let response = data.data;
                 if (response == 'OK'){
-                    alert("Changes saved");
+                    alertify.alert()
+                            .setHeader("")
+                            .setting({
+                                'label':'OK',
+                                'message': 'Changes saved !',
+                                'onok': function(){ window.location.href = '/home';}
+                            }).show();
                     // edit local storage
                     let user = JSON.parse(localStorage.getItem('user'));
                     user['emp_firstname'] = $('#emp_firstname').val();
@@ -77,17 +97,15 @@
                     user['tfn_no'] = $('#tfn_no').val();
                     user['emp_phone'] = $('#emp_phone').val();
                     localStorage.setItem('user', JSON.stringify(user));
-                    // go the the main page
-                    window.location.href = '/home';  
                 }
                 else if (response == 'UNMATCHED_PASSWORD'){
-                    alert("Password not match")
+                    alertify.alert("Password not match").setHeader('<em> </em> ');
                 }
                 else if (response == 'USERNAME_USED'){
-                    alert("Username already exist")
+                    alertify.alert("Username already exist").setHeader('<em> </em> ');
                 }
                 else{
-                    alert("Unidentified response")
+                    alertify.alert("Unidentified response").setHeader('<em> </em> ');
                 }
             }, 'json');
         return false;

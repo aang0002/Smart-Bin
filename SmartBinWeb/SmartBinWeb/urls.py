@@ -31,6 +31,7 @@ from pages.views import EmployeeList
 from pages.views import EditEmployeeView
 from pages.views import BinList
 from pages.views import AssignmentList
+from pages.views import CreateAssignmentView
 from pages.views import EmployeePerformance
 from pages.views import WasteProduction
 from pages.views import BinFrequency
@@ -39,6 +40,7 @@ from pages.views import NearestBinList
 from pages.views import NearestCollectionCenterList
 from pages.views import DamageReportView
 from pages.views import SubmitDamageReportView
+from pages.views import SolveDamageReport
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -60,6 +62,7 @@ urlpatterns = [
     url('^editemployee/', EditEmployeeView.as_view()),
     url('^getbins/', BinList.as_view()),
     url('^getassignments/', AssignmentList.as_view()),
+    url('^createassignment/', CreateAssignmentView.as_view()),
     url('^getemployeeperformance/(?P<period>.+)/(?P<time>.+)', EmployeePerformance.as_view()),
     url('^getwasteproduction/', WasteProduction.as_view()),
     url('^getbinfrequency/', BinFrequency.as_view()),
@@ -69,6 +72,7 @@ urlpatterns = [
     url('^nearestcolcen/(?P<lat>.+)/(?P<long>.+)/', NearestCollectionCenterList.as_view()),
     url('^getdamagereports/(?P<reportFilter>.+)/', DamageReportView.as_view()),
     url('^submitdamagereport/', SubmitDamageReportView.as_view()),
+    url('^solvedamagereport/(?P<dmg_id>.+)/(?P<solved_date>.+)', SolveDamageReport.as_view()),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

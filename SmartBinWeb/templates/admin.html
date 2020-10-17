@@ -2,14 +2,20 @@
 <!DOCTYPE html>
 
 <head>
+  <!-- BOOTSTRAP -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="{% static 'styles/admin.css' %}">
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+  <!-- HOME STYLE -->
+  <link rel="stylesheet" href="{% static 'styles/admin.css' %}">
+  <!-- ANYCHART -->
   <script src="https://cdn.anychart.com/releases/8.0.0/themes/dark_earth.min.js" type="text/javascript"></script>
   <script src="https://cdn.anychart.com/releases/8.0.0/js/anychart-base.min.js"></script>
+  <!-- JQUERY -->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <!-- ALERTIFY -->
+  <link rel="stylesheet" href="{% static 'styles/alertify.rtl.css' %}">
+  <link rel="stylesheet" href="{% static 'styles/alertifythemes/default.rtl.css' %}">
+  <script src="{% static 'script/alertify.js' %}"></script>
   <script type="text/javascript">
     /* CREATE GLOBAL VARIABLES*/
     var active_id = "employees";

@@ -42,7 +42,7 @@ function renderWasteProduction(elemId){
 				if (request.status >= 200 && request.status < 400) {
 				  	for (var key in data) {
 						if (data.hasOwnProperty(key)) {
-						    chartData.push({x: key, value: data[key]})
+						    chartData.push({x: key, value:  data[key]})
 						}
 					}
 					// create the chart
@@ -52,6 +52,7 @@ function renderWasteProduction(elemId){
 					chart.title("Waste Production");
 
 					// render the chart
+					chart.tooltip().format("Waste Type: {%x}\nWaste Produced: {%value} Liter");
 					chart.container('chart');
 					chart.palette(anychart.palettes.defaultPalette);
 					chart.fill("aquastyle");

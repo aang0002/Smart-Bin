@@ -1,0 +1,4 @@
+1. How it is designed, overall architecture, modules, software and platform used
+2. What main input and output are involved
+3. Limitations of their software
+4. Any other relevant information considered important by the Team 

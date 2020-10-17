@@ -42,7 +42,7 @@ function changeEmpPerformanceChartFilter(btnId){
 			let data = JSON.parse(this.response).data;
 		  	for (let emp_username in data) {
 				if (data.hasOwnProperty(emp_username)) { 
-				    chartData.push([ emp_username, data[emp_username] ])
+				    chartData.push({x:emp_username, value:data[emp_username], fill: (anychart.color.lighten("#4CAF50", 0))})
 				};
 			};
 			// create a data object
@@ -56,6 +56,7 @@ function changeEmpPerformanceChartFilter(btnId){
 				let series = chart.bar(sortedView);
 
 				// render the chart
+				chart.tooltip().format("Employee: {%x}\nEmptied: {%value}");
 				chart.title("Employee Performance");
 		        chart.yAxis().title('# Bin Collected');
 		        chart.xScroller().enabled(true);	// turn on Y-scroller
@@ -105,12 +106,13 @@ function renderEmployeePerformance(elemId) {
 			if (request.status >= 200 && request.status < 400) {
 				// delete loader from UI
 				div.innerHTML = '';
+
 				// Begin accessing JSON data here
 				let chartData = [];
 				let data = JSON.parse(this.response).data;
 			  	for (let emp_username in data) {
 					if (data.hasOwnProperty(emp_username)) { 
-					    chartData.push([ emp_username, data[emp_username] ])
+					    chartData.push({x:emp_username, value:data[emp_username], fill: (anychart.color.lighten("#4CAF50", 0))})
 					}
 				}
 			  	// create a data object
@@ -128,6 +130,7 @@ function renderEmployeePerformance(elemId) {
 						let series = chart.bar(sortedView);
 
 						// render the chart
+						chart.tooltip().format("Employee: {%x}\nBins Collected: {%value}");
 						chart.title("Employee Performance");
 				        chart.yAxis().title('# Bin Collected');
 				        chart.xScroller().enabled(true);	// turn on Y-scroller

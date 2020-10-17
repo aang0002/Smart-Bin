@@ -39,8 +39,8 @@ def generate_bin_dummy_data(cursor):
 	for i in range(N):
 
 		cursor.execute("""INSERT INTO pages_bin
-			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, bin_volume, last_cleared_datetime, installation_date, bin_status, postcode)
-			VALUES ('{bin_num}', '{bin_type}', {bin_fullness}, {bin_latitude}, {bin_longitude}, {bin_volume}, '2018-01-01 10:00:00', '2020-08-19', 'perfect condition', {postcode});"""
+			(bin_num, bin_type, bin_fullness, bin_latitude, bin_longitude, bin_volume, installation_date, bin_status, postcode, is_active)
+			VALUES ('{bin_num}', '{bin_type}', {bin_fullness}, {bin_latitude}, {bin_longitude}, {bin_volume}, '2020-08-19', 'perfect condition', {postcode}, 0);"""
 			.format(bin_num=bin_num,
 					bin_type=bin_types[random.randint(0,len(bin_types)-1)], 
 					bin_fullness=random.randint(0,100), 
@@ -177,17 +177,15 @@ def generate_assignment_dummy_data(cursor):
 	# start filling datas
 	for i in range(number_of_days):
 		for j in range(tasks_in_a_day):
- 			cursor.execute("""INSERT INTO pages_assignment (asgn_id, emp_username_id, bin_num_id, colcen_id_id, datetime_created, desc, waste_volume, is_done, total_distance)
-							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', '{desc}', {waste_volume}, 0, {total_distance});"""
+ 			cursor.execute("""INSERT INTO pages_assignment (asgn_id, emp_username_id, bin_num_id, colcen_id_id, datetime_created, waste_volume)
+							VALUES ('{asgn_id}', '{emp_username}', '{bin_num}', '{colcen_id}', '{datetime_created}', {waste_volume});"""
 							.format(
 								asgn_id = asgn_id,
 								emp_username = emp_usernames[random.randint(0,len(emp_usernames)-1)],
 								bin_num = random.randint(1,NUMBER_OF_BINS),
 								colcen_id = random.randint(1,3),
 								datetime_created = date.strftime("%Y-%m-%d") + ' ' + str(random.randint(0,23)) + ':' + str(random.randint(0,59)) + ':' + str(random.randint(0,59)),
-								desc = "This is an empty bin assignment",
-								waste_volume = random.randint(0, 200),
-								total_distance = random.uniform(0.1, 5.0)
+								waste_volume = random.randint(0, 200)
 							))
  			asgn_id += 1
 		date += timedelta(days=1)
@@ -200,7 +198,7 @@ def generate_damagereport_dummy_data(cursor):
 	cursor.execute("DELETE FROM pages_damagereport;")
 
 	# create a list of random descriptions
-	descriptions = [
+	dmg_types = [
 		'broken handle',
 		'sensor emits wrong reading',
 		'leaks on bin'
@@ -211,18 +209,19 @@ def generate_damagereport_dummy_data(cursor):
 	date = datetime.now() - timedelta(days=number_of_days)	# the date of first assignment
 
 	for i in range(number_of_days):
+		x = random.randint(0,1)
 		cursor.execute("""
-						INSERT INTO pages_damagereport (dmg_id, reported_at, emp_username_id, bin_num_id, desc, severity, is_solved)
-						VALUES ({dmg_id}, '{reported_at}', '{emp_username}', '{bin_num}', '{desc}', {severity}, {is_solved});
+						INSERT INTO pages_damagereport (dmg_id, reported_at, emp_username_id, bin_num_id, dmg_type, desc, is_solved, datetime_solved)
+						VALUES ({dmg_id}, '{reported_at}', '{emp_username}', '{bin_num}', '{dmg_type}', '' ,{is_solved}, '{datetime_solved}');
 						"""
 						.format(
 							dmg_id = dmg_id,
 							reported_at = date.strftime("%Y-%m-%d") + ' ' + str(random.randint(0,23)) + ':' + str(random.randint(0,59)) + ':' + str(random.randint(0,59)),
 							emp_username = emp_usernames[random.randint(0,len(emp_usernames)-1)],
 							bin_num = random.randint(1,NUMBER_OF_BINS),
-							desc = descriptions[random.randint(0, len(descriptions)-1)],
-							severity = random.randint(2,10),
-							is_solved = [0,1][random.randint(0,1)]
+							dmg_type = dmg_types[random.randint(0, len(dmg_types)-1)],
+							is_solved = [0,1][x],
+							datetime_solved = [None,'2020-10-15 15:12:59'][x]
 							))
 		dmg_id += 1
 		date += timedelta(days=1)

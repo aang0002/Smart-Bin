@@ -1,45 +1,43 @@
 ### Wed, 16-Sep-2020 ###
 - Side navigtion bar
-- Created a functioning logout button
+- Created a logout button
 - Top title bar
 - Added collection center dummy data to DB
 - Created API to retrieve collection centers data
 - Created user profile card that displays the logged-in user's information
-- "GET DIRECTION" button now also direct user to the nerest collection center
+- Created a "GO" button (when clicked will direct user to the bin and nearest collection center from that bin)
 
 ### Wed, 18-Sep-2020 ###
 - Created an admin login username and password
 - Created admin home page
 - Created table which lists all employees (in admin page)
 - Created table which lists all bins (in admin page)
-- Created a random column chart in admin page
 
 ### Mon, 21-Sep-2020 ###
-- Finished the "Employee performance" page
+- Created the "Employee performance" page
 - Created the "waste prodcution" page
 - Created the "bin frequency" page
 - Added a scroller to every bar charts (the purpose a scroller is to give user the control to zoom in/out the graph, this is useful when the data to be shown is too many)
-- We can now use BootStrap in our HTML (the reason is because BootStrap makes styling a HTML page easier)
+- Style all the HTML pages with BootStrap (Bootstrap is a CSS framework)
 - Instead of refreshing the entire page when a link is being clicked, now, the app only refreshes some components of the HTML page (with this, the application runs faster, and the code looks neater)
 
 ### Tue, 22-Sep-2020 ###
-- Fixed the bug where bin markers don't load ocassionally
-- Added clear bin button (this button will turn the "bin_fullness" property to 0, and turn the bin marker's colour to green)
-- Added "edit profile" page (half done)
+- Fixed the bug where bin markers don't load at some ocassion
+- Added "profile" page (half done)
 
 ### Wed, 23-Sep-2020 ###
-- Created filters for both "Employee Performance" and "Bin Frequenct" pages
+- Created filters for both "Employee Performance" and "Bin Frequency" pages in the admin login UI
 
 ### Sun, 4-10-2020 ###
-- Created an "edit profile page" (still has to change the UI, but functionality-wise is working)
+- Finished the "profile" page
 - Created register employee page (still has to change the UI, but functionality-wise is working)
 
 ### Wed, 7-10-2020 ###
 - added more fields for Employee registration
 
 ### Sun 11-10-2020 ###
-- The bin markers now dynamically change colours
-- added "Report", "Cancle" buttons when user click the 'go' button on a bin marker
+- The bin markers now dynamically change colours whenever the bin_fullness property change
+- added "Report", "Cancel" buttons when user click the 'go' button on a bin marker
 - generated damage report dummy datas
 - created a "damage report" UI in admin page
 - created a filter in damage report admin page (so that user can filter 'solved/unsolved' damage reports)
@@ -47,7 +45,39 @@
 ### Tue 13-10-2020 ###
 - Added a search bar in admin's employee list page (the search bar acts as a search engine)
 - Added a search bar home page bins table (the search bar acts as a search engine)
+- Added the "damage report" form (cleaner can fill in the form to make a report)
+
+### Wed 14-10-2020 ###
+- Add more editable attributes in employee's profile page
+- Add validation check in both front-end and Database
+- Changed the pie chart labeling in admin's "waste production" page
+- Changed bar graph colour to green (to match the colour theme of the app)
+
+### Thur 15-10-2020 ###
+- Added a column of "date resolved" and a collumn of "resolve" button in the admin damage report page.
+- Added legend on the map
+
+### Sat 17-10-2020 ###
+- Added CSS framework to prompt messages (to make it more interactive)
+- In the big map, if the user click the "finish" button, the user will be directed to the main page
+- Implemented a full procedure of clearing a bin
+	a.) select bin (will render the bin collecting route)
+	b.) accept job (render a bigger map on the home page) (still has to implement bin locjing mechanism)
+	c.) Finish job (will check if the user really cleared the bin, if so, take user to home page)
+		* Note that the checking mechanism is impossible to implement at this stage, because we are not using real user location
 
 ### next to do ###
-- damage report form
-- add more editable attributes in profile page
+- the rate of every bin getting filled
+- fix the bug where the bin popup closes by itself every time bin marker is being updated
+
+
+External libraries:
+1.) Mapbox GL -> for the map
+2.) Bootstrap -> CSS
+3.) Anychart.JS -> data visualization
+4.) JQuery -> DOM manipulation
+5.) Alertify -> alert prompt & confirmation prompt CSS
+
+Limitations:
+1.) Browser's zoom size should be fixed to 125% in order to have a proper interface.
+2.) Switching between different pages too fast in admin page could render an incorrect UI.

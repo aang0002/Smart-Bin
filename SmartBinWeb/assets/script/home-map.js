@@ -1,6 +1,16 @@
 function fillMapData(){
+    // make sure that all of the local variables are set to origin values
+    map = null;
+    binMarkers = {};
+    inProgressBinNum = null;
+    clickedBinNum = null;
+    bigMapLoaded = false;
+
+    // API token
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWFuZzAwMDIiLCJhIjoiY2tldmdmamttMXk3ZzJ4bXJseGt4cDBybyJ9.FPvgW8PxjOUeEV33WTfABg';
     let binsToGet;
+
+    /* Uncomment this to track user location */
     // if ("geolocation" in navigator) { 
     //     navigator.geolocation.getCurrentPosition(position => { 
     //         console.log(position.coords.latitude, position.coords.longitude); 
@@ -11,6 +21,8 @@ function fillMapData(){
     // else { 
     //     console.log("Default position will be used")
     // }
+
+    // map instance
     map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v10',
@@ -18,39 +30,44 @@ function fillMapData(){
         zoom: 14
     });
 
-    // initialize the map canvas to interact with later
-    let canvas = map.getCanvasContainer();
+    // Add map controler UI
+    map.addControl(new mapboxgl.NavigationControl({position: 'top-left'}));
 
+    // map onload definition
     map.on('load', function() {
-        // Add starting point to the map
-        map.addSource('points', {
-            'type': 'geojson',
-            'data': {
-              'type': 'FeatureCollection',
-              'features': [
-              {
-                // feature for Mapbox DC
-                'type': 'Feature',
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [myLongitude, myLatitude]
-                },
-                'properties': {
-                  'title': 'Mapbox DC'
-                }
-              },
-              ]
-            }
-        });
 
-        map.addLayer({
-            'id': 'points',
-            'type': 'symbol',
-            'source': 'points',
-            'layout': {
-              'icon-image': 'circle-15',
+        // Add starting point to the map
+        map.loadImage(
+             GLOBAL_PATH + '/static/images/human-icon.png',
+            function (error, image) {
+                if (error) throw error;
+                map.addImage('currentPosition', image);
+                map.addSource('currentPosition', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [
+                            {
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'Point',
+                                'coordinates': [myLongitude, myLatitude]
+                            }
+                            }
+                        ]
+                    }
+                });
+                map.addLayer({
+                    'id': 'currentPosition',
+                    'type': 'symbol',
+                    'source': 'currentPosition',
+                    'layout': {
+                        'icon-image': 'currentPosition',
+                        'icon-size': 0.06
+                    }
+                });
             }
-        });
+        );
 
         map.on("styleimagemissing", e => {
             console.log("loading missing image: " + e.id);
@@ -61,6 +78,24 @@ function fillMapData(){
             });
         });
 
+        // Add legends on the map
+        let layers = ['0-24%', '25-49%', '50-74%', '75-100%'];
+        let colors = ['#008000', '#FFFF00', '#FFA500', '#FF0000'];
+            for (i = 0; i < layers.length; i++) {
+            var layer = layers[i];
+            var color = colors[i];
+            var item = document.createElement('div');
+            var key = document.createElement('span');
+            key.className = 'legend-key';
+            key.style.backgroundColor = color;
+
+            var value = document.createElement('span');
+            value.innerHTML = layer;
+            item.appendChild(key);
+            item.appendChild(value);
+            legend.appendChild(item);
+        }
+
         // Add BIN MARKERS
         addBinMarkers();
 
@@ -68,9 +103,11 @@ function fillMapData(){
         addColCenMarkers();
 
         // update bin data in the map every a certain period of time
-        updateBinsLoop = window.setInterval(function(){
-            updateBins();
-        }, 3500);
+        if (!updateBinsLoop){
+            updateBinsLoop = window.setInterval(function(){
+                updateBins();
+            }, 3500);
+        }
     });
 
 }
@@ -82,7 +119,7 @@ function addColCenMarkers(){
     let binsToGet = 5;
     let path = '/getcolcens/'
 
-    request.open('GET', path, true)
+    request.open('GET', path, false)
     request.onload = function () {
         // Begin accessing JSON data here
         let data = JSON.parse(this.response).data
@@ -92,19 +129,50 @@ function addColCenMarkers(){
 
         if (request.status >= 200 && request.status < 400) {
             data.forEach((colcen) => {
-              // draw the bin on the map
-              let colcenPos = [parseFloat(colcen.attributes.colcen_longitude), parseFloat(colcen.attributes.colcen_latitude)]
-              let colcen_text =  "<p>" +
-                              "Manager: " + colcen.attributes.manager_name + "<br>" +
-                              "Phone: " + colcen.attributes.colcen_phone +
-                              "</p>"
-              let popup = new mapboxgl.Popup()
-                        .setHTML(colcen_text)
-                        .addTo(map);
-              let binMarker = new mapboxgl.Marker({color: 'black'})
-                              .setPopup(popup)
-                              .setLngLat(colcenPos)
-                              .addTo(map);
+                // create a popup object inside the map
+                let colcenPos = [parseFloat(colcen.attributes.colcen_longitude), parseFloat(colcen.attributes.colcen_latitude)]
+                let colcen_text =  "<p>" +
+                                  "Manager: " + colcen.attributes.manager_name + "<br>" +
+                                  "Phone: " + colcen.attributes.colcen_phone +
+                                  "</p>"
+                let popup = new mapboxgl.Popup()
+                            .setHTML(colcen_text)
+                            .addTo(map);
+                // render collection center icon on map
+                let imgName = 'colcen' + colcen.attributes.colcen_id;
+                let sourceName = 'colcen' + colcen.attributes.colcen_id;
+                let layerId = 'colcen' + colcen.attributes.colcen_id;
+                map.loadImage(
+                     GLOBAL_PATH + '/static/images/colcen-icon2.png',
+                    function (error, image) {
+                        if (error) throw error;
+                        map.addImage(imgName, image);
+                        map.addSource(sourceName, {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'FeatureCollection',
+                                'features': [
+                                    {
+                                    'type': 'Feature',
+                                    'geometry': {
+                                        'type': 'Point',
+                                        'coordinates': colcenPos
+                                    }
+                                    }
+                                ]
+                            }
+                        });
+                        map.addLayer({
+                            'id': layerId,
+                            'type': 'symbol',
+                            'source': imgName,
+                            'layout': {
+                                'icon-image': imgName,
+                                'icon-size': 0.2
+                            }
+                        });
+                    }
+                );
             })
         } else {
             console.log('error')
@@ -120,7 +188,7 @@ function addBinMarkers(){
     binsToGet = 5;
     let path = '/getbins/'
 
-    request.open('GET', path, true)
+    request.open('GET', path, false)
     request.onload = function () {
         // Begin accessing JSON data here
         let data = JSON.parse(this.response).data
@@ -212,52 +280,79 @@ function updateBins(){
                                   <span class="glyphicon glyphicon-circle-arrow-right"></span> GO
                                 </button>`
                 // remove the old bin marker and popup
-                let oldbinMarker = binMarkers[bin.attributes.bin_num].remove();
+                let oldbinMarker = binMarkers[bin.attributes.bin_num];
                 oldbinMarker.getPopup().remove();
+                oldbinMarker.remove();
                 // create a popup
                 let popup = new mapboxgl.Popup()
-                        .setHTML(bin_text);
+                        .setHTML(bin_text)
+                        .addTo(map);
                 popup.on('close', function(e) {
                     clickedBinNum = null;
                 });
-                // create a bin marker, but dont add it to the map yet
+                // create a bin marker, but dont add it yet to the map
                 let binMarker = new mapboxgl.Marker({color: binColor})
-                                          .setPopup(popup)
-                                          .setLngLat(binPos); 
+                                          .setLngLat(binPos)
+                                          .setPopup(popup);
                 // put the bin marker to local storage
                 binMarkers[binNum] = binMarker;
-                // only add marker if the popup is not open and there is no route in progress                                         
-                if (binNum != clickedBinNum && inProgressBinNum == null){
-                    popup.addTo(map);
+                // only add marker if the popup is not open and there is no route in progress
+                if (inProgressBinNum == null){
                     binMarker.addTo(map);
+                    if (binNum == clickedBinNum){
+                        //binMarker.togglePopup();
+                    }
                 }
-                else if (binNum == inProgressBinNum){
-                    bin_text =  "<p>" +
-                                "Bin Num: " + binNum + "<br>" +
-                                "Fullness: " + binFullness + "%" + "<br>" +
-                                "Bin Type: " + bin.attributes.bin_type +
-                                "</p>" 
-                    bin_text += `<button class="btn btn-warning" onclick = "reportBinDamage(${bin_num});">
-                                  <span class="glyphicon glyphicon-circle-arrow-right"></span> REPORT
-                                </button>
-                                <button class="btn btn-danger" onclick = "cancelJob(${binNum});">
-                                    <span class="glyphicon glyphicon-circle-arrow-right"></span> CANCEL
-                                </button>
-                                `
-                    // create a popup
-                    popup.remove();
-                    popup = new mapboxgl.Popup()
-                            .setHTML(bin_text);
-                    popup.on('close', function(e) {
-                        clickedBinNum = null;
-                    });
-                    // create a bin marker, but dont add it to the map yet
-                    binMarker.setPopup(popup);
-
-                    // update bin marker
-                    binMarker.addTo(map);
-                    // dont open popup after adding
-                    binMarker.togglePopup();
+                // also add marker if the bin is the bin in progress
+                else{
+                    if (binNum == inProgressBinNum){
+                        bin_text =  "<p>" +
+                                    "Bin Num: " + binNum + "<br>" +
+                                    "Fullness: " + binFullness + "%" + "<br>" +
+                                    "Bin Type: " + bin.attributes.bin_type +
+                                    "</p>"
+                        if (bigMapLoaded){
+                            bin_text += `<div class="btn-group-vertical">
+                                            <button class="btn btn-info" onclick = "finishJob(${binNum});">
+                                              <span class="glyphicon glyphicon-ok"></span> finish
+                                            </button>
+                                            <button class="btn btn-warning" onclick = "reportBinDamage(${binNum});">
+                                              <span class="glyphicon glyphicon-exclamation-sign"></span> report
+                                            </button>
+                                        </div>`
+                        }
+                        else{
+                            bin_text += `<div class="btn-group-vertical">
+                                            <button class="btn btn-info" onclick = "acceptJob(${binNum});">
+                                              <span class="glyphicon glyphicon-ok"></span> accept
+                                            </button>
+                                            <button class="btn btn-warning" onclick = "reportBinDamage(${binNum});">
+                                              <span class="glyphicon glyphicon-exclamation-sign"></span> report
+                                            </button>
+                                            <button class="btn btn-danger" onclick = "cancelJob(${binNum});">
+                                                <span class="glyphicon glyphicon-remove"></span> cancel
+                                            </button>
+                                        </div>`
+                        }
+                        // remove the previously created popup, since it will no be used
+                        popup.remove();
+                        // create a new popup
+                        popup = new mapboxgl.Popup()
+                                .setHTML(bin_text)
+                                .addTo(map)
+                        popup.on('close', function(e) {
+                            clickedBinNum = null;
+                        });
+                        // create a bin marker, but dont add it to the map yet
+                        binMarker.setPopup(popup);
+                        // update bin marker
+                        binMarker.addTo(map);
+                        // open popup after adding
+                        binMarker.togglePopup();
+                    }
+                    else{
+                        binMarker.togglePopup();
+                    }
                 }
             }
         })
@@ -289,7 +384,10 @@ function getDirection(bin_num){
     // render the route on the map
     renderBinCollectionRoute( [myLongitude,myLatitude], [binPos[0],binPos[1]] );
 
-    // remove all bin amrkers except this one
+    // re-center to cuurent cleaner's postiion
+    map.setCenter( [myLongitude,myLatitude] );
+
+    // remove all bin markers except the selected bin
     for (let key in binMarkers) {
         // check if the property/key is defined in the object itself, not in parent
         if (binMarkers.hasOwnProperty(key)) {
@@ -341,12 +439,17 @@ function changeMarkerButton (bin_num){
                     "Fullness: " + bin_fullness + "%" + "<br>" +
                     "Bin Type: " + bin_type +
                     "</p>" 
-    bin_text += `<button class="btn btn-warning" onclick = "reportBinDamage(${bin_num});">
-                  <span class="glyphicon glyphicon-circle-arrow-right"></span> REPORT
-                </button>
-                <button class="btn btn-danger" onclick = "cancelJob(${bin_num});">
-                    <span class="glyphicon glyphicon-circle-arrow-right"></span> CANCEL
-                </button>
+    bin_text += `<div class="btn-group-vertical">
+                    <button class="btn btn-info" onclick = "acceptJob(${bin_num});">
+                      <span class="glyphicon glyphicon-ok"></span> accept
+                    </button>
+                    <button class="btn btn-warning" onclick = "reportBinDamage(${bin_num});">
+                      <span class="glyphicon glyphicon-exclamation-sign"></span> report
+                    </button>
+                    <button class="btn btn-danger" onclick = "cancelJob(${bin_num});">
+                        <span class="glyphicon glyphicon-remove"></span> cancel
+                    </button>
+                </div>
                 `
     // create a new popup on the map
     let popup = new mapboxgl.Popup()
@@ -438,4 +541,239 @@ function reportBinDamage(bin_num){
 
     // direct user to the report damage HTML page
     window.open('/damagereportform/');
+}
+
+
+/*
+This function will be run whenever the employee accepts the job
+*/
+function acceptJob(bin_num){
+    alertify.confirm(
+            '',                                 // title
+            'Clear bin number ' + bin_num + ' ?',  // message
+            onokJob,        // onok function
+            function () {}  // oncancle function (do nothing)
+            );
+
+    function onokJob(){
+        // change all the bin markers popup
+        inProgressBinNum = bin_num;
+
+        // get the current datetime
+        let today = new Date();
+        let DD = String(today.getDate()).padStart(2, '0');
+        let MM = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let YYYY = today.getFullYear();
+        let hh = String(today.getHours()).padStart(2, '0');
+        let mm = String(today.getMinutes()).padStart(2, '0');
+        let ss = String(today.getSeconds()).padStart(2, '0');
+        let datetimeString = YYYY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm + ':' + ss //e.g. 2007-01-01 10:00:00
+
+        // create an assignment (this will also lock the bin)
+        var request = new XMLHttpRequest();
+        var url = '../createassignment';
+        request.open('POST', url, true);
+        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        request.onreadystatechange = function() {//Call a function when the state changes.
+            if(request.readyState == 4 && request.status == 200) {
+                alert(request.status);
+            }
+        }
+        let params = new FormData();
+        params.append('emp_username', JSON.parse(localStorage.getItem('user'))['emp_username']);
+        params.append('bin_num', bin_num);
+        params.append('colcen_id', 'person');
+        params.append('datetime_created', datetimeString);
+        request.send(params);
+
+        // render a bigger map to user
+        renderBigMap();
+
+        // show time elapsed on screen
+        // lock the bin (send a lock request to the DB)
+
+    }
+
+}
+
+/* This function is created to only fill the data for the big map*/
+function renderBigMap(){
+    // scroll to top
+    window.scrollTo(0,0);
+
+    // clear all content
+    let div = document.getElementById('content');
+    div.innerHTML = ''
+
+    // <div class="map fullMap", id="map">
+    let map = document.createElement("div");
+    map.className = "map fullMap";
+    map.id = "map";
+    div.appendChild(map);
+
+    // <div class='map-overlay' id='legend'></div>
+    let legend = document.createElement('div');
+    legend.className = 'map-overlay legendBig';
+    legend.id = 'legend';
+    div.appendChild(legend);
+
+    // fill the map data
+    fillBigMapData(bin_num);
+}
+
+/* Fill the map with the relevant data*/
+function fillBigMapData(bin_num){
+    // make sure that all of the local variables are set to origin values
+    map = null;
+    inProgressBinNum = bin_num;
+    clickedBinNum = bin_num;
+    bigMapLoaded = true;
+
+    // API token
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYWFuZzAwMDIiLCJhIjoiY2tldmdmamttMXk3ZzJ4bXJseGt4cDBybyJ9.FPvgW8PxjOUeEV33WTfABg';
+
+    // mapbox instance
+    map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v10',
+        center: [myLongitude, myLatitude], // starting position
+        zoom: 14
+    });
+
+    // Add map controler UI
+    map.addControl(new mapboxgl.NavigationControl({position: 'top-left'}));
+
+    // onload function
+    map.on('load', function() {
+
+        // Add starting point to the map
+        map.loadImage(
+             GLOBAL_PATH + '/static/images/human-icon.png',
+            function (error, image) {
+                if (error) throw error;
+                map.addImage('currentPosition', image);
+                map.addSource('currentPosition', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [
+                            {
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'Point',
+                                'coordinates': [myLongitude, myLatitude]
+                            }
+                            }
+                        ]
+                    }
+                });
+                map.addLayer({
+                    'id': 'currentPosition',
+                    'type': 'symbol',
+                    'source': 'currentPosition',
+                    'layout': {
+                        'icon-image': 'currentPosition',
+                        'icon-size': 0.06
+                    }
+                });
+            }
+        );
+
+        map.on("styleimagemissing", e => {
+            console.log("loading missing image: " + e.id);
+            map.loadImage('images/' + e.id + ".png", (error, image) => {
+                if (error) throw error;
+                if (!map.hasImage(e.id)) map.addImage(e.id, image);
+                map.getSource('markers').setData(url);
+            });
+        });
+
+        // Add legends on the map
+        let layers = ['0-24%', '25-49%', '50-74%', '75-100%'];
+        let colors = ['#008000', '#FFFF00', '#FFA500', '#FF0000'];
+            for (i = 0; i < layers.length; i++) {
+            var layer = layers[i];
+            var color = colors[i];
+            var item = document.createElement('div');
+            var key = document.createElement('span');
+            key.className = 'legend-key';
+            key.style.backgroundColor = color;
+
+            var value = document.createElement('span');
+            value.innerHTML = layer;
+            item.appendChild(key);
+            item.appendChild(value);
+            legend.appendChild(item);
+        }
+
+        // Add the bin marker
+        let bin = JSON.parse(localStorage.getItem('bins'))[bin_num-1]    // this stotes the information of the bin
+        let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
+        let binFullness = parseInt(bin.attributes.bin_fullness)
+        let binColor;
+        // green
+        if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
+        // yellow
+        else if (binFullness>=25 && binFullness<=49){ binColor = 'yellow';}
+        // orange
+        else if (binFullness>=50 && binFullness<=74){ binColor = 'orange';}
+        // red
+        else{ binColor = 'red';}
+        let myPos = [myLongitude, myLatitude];
+        let bin_text =  "<p>" +
+                        "Bin Num: " + bin_num + "<br>" +
+                        "Fullness: " + binFullness + "%" + "<br>" +
+                        "Bin Type: " + bin.attributes.bin_type +
+                        "</p>" 
+        bin_text += `<div class="btn-group-vertical">
+                        <button class="btn btn-info" onclick = "finishJob(${bin_num});">
+                          <span class="glyphicon glyphicon-ok"></span> finish
+                        </button>
+                        <button class="btn btn-warning" onclick = "reportBinDamage(${bin_num});">
+                          <span class="glyphicon glyphicon-exclamation-sign"></span> report
+                        </button>
+                    </div>`
+        let popup = new mapboxgl.Popup()
+                  .setHTML(bin_text)
+                  .addTo(map);
+        let binMarker = new mapboxgl.Marker({color: binColor})
+                        .setPopup(popup)
+                        .setLngLat(binPos)
+                        .addTo(map);
+        // add event listener for bin marker
+        binMarker.getElement().addEventListener('click', () => { 
+            clickedBinNum = bin.attributes.bin_num; 
+        }); 
+        // add event listener for the popup
+        popup.on('close', function(e) {
+            clickedBinNum = null;
+        });
+        // add the new bin marker to the dict
+        binMarkers[bin.attributes.bin_num] = binMarker;
+        // toggle the popup
+        binMarker.togglePopup();
+
+        // Add COLLECTION CENTER MARKERS
+        addColCenMarkers();
+
+        // render the route
+        renderBinCollectionRoute( [myLongitude,myLatitude], [binPos[0],binPos[1]] );
+    });
+}
+
+function finishJob(bin_num){
+    alertify.confirm(
+            '',                                                               // title
+            `Are you sure you finished clearning bin num ${bin_num} ?
+             A check will progress if you click OK.`,  // message
+            onokcompleteJob,        // onok function
+            function () {}  // oncancle function (do nothing)
+            );
+}
+
+function onokcompleteJob(){
+    // unlock the bin, by changing the is_active attribute to false (make sure this is a synchrnous call)
+
+    // go to the main page
+    renderHomeMain('home');
 }

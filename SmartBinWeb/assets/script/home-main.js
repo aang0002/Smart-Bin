@@ -119,11 +119,19 @@ function renderProfileCard(div){
 }
 
 // <div class="map", id="map">
+// <div class='map-overlay' id='legend'></div>
 function renderMap(div){
+	// <div class="map", id="map">
 	let map = document.createElement("div");
 	map.className = "map";
 	map.id = "map";
 	div.appendChild(map);
+
+	// <div class='map-overlay' id='legend'></div>
+	let legend = document.createElement('div');
+	legend.className = 'map-overlay';
+	legend.id = 'legend';
+	div.appendChild(legend);
 }
 
 //<table class="container" id="binTable"></table>
@@ -154,10 +162,14 @@ function fillDefaultPofileData(){
 	console.log(address)
 	document.getElementById("emp_firstname").value = user['emp_firstname'];
 	document.getElementById("emp_lastname").value = user['emp_lastname'];
-	document.getElementById("tfn_no").value = user['tfn_no'];
+	document.getElementById("bank_acc_name").value = user['bank_acc_name'];
+	document.getElementById("bank_acc_bsb").value = user['bank_acc_bsb'];
+	document.getElementById("bank_acc_number").value = user['bank_acc_number'];
+	document.getElementById("email").value = user['email'];
 	document.getElementById("emp_address_street").value = address[0].trim();
 	document.getElementById("emp_address_suburb").value = address[1].trim();
 	document.getElementById("emp_address_state").value = address[2].trim();
 	document.getElementById("emp_address_postcode").value = address[3].trim();
 	document.getElementById("emp_phone").value = user['emp_phone'];
+	//document.getElementById("employment_type").value = user['employment_type'];
 }

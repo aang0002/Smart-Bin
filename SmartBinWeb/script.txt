@@ -1,0 +1,23 @@
+### The steps below will walk through the step by step process to run this project ###
+
+1.) Installing packages and dependencies
+	a.) Open your terminal window
+	b.)	Go to the ../Smart-Bin directory
+	c.) Run 'pip install --use-feature=2020-resolver -r requirements.txt' to install all the required packages
+
+2.) Populating the the database
+	a.) Go to the directory where the "manage.py" file sits ( it is in ..\Smart-Bin\SmartBinWeb )
+	b.) python DB_generator\generate_smart_bin_dummy.py
+
+3.) Running the web server
+	a.) Go to the directory where the "manage.py" file sits ( it is in ..\Smart-Bin\SmartBinWeb ) ( you should be in the correct directory if you followed the steps in order)
+	b.) Run the command "python manage.py runserver" to run the web server
+
+4.) Openning the front-end app
+	a.) Open your browser
+	b.) In your browser's address bar, type in "127.0.0.1:8000" to launch the app
+
+5.) Simulating changes in bin fullness. This is done to show that the bin markers in the front-end app reflects changes in the database.
+	a.) Go to the directory where the "manage.py" file sits ( it is in ..\Smart-Bin\SmartBinWeb )
+	b.) python DB_generator\simulate_update_bins.py
+	c.) Notice that the bin marker colours and popup updates itself whenever the database updates.

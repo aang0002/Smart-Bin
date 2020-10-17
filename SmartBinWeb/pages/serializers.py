@@ -31,7 +31,7 @@ class BinSerializer(serializers.HyperlinkedModelSerializer):
 
 	class Meta:
 		model = Bin
-		fields = ('bin_num', 'bin_type', 'bin_fullness', 'bin_longitude', 'bin_latitude', 'bin_volume', 'last_cleared_datetime', 'installation_date', 'bin_status', 'postcode')
+		fields = ('bin_num', 'bin_type', 'bin_fullness', 'bin_longitude', 'bin_latitude', 'bin_volume', 'installation_date', 'bin_status', 'postcode', 'is_active')
 
 class CollectionCenterSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -43,10 +43,10 @@ class AssignmentSerializer(serializers.HyperlinkedModelSerializer):
 
 	class Meta:
 		model = Assignment
-		fields = ('asgn_id', 'emp_username', 'bin_num', 'colcen_id', 'datetime_created', 'desc', 'waste_volume', 'total_distance', 'is_done', 'total_distance')
+		fields = ('asgn_id', 'emp_username', 'bin_num', 'colcen_id', 'datetime_created', 'datetime_finished','waste_volume')
 
 class DamageReportSerializer(serializers.HyperlinkedModelSerializer):
 
 	class Meta:
 		model = DamageReport
-		fields = ('dmg_id', 'reported_at', 'emp_username_id', 'bin_num_id', 'desc', 'severity', 'is_solved')
+		fields = ('dmg_id', 'reported_at', 'emp_username_id', 'bin_num_id', 'desc', 'dmg_type', 'is_solved', 'datetime_solved')

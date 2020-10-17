@@ -1,20 +1,17 @@
-body{
-    background-color: black;
-    color: #38BB36;
+.body{
+	background-color: #0D0D0D;
 }
+
 .form-control {
-    background-color:  rgba(136, 126, 126, 0.5)!important;
+    background-color:  rgba(136, 126, 126, 0.5);
 }
 input[type=text], input[type=number], input[type=date], input[type=password]{
-    color: white;
+    color: black;
     padding: 5px;
 }
-select{
-    color: white;
+select[type=text]{
+    color: black;
 }
 option{
-    color: white;
-}
-textarea{
-  color: white;
+    color: black;
 }

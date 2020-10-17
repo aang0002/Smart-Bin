@@ -86,6 +86,13 @@ a {
   text-decoration: none
 }
 
+.form-control {
+  background-color:  rgba(136, 126, 126, 0.5);
+}
+input[type=text], input[type=password]{
+  color: white;
+}
+
 @media (max-width: 600px) {
   .main {
     border-radius: 0px;

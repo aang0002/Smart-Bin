@@ -63,10 +63,10 @@ class Bin(models.Model):
 	bin_longitude = models.DecimalField(max_digits=8, decimal_places=5)
 	bin_latitude = models.DecimalField(max_digits=8, decimal_places=5)
 	bin_volume = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(300)]) # in Litre
-	last_cleared_datetime = models.DateTimeField()
 	installation_date = models.DateField(blank=True)
 	bin_status = models.CharField(max_length=300)
 	postcode = models.CharField(max_length=4, validators=[RegexValidator(r'^[0-9]{4}$')])
+	is_active = models.BooleanField(default=False)	# active means that someone is coming to clear the bin
 
 # Assignment Model
 class Assignment(models.Model):
@@ -75,17 +75,16 @@ class Assignment(models.Model):
 	bin_num = models.ForeignKey(Bin, on_delete=models.CASCADE, blank=False)				# column stored will be bin_num_id
 	colcen_id =  models.ForeignKey(CollectionCenter, on_delete=models.SET_NULL, null=True)
 	datetime_created = models.DateTimeField()
-	desc = models.CharField(max_length=200)
-	waste_volume = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(360)], default=0)
-	is_done = models.BooleanField(default=False, blank=True)
-	total_distance = models.PositiveIntegerField(default=0)
+	datetime_finished = models.DateTimeField(null=True)
+	waste_volume = models.PositiveIntegerField(validators=[MinValueValidator(0), MaxValueValidator(360)], default=0, null=True)
 
 # Damage Model
 class DamageReport(models.Model):
 	dmg_id = models.PositiveIntegerField(primary_key=True)
 	reported_at = models.DateTimeField()
 	emp_username = models.ForeignKey(Employee, on_delete=models.CASCADE)
+	dmg_type = models.CharField(max_length=300)
 	bin_num = models.ForeignKey(Bin, on_delete=models.CASCADE)
-	desc = models.CharField(max_length=300)
-	severity = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])	# value in the range of 0 to 10
+	desc = models.CharField(max_length=300, default="")
 	is_solved = models.BooleanField(default=False)
+	datetime_solved = models.DateTimeField(null=True)

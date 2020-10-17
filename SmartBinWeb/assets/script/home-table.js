@@ -38,62 +38,12 @@ function generateTableContent(table, attributes) {
             let getDirButton = document.createElement("BUTTON");
             getDirButton.type = "button";
             getDirButton.className = "btn btn-primary";
-            getDirButton.innerHTML = "GET DIRECTION";
+            getDirButton.innerHTML = "GO";
             getDirButton.onclick =  function (){
-                                      let cleaner_pos = [myLongitude, myLatitude];
-                                      let bin_pos = [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']]
-                                      getDirection(bin.attributes['bin_num'])
-                                      window.scrollTo(0,100);
-                                      map.flyTo({
-                                        center: [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']],
-                                        zoom: 14
-                                      });
+                                      getDirection(bin.attributes.bin_num);
+                                      clickedBinNum = bin.attributes.bin_num;
                                     }
-            // create CLEAR BIN button
-            let clearBinButton = document.createElement("BUTTON");
-            clearBinButton.type = "button";
-            clearBinButton.className = "btn btn-warning";
-            clearBinButton.innerHTML = "CLEAR BIN";
-            clearBinButton.onclick =  function () {
-                                        let confirmationMessage = "Clear bin " + bin.attributes.bin_num.toString() + "?"
-                                        if (confirm(confirmationMessage)){
-                                          // update the bins collected property of current user
-                                          let userdata = JSON.parse(localStorage.getItem('user'));
-                                          document.getElementById("bins_collected").innerHTML = "Bins collected: " + (userdata.bins_collected + 1);
-                                          userdata.bins_collected += 1;
-                                          localStorage.setItem('user', JSON.stringify(userdata));
-                                          // remove clear button
-                                          clearBinButton.remove();
-                                          // remove the current bin marker
-                                          let binMarker = binMarkers[bin.attributes.bin_num];
-                                          binMarker.remove();
-                                          // add a new marker
-                                          let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
-                                          let bin_text =  "<p>" +
-                                                          "Bin Num: " + bin.attributes.bin_num + "<br>" +
-                                                          "Fullness: " + "0%" + "<br>" +
-                                                          "Bin Type: " + bin.attributes.bin_type +
-                                                          "</p>";
-                                          let popup = new mapboxgl.Popup()
-                                                    .setHTML(bin_text)
-                                                    .addTo(map);
-                                          binMarker = new mapboxgl.Marker({color: "green"})
-                                                                  .setPopup(popup)
-                                                                  .setLngLat(binPos)
-                                                                  .addTo(map);                                        
-                                          window.scrollTo(0,100);
-                                          map.flyTo({
-                                            center: [bin.attributes['bin_longitude'], bin.attributes['bin_latitude']],
-                                            zoom: 14
-                                          });
-                                        }
-                                      }
-            let buttonsDiv = document.createElement('div');
-            buttonsDiv.className = "btn-group-vertical";
-            buttonsDiv.role = "group";
-            buttonsDiv.appendChild(getDirButton);
-            buttonsDiv.appendChild(clearBinButton);
-            cell.appendChild(buttonsDiv);
+            cell.appendChild(getDirButton);
         })}
       else {
         console.log('error');
@@ -195,14 +145,3 @@ function fillBinTable(){
       });
   });
 }
-
-// function getBinDirection(binLongitude, binLatitude){
-//   let cleaner_pos = [myLongitude, myLatitude];
-//   let bin_pos = [binLongitude, binLatitude]
-//   renderBinCollectionRoute(cleaner_pos, bin_pos);
-//   window.scrollTo(0,100);
-//   map.flyTo({
-//     center: [binLongitude, binLatitude],
-//     zoom: 14
-//   });
-// }

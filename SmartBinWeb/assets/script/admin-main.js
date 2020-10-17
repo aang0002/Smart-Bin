@@ -79,12 +79,8 @@ function generateTableContent(table, attributes, dataURI) {
       var data = JSON.parse(this.response).data
 
       if (request.status >= 200 && request.status < 400) {
-        // reset total damage reports
-        totalDamageReports = 0;
         // read the data
         data.forEach((object) => {
-            // incerement total damage report by 1
-            totalDamageReports += 1;
             // render a row in the table
             let row = table.insertRow();
             attributes.forEach((key) => {

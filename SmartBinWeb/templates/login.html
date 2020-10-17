@@ -8,6 +8,11 @@
   <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- ALERTIFY sources -->
+  <link rel="stylesheet" href="{% static 'styles/alertify.rtl.css' %}">
+  <link rel="stylesheet" href="{% static 'styles/alertifythemes/default.rtl.css' %}">
+  <script src="{% static 'script/alertify.js' %}"></script>
+
   <title>Sign in</title>
 
 </head>
@@ -44,8 +49,8 @@
       if (request.status == 200) {
         let response = JSON.parse(this.response)
         if (response.data.length == 0) {
-          console.log("Failed to login");
-          alert("Failed to login");
+          alertify.set('notifier','position', 'top-right');
+          alertify.error('Failed to login.');
         }
         else{
           console.log("Login successfull");

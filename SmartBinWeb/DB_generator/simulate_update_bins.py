@@ -28,8 +28,15 @@ if __name__ == "__main__":
 		print("trying to update bin number",bin_num)
 		cursor.execute(""" 
 						UPDATE pages_bin
-						SET bin_fullness = bin_fullness + 2
+						SET bin_fullness = bin_fullness + 1
 						WHERE bin_num = '{bin_num}' AND bin_fullness < 100
+						;
+						""".format(bin_num=bin_num))
+		# empty all full bins
+		cursor.execute(""" 
+						UPDATE pages_bin
+						SET bin_fullness = 0
+						WHERE bin_fullness = 100
 						;
 						""".format(bin_num=bin_num))
 		# commit changes
