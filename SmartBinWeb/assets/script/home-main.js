@@ -47,11 +47,17 @@ function renderHomeMain(elemId){
 	// change the UI of active tab
 	document.getElementById(active_id).className = "";
 	document.getElementById(elemId).className = "active";
-	active_id = elemId
+	active_id = elemId;
 
 	// clear all content
 	let div = document.getElementById('content');
-	div.innerHTML = ''
+	div.innerHTML = '';
+
+	// if the user currently clearning bin
+	if (bigMapLoaded){
+		renderBigMap(inProgressBinNum);
+		return;
+	}
 
 	// create another div element to wrap user card and map
 	let div2 = document.createElement('div');
@@ -72,50 +78,6 @@ function renderHomeMain(elemId){
 	fillMapData();
 	fillUserCardData();
 	fillBinTable();
-}
-
-
-function renderProfileCard(div){
-	console.log("hey")
-	let userprofile = document.createElement("div");
-	userprofile.className = "userprofile";
-
-	// create avatar
-	let avatar = document.createElement("div");
-	avatar.className = 'avatar';
-	let img = document.createElement('img');
-	img.src = GLOBAL_PATH + '/static/images/no-photo-profile.png'//"{% 'static images/no-photo-profile.png' %}";
-	img.height = "150";
-	img.width = "150";
-	avatar.appendChild(img);
-
-	// create emp name element
-	let empname = document.createElement("h2");
-	empname.id = "emp_name";
-	empname.innerHTML = "";
-
-	// create username element
-	let empusername = document.createElement("p");
-	empusername.id = "emp_username";
-	empusername.innerHTML = "Username: ";
-
-	// create DOB element
-	let empdob = document.createElement("p");
-	empdob.id = "emp_dob";
-	empdob.innerHTML += "D.O.B: ";
-
-	// create Bin Collected element
-	let binscollected = document.createElement("p");
-	binscollected.id = "bins_collected";
-	binscollected.innerHTML += "Bins Collected: ";
-
-	// append all element to userprofile div
-	userprofile.appendChild(avatar);
-	userprofile.appendChild(empname);
-	userprofile.appendChild(empusername);
-	userprofile.appendChild(empdob);
-	userprofile.appendChild(binscollected);
-	div.appendChild(userprofile)
 }
 
 // <div class="map", id="map">
@@ -159,7 +121,6 @@ function renderTable(div){
 function fillDefaultPofileData(){
 	var user = JSON.parse(localStorage.getItem("user"));
 	var address = user['emp_address'].split(",");
-	console.log(address)
 	document.getElementById("emp_firstname").value = user['emp_firstname'];
 	document.getElementById("emp_lastname").value = user['emp_lastname'];
 	document.getElementById("bank_acc_name").value = user['bank_acc_name'];

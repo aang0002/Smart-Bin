@@ -106,12 +106,12 @@ html {
   width: 7%;
 }
 
-.legendBig {
+#legendBig {
   padding: 10px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   line-height: 18px;
   height: 13%;
-  margin-bottom: 10%;
+  margin-bottom: 2.5%;
   width: 7%;
 }
 
@@ -140,14 +140,6 @@ body {
   color:#A7A1AE;
   /*background-color:#1F2739;*/
 }
-
-h1 {
-  font-weight: 300;
-  line-height:1em;
-  text-align: center;
-  color: #4DC3FA;
-}
-
 
 h2 a {
   font-weight: 700;
@@ -291,7 +283,7 @@ Side NAVIGATION BAR
   padding: 16px;
   text-decoration: none;
 }
- 
+
 .sidebar a.active {
   background-color: #4CAF50;
   color: white;
@@ -415,21 +407,6 @@ SEARCH BAR
   background-color:  rgba(0, 0, 0, 0.3);
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-/*
-SELECT OPTION
-*/
-select[type=text] {
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #fff;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
-}
-
-select option {
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #fff;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 /*

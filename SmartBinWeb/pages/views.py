@@ -174,24 +174,62 @@ class AssignmentList(APIView):
 
 class CreateAssignmentView(APIView):
 
-	def post(self, request):
+	def get(self, request, *args, **kwargs):
 		try:
-			asgn_id = Assignment.objects.order_by('-asgn_id')[:1][0].asgn_id + 1
-			emp_username = request.data.get("emp_username")
-			bin_num = request.data.get("bin_num")
-			colcen_id =  request.data.get("colcen_id")
-			datetime_created = request.data.get("datetime_created")
+			asgn_id = str(Assignment.objects.extra(select={'myinteger': 'CAST(asgn_id AS INTEGER)'}).order_by('-myinteger')[:1][0].myinteger + 1)
+			emp_username = kwargs.get('emp_username', '')
+			bin_num = kwargs.get('bin_num', '')
+			colcen_id = kwargs.get('colcen_id', '')
+			datetime_created = kwargs.get('datetime_created', '')
 			# datetime_finished = request.data.get("datetime_")
 			# waste_volume = request.data.get("emp_username")
 
+			# gahter all foreign objects
+			emp = Employee.objects.get(pk=emp_username)
+			smartbin = Bin.objects.get(pk=bin_num)
+			colcen = CollectionCenter.objects.get(pk=colcen_id)
+
+			# lock the bin
+			smartbin.is_active = 1
+			smartbin.save()
+
 			# create the new asgn
 			new_asgn = Assignment.objects.create(	asgn_id=asgn_id,
-													emp_username=emp_username,
-													bin_num=bin_num,
-													colcen_id=colcen_id,
+													emp_username=emp,
+													bin_num=smartbin,
+													colcen_id=colcen,
 													datetime_created=datetime_created
 												)
 			new_asgn.save()
+			return Response(asgn_id)
+		except Exception as e:
+			return HttpResponse(status=500)
+
+class FinishAssignment(APIView):
+
+	def get(self, request, *args, **kwargs):
+		try:
+			asgn_id = kwargs.get('asgn_id', '')
+			waste_volume = kwargs.get('waste_volume', '')
+			datetime_finished = kwargs.get('datetime_finished', '')
+			asgn = Assignment.objects.get(pk=asgn_id)
+			smartbin = asgn.bin_num
+			emp = asgn.emp_username
+			colcen = asgn.colcen_id
+
+			# unlock the bin
+			smartbin.is_active = 0
+			smartbin.save()
+
+			# update the waste volume and datetime_finished
+			asgn.waste_volume = waste_volume
+			asgn.datetime_finished = datetime_finished
+			asgn.save()
+
+			# increment the bins collected value of emp
+			emp.bins_collected += 1
+			emp.save()
+
 			return HttpResponse(status=200)
 		except Exception as e:
 			return HttpResponse(status=500)

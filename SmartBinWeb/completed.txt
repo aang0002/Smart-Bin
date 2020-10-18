@@ -64,7 +64,7 @@
 	a.) select bin (will render the bin collecting route)
 	b.) accept job (render a bigger map on the home page) (still has to implement bin locjing mechanism)
 	c.) Finish job (will check if the user really cleared the bin, if so, take user to home page)
-		* Note that the checking mechanism is impossible to implement at this stage, because we are not using real user location
+		* Note that checking if the user really cleared the bin is impossible to implement at this stage, because we are not working on real user location
 
 ### next to do ###
 - the rate of every bin getting filled
@@ -81,3 +81,6 @@ External libraries:
 Limitations:
 1.) Browser's zoom size should be fixed to 125% in order to have a proper interface.
 2.) Switching between different pages too fast in admin page could render an incorrect UI.
+
+Errors:
+- Creating an assginment will return internal server error, however, the assignment instance itself will still be successfully created in the DB

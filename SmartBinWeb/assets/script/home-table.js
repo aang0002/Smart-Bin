@@ -40,6 +40,7 @@ function generateTableContent(table, attributes) {
             getDirButton.className = "btn btn-primary";
             getDirButton.innerHTML = "GO";
             getDirButton.onclick =  function (){
+                                      window.scrollTo(0, 0);
                                       getDirection(bin.attributes.bin_num);
                                       clickedBinNum = bin.attributes.bin_num;
                                     }
@@ -70,7 +71,9 @@ function renderBinCollectionRoute(cleaner_pos, bin_pos) {
       var colcen_data = data[0].attributes
       var colcen_pos = [colcen_data.colcen_longitude, colcen_data.colcen_latitude]
       getRoute(cleaner_pos, bin_pos, 0);
-      getRoute(bin_pos, colcen_pos, 1);      
+      getRoute(bin_pos, colcen_pos, 1);
+      // save the colcen pos to localStorage
+      window.localStorage.setItem('inProgress_colcen_id', colcen_data.colcen_id);
     }
     else {
       console.log('error');

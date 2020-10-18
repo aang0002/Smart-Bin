@@ -32,6 +32,7 @@ from pages.views import EditEmployeeView
 from pages.views import BinList
 from pages.views import AssignmentList
 from pages.views import CreateAssignmentView
+from pages.views import FinishAssignment
 from pages.views import EmployeePerformance
 from pages.views import WasteProduction
 from pages.views import BinFrequency
@@ -62,7 +63,8 @@ urlpatterns = [
     url('^editemployee/', EditEmployeeView.as_view()),
     url('^getbins/', BinList.as_view()),
     url('^getassignments/', AssignmentList.as_view()),
-    url('^createassignment/', CreateAssignmentView.as_view()),
+    url('^createassignment/(?P<emp_username>.+)/(?P<bin_num>.+)/(?P<colcen_id>.+)/(?P<datetime_created>.+)', CreateAssignmentView.as_view()),
+    url('^finishassignment/(?P<asgn_id>.+)/(?P<waste_volume>.+)/(?P<datetime_finished>.+)', FinishAssignment.as_view()),
     url('^getemployeeperformance/(?P<period>.+)/(?P<time>.+)', EmployeePerformance.as_view()),
     url('^getwasteproduction/', WasteProduction.as_view()),
     url('^getbinfrequency/', BinFrequency.as_view()),

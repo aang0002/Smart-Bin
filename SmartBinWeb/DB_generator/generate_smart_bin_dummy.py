@@ -242,16 +242,16 @@ def create_trigger(cursor):
 
 	cursor.execute("DROP TRIGGER IF EXISTS update_bin_last_cleared_datetime;");
 	# updates the "last_cleared" attribute of bin whenever the 
-	cursor.execute("""
-					CREATE TRIGGER IF NOT EXISTS update_bin_last_cleared_datetime
-						AFTER UPDATE ON pages_assignment
-					WHEN NEW.is_done = 1
-					BEGIN
-						UPDATE pages_bin
-						SET last_cleared_datetime = datetime('now')
-						WHERE bin_num = NEW.bin_num_id;
-					END;
-				""");
+	# cursor.execute("""
+	# 				CREATE TRIGGER IF NOT EXISTS update_bin_last_cleared_datetime
+	# 					AFTER UPDATE ON pages_assignment
+	# 				WHEN NEW.is_done = 1
+	# 				BEGIN
+	# 					UPDATE pages_bin
+	# 					SET last_cleared_datetime = datetime('now')
+	# 					WHERE bin_num = NEW.bin_num_id;
+	# 				END;
+	# 			""");
 
 
 

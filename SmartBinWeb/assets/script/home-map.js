@@ -214,11 +214,16 @@ function addBinMarkers(){
                             "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
                             "Bin Type: " + bin.attributes.bin_type +
                             "</p>"
-            bin_text +=     `<button class="btn btn-primary"
-                              onclick = "getDirection(${bin.attributes.bin_num});
-                                         clickedBinNum=${bin.attributes.bin_num};">
-                              <span class="glyphicon glyphicon-circle-arrow-right"></span> GO
-                            </button>`
+            if (bin.attributes.is_active){
+                bin_text += `<p style="color:red;">Bin is being cleared by other employee.</p>`
+            }
+            else{
+                bin_text +=     `<button class="btn btn-primary"
+                                  onclick = "getDirection(${bin.attributes.bin_num});
+                                             clickedBinNum=${bin.attributes.bin_num};">
+                                  <span class="glyphicon glyphicon-circle-arrow-right"></span> GO
+                                </button>`
+            }
             let popup = new mapboxgl.Popup()
                       .setHTML(bin_text)
                       .addTo(map);
@@ -259,7 +264,8 @@ function updateBins(){
             let binNum = bin.attributes.bin_num;
             let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)];
             let binFullness = parseInt(bin.attributes.bin_fullness);
-            if (binFullness != localStorageBins[binNum-1].attributes['bin_fullness']){    // if the bin fullness is being updated in the DB
+            // if the bin fullness changed or is_active changed
+            if (binFullness != localStorageBins[binNum-1].attributes['bin_fullness'] || bin.attributes.is_active != localStorageBins[binNum-1].attributes['is_active']){    
                 // green
                 if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
                 // yellow
@@ -274,11 +280,16 @@ function updateBins(){
                                 "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
                                 "Bin Type: " + bin.attributes.bin_type +
                                 "</p>"
-                bin_text +=     `<button class="btn btn-primary"
-                                  onclick = "getDirection(${bin.attributes.bin_num});
-                                             clickedBinNum=${bin.attributes.bin_num};">
-                                  <span class="glyphicon glyphicon-circle-arrow-right"></span> GO
-                                </button>`
+                if (bin.attributes.is_active){
+                    bin_text += `<p style="color:red;">Bin is being cleared by other employee.</p>`
+                }
+                else{
+                    bin_text +=     `<button class="btn btn-primary"
+                                      onclick = "getDirection(${bin.attributes.bin_num});
+                                                 clickedBinNum=${bin.attributes.bin_num};">
+                                      <span class="glyphicon glyphicon-circle-arrow-right"></span> GO
+                                    </button>`
+                }
                 // remove the old bin marker and popup
                 let oldbinMarker = binMarkers[bin.attributes.bin_num];
                 oldbinMarker.getPopup().remove();
@@ -559,6 +570,10 @@ function acceptJob(bin_num){
         // change all the bin markers popup
         inProgressBinNum = bin_num;
 
+        // disable side navigation buttons
+        $('.home').addClass('disabled');
+        $('.profile').addClass('disabled');
+
         // get the current datetime
         let today = new Date();
         let DD = String(today.getDate()).padStart(2, '0');
@@ -569,35 +584,38 @@ function acceptJob(bin_num){
         let ss = String(today.getSeconds()).padStart(2, '0');
         let datetimeString = YYYY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm + ':' + ss //e.g. 2007-01-01 10:00:00
 
+        // gather all the required params
+        let emp_username = JSON.parse(localStorage.getItem('user'))['emp_username'];
+        let colcen_id = localStorage.getItem('inProgress_colcen_id');
+        let datetime_created = datetimeString;
+
         // create an assignment (this will also lock the bin)
         var request = new XMLHttpRequest();
-        var url = '../createassignment';
-        request.open('POST', url, true);
-        request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        request.onreadystatechange = function() {//Call a function when the state changes.
-            if(request.readyState == 4 && request.status == 200) {
-                alert(request.status);
+        var url = `../createassignment/${emp_username}/${bin_num}/${colcen_id}/${datetime_created}`;
+        request.open('GET', url, false);
+        request.onload = function () { 
+            if (request.status >= 200 && request.status < 400) {
+                let asgn_id = JSON.parse(this.response).data;
+                localStorage.setItem('inProgress_asgn_id', asgn_id);
+                alertify.success("You are assigned to bin " + bin_num);
+                // render a bigger map to user
+                renderBigMap(bin_num);
+            }
+            else{
+                alertify.error("Something went wrong")
             }
         }
-        let params = new FormData();
-        params.append('emp_username', JSON.parse(localStorage.getItem('user'))['emp_username']);
-        params.append('bin_num', bin_num);
-        params.append('colcen_id', 'person');
-        params.append('datetime_created', datetimeString);
-        request.send(params);
-
-        // render a bigger map to user
-        renderBigMap();
+        request.send();
+        
 
         // show time elapsed on screen
         // lock the bin (send a lock request to the DB)
 
     }
-
 }
 
-/* This function is created to only fill the data for the big map*/
-function renderBigMap(){
+ /* This function is created to only fill the data for the big map*/
+function renderBigMap(bin_num){
     // scroll to top
     window.scrollTo(0,0);
 
@@ -611,15 +629,16 @@ function renderBigMap(){
     map.id = "map";
     div.appendChild(map);
 
-    // <div class='map-overlay' id='legend'></div>
+    // <div class='map-overlay bigLegend' id='legendBig'></div>
     let legend = document.createElement('div');
-    legend.className = 'map-overlay legendBig';
-    legend.id = 'legend';
+    legend.className = 'map-overlay';
+    legend.id = 'legendBig';
     div.appendChild(legend);
 
     // fill the map data
     fillBigMapData(bin_num);
 }
+
 
 /* Fill the map with the relevant data*/
 function fillBigMapData(bin_num){
@@ -703,7 +722,7 @@ function fillBigMapData(bin_num){
             value.innerHTML = layer;
             item.appendChild(key);
             item.appendChild(value);
-            legend.appendChild(item);
+            legendBig.appendChild(item);
         }
 
         // Add the bin marker
@@ -772,8 +791,40 @@ function finishJob(bin_num){
 }
 
 function onokcompleteJob(){
+    // get the bin instance from lcoal storage
+    let bin = JSON.parse(localStorage.getItem('bins'))[inProgressBinNum-1];
+    // convert datetime now to SQLite acceptable string
+    let today = new Date();
+    let DD = String(today.getDate()).padStart(2, '0');
+    let MM = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let YYYY = today.getFullYear();
+    let hh = String(today.getHours()).padStart(2, '0');
+    let mm = String(today.getMinutes()).padStart(2, '0');
+    let ss = String(today.getSeconds()).padStart(2, '0');
+    let datetimeString = YYYY + '-' + MM + '-' + DD + ' ' + hh + ':' + mm + ':' + ss //e.g. 2007-01-01 10:00:00
     // unlock the bin, by changing the is_active attribute to false (make sure this is a synchrnous call)
-
-    // go to the main page
-    renderHomeMain('home');
+    let request = new XMLHttpRequest();
+    let asgn_id = localStorage.getItem('inProgress_asgn_id');
+    let waste_volume = Math.round(bin.attributes.bin_fullness * (bin.attributes.bin_fullness / 100));
+    let datetime_finished = datetimeString;
+    let path = `/finishassignment/${asgn_id}/${waste_volume}/${datetime_finished}`;
+    request.open('GET', path, false);
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            // increments the bins collected attribute
+            let user = JSON.parse(localStorage.getItem('user'));
+            user['bins_collected'] = user['bins_collected'] + 1
+            localStorage.setItem('user', JSON.stringify(user));
+            // send success message to user
+            alertify.success('You completed a job with id ' + asgn_id);
+            // set back the bigMapLoaded property to false
+            bigMapLoaded = false;
+            // go to the main page
+            renderHomeMain('home');
+        }
+        else{
+            alertify.error('Something went wrong');
+        }
+    }
+    request.send();
 }
