@@ -201,6 +201,29 @@ function addBinMarkers(){
             let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)];
             let binFullness = parseInt(bin.attributes.bin_fullness);
             let binDistance = get_bin_distance(bin.attributes.bin_num);
+            // find the nearest colcen's distance
+            let distanceToColcen = Infinity;
+            let nearestColcenId = null;
+            let colcens = JSON.parse(localStorage.getItem('colcens'));
+            colcens.forEach(colcen => {
+                // get the longitude and latitude
+                let colcenLng = parseFloat(colcen.attributes['colcen_longitude']);
+                let colcenLat = parseFloat(colcen.attributes['colcen_latitude']);
+                // compute the x and y distance
+                let x_distance = Math.abs(Math.abs(binPos[0])-Math.abs(colcenLng)) * 111; // in km
+                let y_distance = Math.abs(Math.abs(binPos[1])-Math.abs(colcenLat)) * 111; // in km
+                // calculate the distance between two points
+                let binToColcenDistance = Math.sqrt(Math.pow(x_distance,2) + Math.pow(y_distance,2)).toFixed(2);
+                // update the nearest colcen if necessary
+                if (binToColcenDistance < distanceToColcen){
+                    distanceToColcen = binToColcenDistance;
+                    nearestColcenId = colcen.attributes.colcen_id;
+                }
+            });
+            // add these two new informations to the bin
+            bin.attributes.nearest_colcen_id = nearestColcenId;
+            bin.attributes.nearest_colcen_distance = distanceToColcen;
+            // compute the colour of the bin
             let binColor;
             // green
             if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
@@ -214,8 +237,8 @@ function addBinMarkers(){
             let bin_text =  "<p>" +
                             "Bin Num: " + bin.attributes.bin_num + "<br>" +
                             "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
-                            "Bin Type: " + bin.attributes.bin_type + "<br>" +
-                            "Distance: " + binDistance + " km" + "<br>" +
+                            "Bin Distance: " + binDistance + " km" + "<br>" +
+                            "Total Distance: " + (parseFloat(binDistance)+parseFloat(bin.attributes.nearest_colcen_distance)).toFixed(2) + " km" + "<br>" +
                              "</p>"
             if (bin.attributes.is_active){
                 bin_text += `<p style="color:red;">Bin is being cleared by other employee.</p>`
@@ -271,6 +294,28 @@ function updateBins(){
             let binDistance = get_bin_distance(binNum);
             // if the bin fullness changed or is_active changed
             if (binFullness != localStorageBins[binNum-1].attributes['bin_fullness'] || bin.attributes.is_active != localStorageBins[binNum-1].attributes['is_active']){    
+                // find the nearest colcen's distance
+                let distanceToColcen = Infinity;
+                let nearestColcenId = null;
+                let colcens = JSON.parse(localStorage.getItem('colcens'));
+                colcens.forEach(colcen => {
+                    // get the longitude and latitude
+                    let colcenLng = parseFloat(colcen.attributes['colcen_longitude']);
+                    let colcenLat = parseFloat(colcen.attributes['colcen_latitude']);
+                    // compute the x and y distance
+                    let x_distance = Math.abs(Math.abs(binPos[0])-Math.abs(colcenLng)) * 111; // in km
+                    let y_distance = Math.abs(Math.abs(binPos[1])-Math.abs(colcenLat)) * 111; // in km
+                    // calculate the distance between two points
+                    let binToColcenDistance = Math.sqrt(Math.pow(x_distance,2) + Math.pow(y_distance,2)).toFixed(2);
+                    // update the nearest colcen if necessary
+                    if (binToColcenDistance < distanceToColcen){
+                        distanceToColcen = binToColcenDistance;
+                        nearestColcenId = colcen.attributes.colcen_id;
+                    }
+                });
+                // add these two new informations to the bin
+                bin.attributes.nearest_colcen_id = nearestColcenId;
+                bin.attributes.nearest_colcen_distance = distanceToColcen;
                 // green
                 if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
                 // yellow
@@ -283,8 +328,8 @@ function updateBins(){
                 let bin_text =  "<p>" +
                                 "Bin Num: " + bin.attributes.bin_num + "<br>" +
                                 "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
-                                "Bin Type: " + bin.attributes.bin_type + "<br>" +
-                                "Distance: " + binDistance + " km" + "<br>" +
+                                "Bin Distance: " + binDistance + " km" + "<br>" +
+                                "Total Distance: " + (parseFloat(binDistance)+parseFloat(bin.attributes.nearest_colcen_distance)).toFixed(2) + " km" + "<br>" +
                                 "</p>"
                 if (bin.attributes.is_active){
                     bin_text += `<p style="color:red;">Bin is being cleared by other employee.</p>`
@@ -326,8 +371,8 @@ function updateBins(){
                         bin_text =  "<p>" +
                                     "Bin Num: " + binNum + "<br>" +
                                     "Fullness: " + binFullness + "%" + "<br>" +
-                                    "Bin Type: " + bin.attributes.bin_type +
-                                    "Distance: " + binDistance + " km" + "<br>" +
+                                    "Bin Distance: " + binDistance + " km" + "<br>" +
+                                    "Total Distance: " + (parseFloat(binDistance)+parseFloat(bin.attributes.nearest_colcen_distance)).toFixed(2) + " km" + "<br>" +
                                     "</p>"
                         if (bigMapLoaded){
                             bin_text += `<div class="btn-group-vertical">
@@ -432,8 +477,8 @@ function changeMarkerButton (bin_num){
         let previous_bin_text =  "<p>" +
                         "Bin Num: " + previousBin.attributes.bin_num + "<br>" +
                         "Fullness: " + previousBin.attributes.bin_fullness + "%" + "<br>" +
-                        "Bin Type: " + previousBin.attributes.bin_type +
-                        "Distance: " + binDistance + " km" + "<br>" +
+                        "Bin Distance: " + binDistance + " km" + "<br>" +
+                        "Total Distance: " + (parseFloat(binDistance)+parseFloat(previousBin.attributes.nearest_colcen_distance)).toFixed(2) + " km" + "<br>" +
                         "</p>" +
                         `<button class="btn btn-primary"
                           onclick = "getDirection(${previousBin.attributes.bin_num});
@@ -458,8 +503,8 @@ function changeMarkerButton (bin_num){
     let bin_text =  "<p>" +
                     "Bin Num: " + bin_num + "<br>" +
                     "Fullness: " + bin_fullness + "%" + "<br>" +
-                    "Bin Type: " + bin_type +
-                    "Distance: " + binDistance + " km" + "<br>" +
+                    "Bin Distance: " + binDistance + " km" + "<br>" +
+                    "Total Distance: " + (parseFloat(binDistance)+parseFloat(bin.attributes.nearest_colcen_distance)).toFixed(2) + " km" + "<br>" +
                     "</p>" 
     bin_text += `<div class="btn-group-vertical">
                     <button class="btn btn-info" onclick = "acceptJob(${bin_num});">
@@ -511,8 +556,8 @@ function cancelJob(bin_num){
     let bin_text =  "<p>" +
                     "Bin Num: " + bin.attributes.bin_num + "<br>" +
                     "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
-                    "Bin Type: " + bin.attributes.bin_type +
-                    "Distance: " + binDistance + " km" + "<br>" +
+                    "Bin Distance: " + binDistance + " km" + "<br>" +
+                    "Total Distance: " + (parseFloat(binDistance)+parseFloat(bin.attributes.nearest_colcen_distance)).toFixed(2) + " km" + "<br>" +
                     "</p>" +
                     `<button class="btn btn-primary"
                       onclick = "getDirection(${bin.attributes.bin_num});
@@ -755,8 +800,8 @@ function fillBigMapData(bin_num){
         let bin_text =  "<p>" +
                         "Bin Num: " + bin_num + "<br>" +
                         "Fullness: " + binFullness + "%" + "<br>" +
-                        "Bin Type: " + bin.attributes.bin_type +
-                        "Distance: " + binDistance + " km" + "<br>" +
+                        "Bin Distance: " + binDistance + " km" + "<br>" +
+                        "Total Distance: " + (parseFloat(binDistance)+parseFloat(bin.attributes.nearest_colcen_distance)).toFixed(2) + " km" + "<br>" +
                         "</p>" 
         bin_text += `<div class="btn-group-vertical">
                         <button class="btn btn-info" onclick = "finishJob(${bin_num});">
@@ -852,10 +897,38 @@ function get_bin_distance(bin_num){
     let cleanerLng = myLongitude;
     let cleanerLat = myLatitude;
 
-    // compute the distance
+    // compute the x and y distance
     let x_distance = Math.abs(Math.abs(binLng)-Math.abs(cleanerLng)) * 111; // in km
     let y_distance = Math.abs(Math.abs(binLat)-Math.abs(cleanerLat)) * 111; // in km
 
     // return the distance between two points
     return Math.sqrt(Math.pow(x_distance,2) + Math.pow(y_distance,2)).toFixed(2);
+}
+
+function get_total_route_distance(bin_num){
+
+    // get the bin informations
+    let bin = JSON.parse(localStorage.getItem('bins'))[bin_num-1];
+    let binLng = parseFloat(bin.attributes.bin_longitude);
+    let binLat = parseFloat(bin.attributes.bin_latitude);
+
+    // find the nearest colcen's distance
+    let distanceToColcen = Infinity;
+    let colcens = JSON.parse(localStorage.getItem('colcens'));
+    colcens.forEach(colcen => {
+        // get the longitude and latitude
+        let colcenLng = parseFloat(colcen.attributes['colcen_longitude']);
+        let colcenLat = parseFloat(colcen.attributes['colcen_latitude']);
+        // compute the x and y distance
+        let x_distance = Math.abs(Math.abs(binLng)-Math.abs(colcenLng)) * 111; // in km
+        let y_distance = Math.abs(Math.abs(binLat)-Math.abs(colcenLat)) * 111; // in km
+        // calculate the distance between two points
+        let binToColcenDistance = Math.sqrt(Math.pow(x_distance,2) + Math.pow(y_distance,2)).toFixed(2);
+        // update the nearest colcen if necessary
+        if (binToColcenDistance < distanceToColcen){
+            distanceToColcen = binToColcenDistance;
+        }
+    });
+    // at this point, the distanceToColcen var stores the nearest colcen distance from the selected bin
+
 }
