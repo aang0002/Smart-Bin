@@ -132,8 +132,8 @@ function addRoute (coords, routeNum) {
 
 function fillBinTable(){
   // fill the data
-  let headers = ["Bin Num", "Type", "Fullness", "Last Cleared", "Status"]
-  let attributes = ["bin_num", "bin_type", "bin_fullness", "last_cleared_datetime", "bin_status"]
+  let headers = ["Bin Num", "Type", "Fullness (%)", " Full Volume (L)", "Status", "Postcode"]
+  let attributes = ["bin_num", "bin_type", "bin_fullness", "bin_volume", "bin_status", "postcode"]
   let table = document.getElementById("binTable");
   generateTableHead(table, headers);
   generateTableContent(table, attributes);

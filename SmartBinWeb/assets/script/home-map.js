@@ -70,7 +70,6 @@ function fillMapData(){
         );
 
         map.on("styleimagemissing", e => {
-            console.log("loading missing image: " + e.id);
             map.loadImage('images/' + e.id + ".png", (error, image) => {
                 if (error) throw error;
                 if (!map.hasImage(e.id)) map.addImage(e.id, image);
@@ -188,17 +187,20 @@ function addBinMarkers(){
     binsToGet = 5;
     let path = '/getbins/'
 
-    request.open('GET', path, false)
+    request.open('GET', path, true)
     request.onload = function () {
         // Begin accessing JSON data here
         let data = JSON.parse(this.response).data
 
         // store the bins data to local storage
         window.localStorage.setItem('bins', JSON.stringify(data));
+
+        // access each bin
         data.forEach((bin) => {
-            // draw the bin on the map
-            let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
-            let binFullness = parseInt(bin.attributes.bin_fullness)
+            // get bin attributes
+            let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)];
+            let binFullness = parseInt(bin.attributes.bin_fullness);
+            let binDistance = get_bin_distance(bin.attributes.bin_num);
             let binColor;
             // green
             if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
@@ -212,8 +214,9 @@ function addBinMarkers(){
             let bin_text =  "<p>" +
                             "Bin Num: " + bin.attributes.bin_num + "<br>" +
                             "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
-                            "Bin Type: " + bin.attributes.bin_type +
-                            "</p>"
+                            "Bin Type: " + bin.attributes.bin_type + "<br>" +
+                            "Distance: " + binDistance + " km" + "<br>" +
+                             "</p>"
             if (bin.attributes.is_active){
                 bin_text += `<p style="color:red;">Bin is being cleared by other employee.</p>`
             }
@@ -261,9 +264,11 @@ function updateBins(){
         // get bins data from local storage
         let localStorageBins = JSON.parse(window.localStorage.getItem('bins'));
         data.forEach((bin) => {
+            // get bin attributes
             let binNum = bin.attributes.bin_num;
             let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)];
             let binFullness = parseInt(bin.attributes.bin_fullness);
+            let binDistance = get_bin_distance(binNum);
             // if the bin fullness changed or is_active changed
             if (binFullness != localStorageBins[binNum-1].attributes['bin_fullness'] || bin.attributes.is_active != localStorageBins[binNum-1].attributes['is_active']){    
                 // green
@@ -278,7 +283,8 @@ function updateBins(){
                 let bin_text =  "<p>" +
                                 "Bin Num: " + bin.attributes.bin_num + "<br>" +
                                 "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
-                                "Bin Type: " + bin.attributes.bin_type +
+                                "Bin Type: " + bin.attributes.bin_type + "<br>" +
+                                "Distance: " + binDistance + " km" + "<br>" +
                                 "</p>"
                 if (bin.attributes.is_active){
                     bin_text += `<p style="color:red;">Bin is being cleared by other employee.</p>`
@@ -321,6 +327,7 @@ function updateBins(){
                                     "Bin Num: " + binNum + "<br>" +
                                     "Fullness: " + binFullness + "%" + "<br>" +
                                     "Bin Type: " + bin.attributes.bin_type +
+                                    "Distance: " + binDistance + " km" + "<br>" +
                                     "</p>"
                         if (bigMapLoaded){
                             bin_text += `<div class="btn-group-vertical">
@@ -417,6 +424,7 @@ function changeMarkerButton (bin_num){
     if (inProgressBinNum != null){
         let previousBin = bins[inProgressBinNum-1];
         let previousBinMarker = binMarkers[inProgressBinNum];
+        let binDistance = get_bin_distance(inProgressBinNum);
         // remove the previous popup
         previousBinMarker.getPopup().remove();
         // create a new popup
@@ -425,6 +433,7 @@ function changeMarkerButton (bin_num){
                         "Bin Num: " + previousBin.attributes.bin_num + "<br>" +
                         "Fullness: " + previousBin.attributes.bin_fullness + "%" + "<br>" +
                         "Bin Type: " + previousBin.attributes.bin_type +
+                        "Distance: " + binDistance + " km" + "<br>" +
                         "</p>" +
                         `<button class="btn btn-primary"
                           onclick = "getDirection(${previousBin.attributes.bin_num});
@@ -444,11 +453,13 @@ function changeMarkerButton (bin_num){
     let bin = bins[bin_num-1];
     let bin_fullness = bin.attributes['bin_fullness'];
     let bin_type = bin.attributes['bin_type'];
+    let binDistance = get_bin_distance(bin_num);
     // create a popup text
     let bin_text =  "<p>" +
                     "Bin Num: " + bin_num + "<br>" +
                     "Fullness: " + bin_fullness + "%" + "<br>" +
                     "Bin Type: " + bin_type +
+                    "Distance: " + binDistance + " km" + "<br>" +
                     "</p>" 
     bin_text += `<div class="btn-group-vertical">
                     <button class="btn btn-info" onclick = "acceptJob(${bin_num});">
@@ -496,10 +507,12 @@ function cancelJob(bin_num){
     let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)];
 
     // create a popup text
+    let binDistance = get_bin_distance(bin_num);
     let bin_text =  "<p>" +
                     "Bin Num: " + bin.attributes.bin_num + "<br>" +
                     "Fullness: " + bin.attributes.bin_fullness + "%" + "<br>" +
                     "Bin Type: " + bin.attributes.bin_type +
+                    "Distance: " + binDistance + " km" + "<br>" +
                     "</p>" +
                     `<button class="btn btn-primary"
                       onclick = "getDirection(${bin.attributes.bin_num});
@@ -699,7 +712,6 @@ function fillBigMapData(bin_num){
         );
 
         map.on("styleimagemissing", e => {
-            console.log("loading missing image: " + e.id);
             map.loadImage('images/' + e.id + ".png", (error, image) => {
                 if (error) throw error;
                 if (!map.hasImage(e.id)) map.addImage(e.id, image);
@@ -729,6 +741,7 @@ function fillBigMapData(bin_num){
         let bin = JSON.parse(localStorage.getItem('bins'))[bin_num-1]    // this stotes the information of the bin
         let binPos = [parseFloat(bin.attributes.bin_longitude), parseFloat(bin.attributes.bin_latitude)]
         let binFullness = parseInt(bin.attributes.bin_fullness)
+        let binDistance = get_bin_distance(bin_num);
         let binColor;
         // green
         if (binFullness>=0 && binFullness<=24){ binColor = 'green';}
@@ -743,6 +756,7 @@ function fillBigMapData(bin_num){
                         "Bin Num: " + bin_num + "<br>" +
                         "Fullness: " + binFullness + "%" + "<br>" +
                         "Bin Type: " + bin.attributes.bin_type +
+                        "Distance: " + binDistance + " km" + "<br>" +
                         "</p>" 
         bin_text += `<div class="btn-group-vertical">
                         <button class="btn btn-info" onclick = "finishJob(${bin_num});">
@@ -827,4 +841,21 @@ function onokcompleteJob(){
         }
     }
     request.send();
+}
+
+function get_bin_distance(bin_num){
+
+    // get the bin informations
+    let bin = JSON.parse(localStorage.getItem('bins'))[bin_num-1];
+    let binLng = parseFloat(bin.attributes.bin_longitude);
+    let binLat = parseFloat(bin.attributes.bin_latitude);
+    let cleanerLng = myLongitude;
+    let cleanerLat = myLatitude;
+
+    // compute the distance
+    let x_distance = Math.abs(Math.abs(binLng)-Math.abs(cleanerLng)) * 111; // in km
+    let y_distance = Math.abs(Math.abs(binLat)-Math.abs(cleanerLat)) * 111; // in km
+
+    // return the distance between two points
+    return Math.sqrt(Math.pow(x_distance,2) + Math.pow(y_distance,2)).toFixed(2);
 }
